@@ -69,5 +69,5 @@ Blade Blade::dual()
 Blade up(float _x, float _y, float _z)
 {
 	Blade x = (_x * e1) + (_y * e2) + (_z * e3); //eucledian point
-	return Blade(x + (0.5 * (x * x) * ei) + eo);//CGA(x + (0.5 * (x * x) * ei) + eo); //now really CGA point
+	return x;//CGA(x + (0.5 * (x * x) * ei) + eo); //now really CGA point
 }
