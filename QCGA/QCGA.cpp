@@ -104,7 +104,7 @@ QCGA QCGA::operator[](const int _grade) const
 {
 	std::vector<QCGA> left = makeCGAFromBasisBlades(*this);
 
-	QCGA res("0");
+	QCGA res = zero;
 	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
 	{
 		res = res + (left[i])(_grade); //equivalent to standard formula 
@@ -126,7 +126,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 	std::map<std::string, double> singleMap;
 	std::vector<QCGA*> basisBlades;
 	basisBlades.reserve(map.size());
-	QCGA res("0");
+	QCGA res = zero;
 	//now, try to simplify individual label
 	int iter = 0;
 	std::map<std::string, double>mapCopy = map;
@@ -140,6 +140,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 		{
 			mapCopy.erase(basisBlade);
 			mapCopy["1"] = oldCoef;
+			copyOfBasisBlade = "1";
 		}
 		else if ((basisBlade.find_last_of("*") + 1) != basisBlade.find_last_of("e")) //if there is ei*1, label will be ei
 		{
@@ -260,7 +261,7 @@ QCGA QCGA::operator|(const QCGA& other) const
 	std::vector<QCGA> left = makeCGAFromBasisBlades(*this);
 	std::vector<QCGA> right = makeCGAFromBasisBlades(other);
 
-	QCGA res("0");
+	QCGA res = zero;
 	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
 	{
 		for (int j = 0; j < other.STDmapLabelToCoefficient.size(); j++)
@@ -279,7 +280,7 @@ QCGA QCGA::operator^(const QCGA& other) const
 	std::vector<QCGA> left = makeCGAFromBasisBlades(*this);
 	std::vector<QCGA> right = makeCGAFromBasisBlades(other);
 
-	QCGA res("0");
+	QCGA res = zero;
 	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
 	{
 		for (int j = 0; j < other.STDmapLabelToCoefficient.size(); j++)

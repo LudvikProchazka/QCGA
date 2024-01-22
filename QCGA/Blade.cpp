@@ -5,7 +5,7 @@
 bool Blade::isBlade(QCGA& Multivector) {
 	if (Multivector[0] == Multivector)
 	{
-		return false;
+		return true;
 	}
 	else {
 		QCGA l(Multivector * ~Multivector);
@@ -27,7 +27,7 @@ Blade::Blade(const QCGA& Multivector) : QCGA(Multivector)
 		this->grade = -1;
 		std::cout << "WARNING: Multivector: " << Multivector << " is not a blade!, program will likely crash if it is being used as blade" << std::endl;
 	}
-	this->nullBlade = (Multivector | Multivector) == QCGA("0");
+	this->nullBlade = (Multivector | Multivector) == zero;
 }
 
 Blade Blade::operator^(const Blade& other) const
@@ -69,5 +69,6 @@ Blade Blade::dual()
 Blade up(float _x, float _y, float _z)
 {
 	Blade x = (_x * e1) + (_y * e2) + (_z * e3); //eucledian point
-	return x;//CGA(x + (0.5 * (x * x) * ei) + eo); //now really CGA point
+	x = x + 0.5 * ((_x * _x) * ei1 + (_y * _y) * ei2 + (_z * _z) * ei3) + (_x * _y) * ei4 + (_x * _z) * ei5 + (_y * _z) * ei6 + eo1 + eo2 + eo3;
+	return x;
 }

@@ -45,7 +45,7 @@
 #define	ei3 (QCGA::generatingBlades[12]+QCGA::generatingBlades[6]) 
 #define	ei4 (QCGA::generatingBlades[13]+QCGA::generatingBlades[7]) 
 #define	ei5 (QCGA::generatingBlades[14]+QCGA::generatingBlades[8]) 
-#define	ei5 (QCGA::generatingBlades[15]+QCGA::generatingBlades[9]) 
+#define	ei6 (QCGA::generatingBlades[15]+QCGA::generatingBlades[9]) 
 #define	eo1 (0.5*(QCGA::generatingBlades[10]-QCGA::generatingBlades[4])) 
 #define	eo2 (0.5*(QCGA::generatingBlades[11]-QCGA::generatingBlades[5])) 
 #define	eo3 (0.5*(QCGA::generatingBlades[12]-QCGA::generatingBlades[6])) 
