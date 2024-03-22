@@ -294,12 +294,21 @@ QCGA QCGA::operator^(const QCGA& other) const
 
 QCGA QCGA::operator^(const int exponent) const
 {
-	QCGA res = *this;
-	for (int i = 0; i < exponent - 1; i++)
+	if (exponent < 0)
 	{
-		res = res * *this;
+		std::cout << "Warning, calling an inverse of QCGA, not of a blade, this might fail!\n";
+		QCGA res = (~*this) / ((*this * ~(*this)).toNumeric());
+		return res;
 	}
-	return res;
+	else
+	{
+		QCGA res = *this;
+		for (int i = 0; i < exponent - 1; i++)
+		{
+			res = res * *this;
+		}
+		return res;
+	}
 }
 
 QCGA QCGA::operator/(const double divider) const

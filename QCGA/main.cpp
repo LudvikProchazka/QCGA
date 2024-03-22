@@ -9,10 +9,9 @@
 int main()
 {
 	QCGA::generateGeneratingBlades();
-	Blade a = up(0, 0, 0);
-	Blade b = up(1, 1, 1);
-	std::cout << (a | b) << std::endl;
-	std::cout << (b | a) << std::endl;
-
+	Blade a = e1 + e2;
+	std::cout << a << std::endl;
+	std::cout << (a^(-1)) << std::endl;
+	std::cout << (a* (a ^ (-1))) << std::endl;
 	return 0;
 }
