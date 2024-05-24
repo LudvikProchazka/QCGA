@@ -8,10 +8,11 @@
 
 int main()
 {
+	//TEST FRO REPO
 	QCGA::generateGeneratingBlades();
 	Blade a = e1 + e2;
 	std::cout << a << std::endl;
 	std::cout << (a^(-1)) << std::endl;
-	std::cout << (a* (a ^ (-1))) << std::endl;
+	std::cout << (a* (a ^ (-1))) << std::endl; 
 	return 0;
 }
