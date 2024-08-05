@@ -15,15 +15,12 @@
       "RelativeMoniker": "D:0:0:{E904D2AD-B921-42F1-BE0E-23D5969642B1}|QCGA\\QCGA.vcxproj|solutionrelative:QCGA\\QCGA.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E904D2AD-B921-42F1-BE0E-23D5969642B1}|QCGA\\QCGA.vcxproj|C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\QCGA.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{E904D2AD-B921-42F1-BE0E-23D5969642B1}|QCGA\\QCGA.vcxproj|solutionrelative:QCGA\\QCGA.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\include\\string||{3B902123-F8A7-4915-9F01-361F908088D0}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E904D2AD-B921-42F1-BE0E-23D5969642B1}|QCGA\\QCGA.vcxproj|C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\Blade.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{E904D2AD-B921-42F1-BE0E-23D5969642B1}|QCGA\\QCGA.vcxproj|solutionrelative:QCGA\\Blade.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E904D2AD-B921-42F1-BE0E-23D5969642B1}|QCGA\\QCGA.vcxproj|C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\QCGA.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{E904D2AD-B921-42F1-BE0E-23D5969642B1}|QCGA\\QCGA.vcxproj|solutionrelative:QCGA\\QCGA.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -33,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 259,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -41,25 +38,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "string",
-              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\include\\string",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\include\\string",
-              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\include\\string",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\include\\string",
-              "ViewState": "AQIAAFcAAAAAAAAAAAAkwGMAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-01-22T17:39:45.597Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "Blade.h",
               "DocumentMoniker": "C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\Blade.h",
               "RelativeDocumentMoniker": "QCGA\\Blade.h",
               "ToolTip": "C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\Blade.h",
               "RelativeToolTip": "QCGA\\Blade.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-24T09:22:01.371Z"
             },
@@ -71,7 +56,7 @@
               "RelativeDocumentMoniker": "QCGA\\Blade.cpp",
               "ToolTip": "C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\Blade.cpp",
               "RelativeToolTip": "QCGA\\Blade.cpp",
-              "ViewState": "AQIAACUAAAAAAAAAAAAAAB0AAAAAAAAA",
+              "ViewState": "AQIAAC4AAAAAAAAAAAAkwEYAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-24T09:22:01.374Z",
               "EditorCaption": ""
@@ -84,23 +69,22 @@
               "RelativeDocumentMoniker": "QCGA\\QCGA.h",
               "ToolTip": "C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\QCGA.h",
               "RelativeToolTip": "QCGA\\QCGA.h",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAAC4AAABDAAAA",
+              "ViewState": "AQIAACQAAAAAAAAAAAAkwDMAAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-24T09:22:01.376Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "QCGA.cpp",
               "DocumentMoniker": "C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\QCGA.cpp",
               "RelativeDocumentMoniker": "QCGA\\QCGA.cpp",
               "ToolTip": "C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\QCGA.cpp",
               "RelativeToolTip": "QCGA\\QCGA.cpp",
-              "ViewState": "AQIAAGIBAAAAAAAAAAAMwDYBAAACAAAA",
+              "ViewState": "AQIAAE8BAAAAAAAAAAArwE0BAAAUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-24T09:22:01.379Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-24T09:22:01.379Z"
             },
             {
               "$type": "Document",
@@ -110,7 +94,7 @@
               "RelativeDocumentMoniker": "QCGA\\main.cpp",
               "ToolTip": "C:\\Users\\Luda4\\source\\repos\\QCGA\\QCGA\\main.cpp",
               "RelativeToolTip": "QCGA\\main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAdAAAA",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAACoAAACEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-24T09:22:01.381Z",
               "EditorCaption": ""

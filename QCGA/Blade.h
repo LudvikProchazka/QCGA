@@ -16,6 +16,7 @@ public:
 	Blade operator^(const Blade& other) const;
 	Blade operator ^(const int exponent) const; //exponent operator, mainly for inverse: A^(-1)
 	Blade dual(); //dual: A.dual() = A * I^(-1)
+	Blade down() const; //dual: A.dual() = A * I^(-1)
 
 private:
 	int grade;

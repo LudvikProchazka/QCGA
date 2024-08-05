@@ -65,10 +65,17 @@ Blade Blade::dual()
 	return Blade(*this * (I ^ (-1)));
 }
 
+Blade Blade::down() const
+{
+	double multiplicator = ((*this | (ei1 * ei2 * ei3 * ei4 * ei5 * ei6)) | (eo2 * eo3 * eo4 * eo5 * eo6)).toNumeric();
+	Blade res = (double(1) / multiplicator) * *this;
+	return res;
+}
+
 //creates CGA object as embedded 3D point
 Blade up(float _x, float _y, float _z)
 {
 	Blade x = (_x * e1) + (_y * e2) + (_z * e3); //eucledian point
-	x = x + 0.5 * ((_x * _x) * ei1 + (_y * _y) * ei2 + (_z * _z) * ei3) + (_x * _y) * ei4 + (_x * _z) * ei5 + (_y * _z) * ei6 + eo1 + eo2 + eo3;
+	x = eo1 + x + 0.5*(_x * _x + _y * _y + _z * _z)*ei1 + 0.5*(_x * _x - _y * _y + _z * _z) * ei2 + 0.5*(_x * _x + _y * _y - _z * _z) * ei3 + _x*_y*ei4 + _x*_z*ei5 + _y*_z*ei6;
 	return x;
 }

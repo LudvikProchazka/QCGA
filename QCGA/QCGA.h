@@ -40,18 +40,19 @@
 #define	e14 (QCGA::generatingBlades[14])
 #define	e15 (QCGA::generatingBlades[15])
 
+#define	eo6 (0.5*(QCGA::generatingBlades[15]-QCGA::generatingBlades[9])) 
+#define	eo5 (0.5*(QCGA::generatingBlades[14]-QCGA::generatingBlades[8])) 
+#define	eo4 (0.5*(QCGA::generatingBlades[13]-QCGA::generatingBlades[7])) 
+#define	eo3 (0.5*(QCGA::generatingBlades[12]-QCGA::generatingBlades[6])) 
+#define	eo2 (0.5*(QCGA::generatingBlades[11]-QCGA::generatingBlades[5])) 
+#define	eo1 (0.5*(QCGA::generatingBlades[10]-QCGA::generatingBlades[4])) 
 #define	ei1 (QCGA::generatingBlades[10]+QCGA::generatingBlades[4]) 
 #define	ei2 (QCGA::generatingBlades[11]+QCGA::generatingBlades[5]) 
 #define	ei3 (QCGA::generatingBlades[12]+QCGA::generatingBlades[6]) 
 #define	ei4 (QCGA::generatingBlades[13]+QCGA::generatingBlades[7]) 
 #define	ei5 (QCGA::generatingBlades[14]+QCGA::generatingBlades[8]) 
 #define	ei6 (QCGA::generatingBlades[15]+QCGA::generatingBlades[9]) 
-#define	eo1 (0.5*(QCGA::generatingBlades[10]-QCGA::generatingBlades[4])) 
-#define	eo2 (0.5*(QCGA::generatingBlades[11]-QCGA::generatingBlades[5])) 
-#define	eo3 (0.5*(QCGA::generatingBlades[12]-QCGA::generatingBlades[6])) 
-#define	eo4 (0.5*(QCGA::generatingBlades[13]-QCGA::generatingBlades[7])) 
-#define	eo5 (0.5*(QCGA::generatingBlades[14]-QCGA::generatingBlades[8])) 
-#define	eo6 (0.5*(QCGA::generatingBlades[15]-QCGA::generatingBlades[9])) 
+
 
 #define I Blade(e1*e2*e3*e4*e5*e6*e7*e8*e9*e10*e11*e12*e13*e14*e15) //Pseaudoscalar of an algebra
 
