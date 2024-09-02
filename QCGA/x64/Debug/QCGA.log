@@ -1,3 +1,7 @@
 ﻿  main.cpp
-C:\Users\Luda4\source\repos\QCGA\QCGA\main.cpp(38,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Luda4\source\repos\QCGA\QCGA\main.cpp(37,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Luda4\source\repos\QCGA\QCGA\main.cpp(38,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Luda4\source\repos\QCGA\QCGA\main.cpp(110,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Luda4\source\repos\QCGA\QCGA\main.cpp(111,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Luda4\source\repos\QCGA\QCGA\main.cpp(150,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   QCGA.vcxproj -> C:\Users\Luda4\source\repos\QCGA\x64\Debug\QCGA.exe
