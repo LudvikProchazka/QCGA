@@ -17,7 +17,7 @@
 #define GENERATING_BASIS_DIMENSION 15 //dimension of generating space R^5
 #define ALGEBRA_P 9 //number of positive squared vectors
 #define ALGEBRA_Q 6 //number of negative squared vectors
-#define PRECISION 1000000 //for rounding
+#define PRECISION 100000 //for rounding
 
 #define zero (QCGA())
 #define one (QCGA::generatingBlades[0])

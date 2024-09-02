@@ -1,5 +1,5 @@
 #include "QCGA.h"
-
+#include <cmath>
 #include <numeric>
 
 QCGA QCGA::generatingBlades[GENERATING_BASIS_DIMENSION + 1];
@@ -31,6 +31,7 @@ QCGA::QCGA(std::map<std::string, double> map)
 	std::map<std::string, double> copyOfMap = map;
 	for (const auto& [basisBlade, coef] : map)
 	{
+		//copyOfMap.at(basisBlade) = std::round(coef * PRECISION) / PRECISION; //tried to fix rounding error in another way
 		if (abs(coef) <= double(1) / PRECISION)
 		{
 			copyOfMap.erase(basisBlade);
@@ -43,7 +44,7 @@ QCGA::QCGA(std::map<std::string, double> map)
 	this->STDmapLabelToCoefficient = copyOfMap;
 }
 
-//instanciate CGA object from given objects
+//instantiate CGA object from given objects
 QCGA::QCGA(const QCGA& Multivector) { *this = Multivector; }
 
 //default constructor calls CGA("0")
@@ -76,14 +77,14 @@ bool QCGA::operator==(const QCGA& other) const
 	for (const auto& [basisBlade, value] : this->STDmapLabelToCoefficient)
 	{
 		auto otherMap = other.getSTDmapLabelToCoefficient();
-		if (otherMap.find(basisBlade) == otherMap.end()) //if there is on the right not the same basis blade as in the left
+		if (otherMap.find(basisBlade) == otherMap.end()) //if there is on the right not the same basis blade as on the left
 		{
 			equal = false;
 			break;
 		}
 		else //if there is, check for coefs if they are the same
 		{
-			if (otherMap.at(basisBlade) != value) // if coefs are different
+			if (abs(otherMap.at(basisBlade) - value) > double(1) / PRECISION) // if coefs are different
 			{
 				equal = false;
 				break;
