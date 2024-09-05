@@ -10,6 +10,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <map>
+#include <iomanip>
 
 
 
@@ -17,7 +18,7 @@
 #define GENERATING_BASIS_DIMENSION 15 //dimension of generating space R^5
 #define ALGEBRA_P 9 //number of positive squared vectors
 #define ALGEBRA_Q 6 //number of negative squared vectors
-#define PRECISION 100000 //for rounding
+#define PRECISION 1000000000000 //for rounding
 
 #define zero (QCGA())
 #define one (QCGA::generatingBlades[0])
@@ -63,28 +64,31 @@ public:
 	static void generateGeneratingBlades(); //generates generatingBlades
 
 	explicit QCGA(std::string input); //constructor used for construct generatingBlades
-	explicit QCGA(std::map<std::string, double> map);
+	explicit QCGA(std::map<std::string, long double> map);
 	QCGA(const QCGA& Multivector); //instanciate CGA object from given objects
 	QCGA(); //default constructor, calls CGA("0");
 
-	std::map<std::string, double> getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
-	double toNumeric(); //returs coefficient at basis blade "1"
+	std::map<std::string, long double> getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
+	long double toNumeric(); //returs coefficient at basis blade "1"
 
 
 	//**********************************OPERATORS**********************************\\
-
+	
+	QCGA rotorExponential(unsigned int degree, long double phi);
+	QCGA translatorExponential(unsigned int degree, long double distance);
+	QCGA scalorExponential(unsigned int degree, long double factor);
 	bool operator==(const QCGA& other) const; //equals operator
 	bool operator!=(const QCGA& other) const; //not equals operator
 	QCGA operator[](const int grade) const; //grade projection
 	QCGA operator*(const QCGA& other) const; //geometric product operator
-	QCGA operator*(const double scalar) const; //multiplying by scalar from the right operator
+	QCGA operator*(const long double scalar) const; //multiplying by scalar from the right operator
 	QCGA operator~() const; //reverse operator
 	QCGA operator+(const QCGA& other) const; //multivector addition operator
 	QCGA operator-(const QCGA& other) const; //multivector substraction operator
 	QCGA operator|(const QCGA& other) const; //inner product operator
 	QCGA operator^(const QCGA& other) const; //outer product operator
 	QCGA operator^(const int exponent) const; //exponent operator
-	QCGA operator/(const double divider) const; //dividing operator
+	QCGA operator/(const long double divider) const; //dividing operator
 
 	int grade(std::string label) const; //returns grade of basis blade (if we give it appropriate label...)
 	std::string log() const; //returns multivector, used in << operator
@@ -105,7 +109,7 @@ protected:
 
 	//**********************************ACTUAL_ATRIBUTES**********************************\\
 
-	std::map<std::string, double> STDmapLabelToCoefficient; //representation of a general multivector
+	std::map<std::string, long double> STDmapLabelToCoefficient; //representation of a general multivector
 
 	//**********************************SUPPORT_FUNCTIONS**********************************\\
 
@@ -113,7 +117,7 @@ protected:
 };
 //**********************************NON-MEMBER_OPERATORS**********************************\\
 
-QCGA operator*(const double scalar, const QCGA& onther); //multiplying by scalar from the left
+QCGA operator*(const long double scalar, const QCGA& onther); //multiplying by scalar from the left
 std::ostream& operator<<(std::ostream& stream, const QCGA& vector); //operator for printing
 std::vector<QCGA> makeCGAFromBasisBlades(const QCGA& multivector); //returns vector of basis blades in linear combination of general multivector
 void removeOccurences(std::string& str, const std::string substr); //removes occurences of substring in string

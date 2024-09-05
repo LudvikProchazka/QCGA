@@ -23,5 +23,5 @@ private:
 	bool nullBlade;
 	static bool isBlade(QCGA& Multivector);  // Used in constructor, A is blade <=> A*~A is scalar. Well, i hope so
 };
-Blade up(float x, float y, float z); //Embedding of a 3D point. This has to be modified when changing algebra
+Blade up(long double x, long double y, long double z); //Embedding of a 3D point. This has to be modified when changing algebra
 #endif
