@@ -133,14 +133,29 @@ bool QCGA::operator==(const QCGA& other) const
 			equal = false;
 			break;
 		}
-		else //if there is, check for coefs if they are the same
+		//if there is, check for coefs if they are the same
+		if (abs(otherMap.at(basisBlade) - value) > long double(10000) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
 		{
-			if (abs(otherMap.at(basisBlade) - value) > long double(100) / (PRECISION)) // if coefs are different, 100 is for not being so strict due to rounding errors
-			{
-				equal = false;
-				break;
-			}
+			equal = false;
+			break;
 		}
+	
+	}
+	for (const auto& [basisBlade, value] : other.getSTDmapLabelToCoefficient()) //now vice versa
+	{
+		auto otherMap = other.getSTDmapLabelToCoefficient();
+		if (this->STDmapLabelToCoefficient.find(basisBlade) == this->STDmapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
+		{
+			equal = false;
+			break;
+		}
+		//if there is, check for coefs if they are the same
+		if (abs(otherMap.at(basisBlade) - value) > long double(10000) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
+		{
+			equal = false;
+			break;
+		}
+
 	}
 	return equal;
 }
@@ -183,7 +198,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 	int iter = 0;
 	std::map<std::string, long double>mapCopy = map;
 	for (auto& [basisBlade, coef] : map) //each label in newLabel will be modified
-	{ //Ted je tady problem, ze to map primo menim. ez fix: meni jinou map do ktere sypat vysledky
+	{ 
 		long double oldCoef = coef;
 		std::string copyOfBasisBlade = basisBlade;
 		int sign = 1; //sign for controling sing when swaps happen
