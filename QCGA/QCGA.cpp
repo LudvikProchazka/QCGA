@@ -75,16 +75,14 @@ QCGA QCGA::rotorExponential(unsigned int degree, long double phi)
 	QCGA res = one;
 	for (int i = 1; i < degree+1; i++)
 	{
-		long long unsigned int factorial = i;
+		unsigned long long factorial = i;
 		for (int j = i; j > 1; j--)
 			factorial *= (j - 1);
-		long double factor = (pow(phi, i)) * (long double(1) / factorial);
-		//std::cout  << (factor * ((*this) ^ i)) << std::endl;
-		res = res + (factor * ((*this) ^ i));
-		//std::cout  <<  res << std::endl;
+		res = res + (((phi / 2) * (*this)) ^ i)* (long double(1) / factorial);
+		//std::cout << "i: " << i << std::endl;
+		//std::cout << "r: " << res << std::endl;
 	}
 	*this = res;
-	
 	return res;
 	
 }
@@ -97,11 +95,9 @@ QCGA QCGA::translatorExponential(unsigned int degree, long double distance)
 		long long unsigned int factorial = i;
 		for (int j = i; j > 1; j--)
 			factorial *= (j - 1);
-		long double factor = (pow(distance, i)) * (long double(1) / factorial);
+		long double factor = (pow(distance/2, i)) * (long double(1) / factorial);
 		res = res + (factor * ((*this) ^ i));
 	}
-	*this = res;
-
 	return res;
 }
 
@@ -383,10 +379,38 @@ QCGA QCGA::operator/(const long double divider) const
 	return *this * (1 / divider);
 }
 
-//returns grade of basis blade (if we give it appropriate label...)
-int QCGA::grade(std::string label) const
+QCGA QCGA::scalarProduct(const QCGA& b)
 {
-	unsigned int grade = 0;
+	return (*this * b)[0];
+}
+
+
+QCGA QCGA::rotate(const QCGA& point, int plane, long double angle)
+{
+	QCGA rotor = zero;
+	switch (plane)
+	{
+	case 1:
+		rotor = rxy.rotorExponential(20, angle);
+		break;
+	case 2:
+		rotor = rxz.rotorExponential(20, angle);
+		break;
+	case 3:
+		rotor = ryz.rotorExponential(20, angle);
+		break;
+	default:
+		std::cout << "Wrong rotation plane" << std::endl;
+		return point;
+		break;
+	}
+	return (rotor * point * ~rotor)[1];
+}
+
+//returns grade of basis blade (if we give it appropriate label...)
+int QCGA::grade(const std::string& label) const
+{
+	int grade = 0;
 	for (const char c : label) {
 		if (c == 'e') {
 			grade++;
@@ -408,15 +432,25 @@ std::string QCGA::log() const
 		std::string coef;
 		for (auto& a : STDmapLabelToCoefficient)
 		{
-			coef = std::to_string(a.second);
-			for (int j = coef.length() - 1; j >= 0; j--) //deletes zeros behing decimal point if possible
+			if (abs(a.second) < (double(1000000)/PRECISION))
 			{
-				if (coef[j] == '0' || coef[j] == '.')
-				{
-					coef.erase(coef.end() - 1);
-				}
-				else break;
+				continue;
 			}
+			coef = std::to_string(a.second);
+			int j = coef.length() - 1;
+			while (coef[j] == '0' && coef[j] != '.')
+			{
+				coef.erase(coef.end() - 1);
+				j--;
+			}
+			//for (int j = coef.length() - 1; j >= 0; j--) //deletes zeros behing decimal point if possible
+			//{
+			//	if (coef[j] == '0' || coef[j] == '.')
+			//	{
+			//		coef.erase(coef.end() - 1);
+			//	}
+			//	else break;
+			//}
 			s += coef + "*" + a.first + " + ";
 		}
 	}

@@ -54,6 +54,9 @@
 #define	ei5 (QCGA::generatingBlades[14]+QCGA::generatingBlades[8]) 
 #define	ei6 (QCGA::generatingBlades[15]+QCGA::generatingBlades[9]) 
 
+#define rxy ((e1 ^ e2) + (eo6 ^ ei5) + (ei6 ^ eo5) + (2 * (eo4 ^ ei2)) + (2 * (ei4 ^ eo2)) + (eo4 ^ ei3))
+#define rxz ((-1 * (e3 ^ e1)) + (-1 * (ei4 ^ eo6)) + (-2 * (ei3 ^ eo5)) + (-1 * (ei2 ^ eo5)) + (-1 * (eo4 ^ ei6)) + (-2 * (eo3 ^ ei5)))
+#define ryz ((e2 ^ e3) + (eo6 ^ ei3) + (ei5 ^ eo4) + (2 * (ei6 ^ eo3)) + (2 * (eo2 ^ ei6)) + (ei2 ^ eo6)+(eo5 ^ ei4))
 
 #define I Blade(e1*e2*e3*e4*e5*e6*e7*e8*e9*e10*e11*e12*e13*e14*e15) //Pseaudoscalar of an algebra
 
@@ -89,8 +92,11 @@ public:
 	QCGA operator^(const QCGA& other) const; //outer product operator
 	QCGA operator^(const int exponent) const; //exponent operator
 	QCGA operator/(const long double divider) const; //dividing operator
+	QCGA scalarProduct(const QCGA& b);
+	//QCGA conjugate(const QCGA& a);
+	static QCGA rotate(const QCGA& point, int plane, long double angle);
 
-	int grade(std::string label) const; //returns grade of basis blade (if we give it appropriate label...)
+	int grade(const std::string& label) const; //returns grade of basis blade (if we give it appropriate label...)
 	std::string log() const; //returns multivector, used in << operator
 protected:
 	//**********************************STATIC_SUPPORT_FUNCTIONS**********************************\\

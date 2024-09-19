@@ -1,0 +1,21 @@
+﻿  Blade.cpp
+  main.cpp
+  QCGA.cpp
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(76,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(95,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(109,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(173,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(330,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(332,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(349,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(351,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(495,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(512,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(514,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(537,17): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(538,18): warning C4018: '<': signed/unsigned mismatch
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 609 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  QCGA.vcxproj -> C:\Users\Luda4\source\repos\QCGA\Release\QCGA.exe

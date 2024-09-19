@@ -79,3 +79,10 @@ Blade up(long double _x, long double _y, long double _z)
 	x = eo1 + x + 0.5*(_x * _x + _y * _y + _z * _z)*ei1 + 0.5*(_x * _x - _y * _y + _z * _z) * ei2 + 0.5*(_x * _x + _y * _y - _z * _z) * ei3 + _x*_y*ei4 + _x*_z*ei5 + _y*_z*ei6;
 	return x;
 }
+
+Blade MujUp(long double _x, long double _y, long double _z)
+{
+	Blade x = (_x * e1) + (_y * e2) + (_z * e3); //eucledian point
+	x = eo1 + x + 0.5 * (_x * _x + _y * _y + _z * _z) * ei1 + 0.5 * (_x * _x - _y * _y) * ei2 + 0.5 * (_x * _x - _z * _z) * ei3 + _x * _y * ei4 + _x * _z * ei5 + _y * _z * ei6;
+	return x;
+}
