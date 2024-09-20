@@ -14,27 +14,27 @@
 
 
 
-#define TOTAL_DIMENSION 32768 //total dimension of algebra (2^5)
+#define TOTAL_DIMENSION 32768 //total dimension of an algebra (2^5)
 #define GENERATING_BASIS_DIMENSION 15 //dimension of generating space R^5
 #define ALGEBRA_P 9 //number of positive squared vectors
 #define ALGEBRA_Q 6 //number of negative squared vectors
-#define PRECISION 1000000000000 //for rounding
+#define PRECISION 1000000000000 //constant for rounding
 
-#define zero (QCGA())
-#define one (QCGA::generatingBlades[0])
+#define zero (QCGA()) //zero vecor
+#define one (QCGA::generatingBlades[0]) //scalar
 
-#define	e1 (QCGA::generatingBlades[1])
+#define	e1 (QCGA::generatingBlades[1]) //euclidean vectors
 #define	e2 (QCGA::generatingBlades[2])
 #define	e3 (QCGA::generatingBlades[3])
 
-#define	e4 (QCGA::generatingBlades[4])//e+
+#define	e4 (QCGA::generatingBlades[4])//e+: positive squared vectors
 #define	e5 (QCGA::generatingBlades[5])
 #define	e6 (QCGA::generatingBlades[6])
 #define	e7 (QCGA::generatingBlades[7])
 #define	e8 (QCGA::generatingBlades[8])
 #define	e9 (QCGA::generatingBlades[9])
 
-#define	e10 (QCGA::generatingBlades[10])//e-
+#define	e10 (QCGA::generatingBlades[10])//e-: negative squared vectors
 #define	e11 (QCGA::generatingBlades[11])
 #define	e12 (QCGA::generatingBlades[12])
 #define	e13 (QCGA::generatingBlades[13])
@@ -54,16 +54,35 @@
 #define	ei5 (QCGA::generatingBlades[14]+QCGA::generatingBlades[8]) 
 #define	ei6 (QCGA::generatingBlades[15]+QCGA::generatingBlades[9]) 
 
-#define rxy ((e1 ^ e2) + (eo6 ^ ei5) + (ei6 ^ eo5) + (2 * (eo4 ^ ei2)) + (2 * (ei4 ^ eo2)) + (eo4 ^ ei3))
-#define rxz ((-1 * (e3 ^ e1)) + (-1 * (ei4 ^ eo6)) + (-2 * (ei3 ^ eo5)) + (-1 * (ei2 ^ eo5)) + (-1 * (eo4 ^ ei6)) + (-2 * (eo3 ^ ei5)))
-#define ryz ((e2 ^ e3) + (eo6 ^ ei3) + (ei5 ^ eo4) + (2 * (ei6 ^ eo3)) + (2 * (eo2 ^ ei6)) + (ei2 ^ eo6)+(eo5 ^ ei4))
+#define rxy ((e1 ^ e2) + (eo6 ^ ei5) + (ei6 ^ eo5) + (2 * (eo4 ^ ei2)) + (2 * (ei4 ^ eo2)) + (eo4 ^ ei3)) //generator for rotation in the xy-plane
+#define rxz ((-1 * (e3 ^ e1)) + (-1 * (ei4 ^ eo6)) + (-2 * (ei3 ^ eo5)) + (-1 * (ei2 ^ eo5)) + (-1 * (eo4 ^ ei6)) + (-2 * (eo3 ^ ei5))) //generator for rotation in the xz-plane
+#define ryz ((e2 ^ e3) + (eo6 ^ ei3) + (ei5 ^ eo4) + (2 * (ei6 ^ eo3)) + (2 * (eo2 ^ ei6)) + (ei2 ^ eo6)+(eo5 ^ ei4)) //generator for rotation in the yz-plane
+
+#define T1x (one - 0.5 * distance * (e1 ^ ei1))
+#define T2x (one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2))
+#define T3x (one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3))
+#define T4x (one - 0.5 * distance * (e2 ^ ei4))
+#define T5x (one - 0.5 * distance * (e3 ^ ei5))
+#define Tx (T1x*T2x*T3x*T4x*T5x) //Translator in x
+
+#define T1y (one - 0.5 * distance * (e2 ^ ei1))
+#define T2y (one + 0.5 * distance * (e2 ^ ei2) - 0.25 * pow(distance, 2) * (ei1 ^ ei2))
+#define T3y (one - 0.5 * distance * (e1 ^ ei4))
+#define T4y (one - 0.5 * distance * (e3 ^ ei6))
+#define Ty (T1y*T2y*T3y*T4y) //Translator in y
+
+#define T1z (one - 0.5 * distance * (e3 ^ ei1))
+#define T2z	(one + 0.5 * distance * (e3 ^ ei3) - 0.25 * pow(distance, 2) * (ei1 ^ ei3))
+#define T3z	(one - 0.5 * distance * (e1 ^ ei5))
+#define T4z	(one - 0.5 * distance * (e2 ^ ei6))
+#define Tz (T1z*T2z*T3z*T4z) //Translator in z
 
 #define I Blade(e1*e2*e3*e4*e5*e6*e7*e8*e9*e10*e11*e12*e13*e14*e15) //Pseaudoscalar of an algebra
 
 class QCGA
 {
 public:
-	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en
+	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en. Will be made protected after all is done. I want defined vectors to work in Blade now
 	static void generateGeneratingBlades(); //generates generatingBlades
 
 	explicit QCGA(std::string input); //constructor used for construct generatingBlades
@@ -79,7 +98,6 @@ public:
 	
 	QCGA rotorExponential(unsigned int degree, long double phi);
 	QCGA translatorExponential(unsigned int degree, long double distance);
-	QCGA scalorExponential(unsigned int degree, long double factor);
 	bool operator==(const QCGA& other) const; //equals operator
 	bool operator!=(const QCGA& other) const; //not equals operator
 	QCGA operator[](const int grade) const; //grade projection
@@ -95,6 +113,7 @@ public:
 	QCGA scalarProduct(const QCGA& b);
 	//QCGA conjugate(const QCGA& a);
 	static QCGA rotate(const QCGA& point, int plane, long double angle);
+	static QCGA translate(const QCGA& point, int plane, long double angle);
 
 	int grade(const std::string& label) const; //returns grade of basis blade (if we give it appropriate label...)
 	std::string log() const; //returns multivector, used in << operator

@@ -79,12 +79,8 @@ QCGA QCGA::rotorExponential(unsigned int degree, long double phi)
 		for (int j = i; j > 1; j--)
 			factorial *= (j - 1);
 		res = res + (((phi / 2) * (*this)) ^ i)* (long double(1) / factorial);
-		//std::cout << "i: " << i << std::endl;
-		//std::cout << "r: " << res << std::endl;
 	}
-	*this = res;
 	return res;
-	
 }
 
 QCGA QCGA::translatorExponential(unsigned int degree, long double distance)
@@ -101,21 +97,6 @@ QCGA QCGA::translatorExponential(unsigned int degree, long double distance)
 	return res;
 }
 
-QCGA QCGA::scalorExponential(unsigned int degree, long double f)
-{
-	QCGA res = one;
-	for (int i = 1; i < degree + 1; i++)
-	{
-		long long unsigned int factorial = i;
-		for (int j = i; j > 1; j--)
-			factorial *= (j - 1);
-		long double factor = (pow(f, i)) * (long double(1) / factorial);
-		res = res + (factor * ((*this) ^ i));
-	}
-	*this = res;
-
-	return res;
-}
 
 //equal operator
 bool QCGA::operator==(const QCGA& other) const
@@ -407,6 +388,26 @@ QCGA QCGA::rotate(const QCGA& point, int plane, long double angle)
 	return (rotor * point * ~rotor)[1];
 }
 
+QCGA QCGA::translate(const QCGA& point, int direction, long double distance)
+{
+	switch (direction)
+	{
+	case 1:
+		return Tx * point * ~Tx;
+		break;
+	case 2:
+		return Ty * point * ~Ty;
+		break;
+	case 3:
+		return Tz * point * ~Tz;
+		break;
+	default:
+		std::cout << "Wrong direction for translating" << std::endl;
+		return point;
+		break;
+	}
+}
+
 //returns grade of basis blade (if we give it appropriate label...)
 int QCGA::grade(const std::string& label) const
 {
@@ -443,6 +444,8 @@ std::string QCGA::log() const
 				coef.erase(coef.end() - 1);
 				j--;
 			}
+			if (coef[j] == '.')
+				coef.erase(coef.end() - 1);
 			//for (int j = coef.length() - 1; j >= 0; j--) //deletes zeros behing decimal point if possible
 			//{
 			//	if (coef[j] == '0' || coef[j] == '.')

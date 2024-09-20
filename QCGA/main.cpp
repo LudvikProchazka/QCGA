@@ -5,6 +5,18 @@
 #include <numbers>
 #include <iomanip>      // std::setprecision
 
+enum rotation_planes
+{
+	xy = 1,
+	xz,
+	yz
+};
+enum translation_directions
+{
+	x = 1,
+	y,
+	z
+};
 
 QCGA com(const QCGA& a, const QCGA& b)
 {
@@ -76,23 +88,35 @@ void RotorXYMuj()
 
 	double phi = std::numbers::pi / 4;
 
+	QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
+	QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
+	QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
+	QCGA R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
+	QCGA R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
+
 	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
 
-	QCGA C = MujUp(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
+	QCGA C = MujUp(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
 	QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
-	QCGA c_234 = 3 * ei2 + 2 * ei4;
+	QCGA c_24 = -1.5 * ei2 + 2 * ei4;
 	QCGA c_56 = 3 * ei5 + 6 * ei6;
+	QCGA c_3 = -4 * ei3;
 
+	double x = 1;
+	double y = 2;
 	double z = 3;
 	double theta = atan(2) - phi;
 	QCGA CC = MujUp(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
+	QCGA _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) +c_3+ ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
+	std::cout << "Rotated: " << _rotated << std::endl;
+	std::cout << " Target: " << CC << std::endl;
+	std::cout << "   Good: " << (_rotated == CC) << std::endl;
 
 	QCGA rotor = r.rotorExponential(20, phi);
 	QCGA rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
-	std::cout << "   Rotor: " << (rotor) << std::endl;
 }
 
 void RotorXZ()
@@ -255,12 +279,30 @@ void RotorYZMuj()
 	long double phi = std::numbers::pi / 4;
 	//long double phi = std::numbers::pi / 2;
 
-	QCGA C = MujUp(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
-	//QCGA C = up(2, 3, -1); //eo1+2*e1+3*e2-1*e3+7*ei1-2*ei2+6*ei3+6*ei4-2*ei5-3*ei6
+	QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
+	QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
+	QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
+	QCGA R4 = cos(phi / 2) * one + sin(phi / 2) * r4;
+	QCGA R5 = cos(phi / 2) * one + sin(phi / 2) * r5;
+	QCGA R6 = cos(phi / 2) * one + sin(phi / 2) * r6;
+	QCGA R7 = cos(phi / 2) * one + sin(phi / 2) * r7;
+
+	QCGA C = MujUp(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+	QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
+	QCGA c_45 = 2 * ei4 + 3 * ei5;
+	QCGA c_236 = -1.5 * ei2 - 4 * ei3 + 6 * ei6;
+	//QCGA C = MujUp(2, 3, -1); 
 
 
 	QCGA target = MujUp(1, 0.5 * 5 * sqrt(2), 0.5 * sqrt(2));
-	//QCGA target = up(2, -1, -3);
+	//QCGA target = MujUp(2, -1, -3);
+	QCGA rot_236 = (r2 + r4 + r5 + r6).rotorExponential(20, phi);
+
+	QCGA _rotated = ((R1 * c_cga * ~R1) + ((R3 ^ R7) * c_45 * (~R7 ^ ~R3)) + (rot_236 * c_236 * ~rot_236))[1];
+	std::cout << "Rotated: " << _rotated << std::endl;
+	std::cout << " Target: " << target << std::endl;
+	std::cout << "   Good: " << (_rotated == target) << std::endl;
+
 
 	QCGA rotor = r.rotorExponential(20, phi);
 	QCGA rotated = (rotor * C * ~rotor)[1];
@@ -300,18 +342,28 @@ void TranslatorXMuj()
 	QCGA t5 = -1 * e3 ^ ei5;
 
 	QCGA t = t1 + t2 + t3 + t4 + t5;
+	int distance = -1/double(3);
 
-	int distance = 30;
+	QCGA T1 = one - 0.5 * distance * (e1 ^ ei1);
+	QCGA T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);
+	QCGA T3 = one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3);
+	QCGA T4 = one - 0.5 * distance * (e2 ^ ei4);
+	QCGA T5 = one - 0.5 * distance * (e3 ^ ei5);
+
 	QCGA translatorX = t.translatorExponential(20, distance);
+	QCGA translatorX2 = T1 * T2	* T3 * T4 * T5;
 
 	QCGA C = MujUp(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
 	QCGA target = MujUp(1 + distance, 2, 3);
 
 	QCGA translated = translatorX * C * ~translatorX;
+	QCGA translated2 = translatorX2 * C * ~translatorX2;
 
 	std::cout << "Translated: " << translated << std::endl;
+	std::cout << "Translated: " << translated2 << std::endl;
 	std::cout << "    Target: " << target << std::endl;
 	std::cout << "      Good: " << (translated == target) << std::endl;
+	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
 
 void TranslatorY()
@@ -344,18 +396,27 @@ void TranslatorYMuj()
 	QCGA t4 = -1 * e3 ^ ei6;
 
 	QCGA t = t1 + t2 + t3 + t4;
+	int distance = 7;
 
-	int distance = 3;
+	QCGA T1 = one - 0.5 * distance * (e2 ^ ei1);
+	QCGA T2 = one + 0.5 * distance * (e2 ^ ei2) - 0.25 * pow(distance, 2) * (ei1 ^ ei2);
+	QCGA T3 = one - 0.5 * distance * (e1 ^ ei4);
+	QCGA T4 = one - 0.5 * distance * (e3 ^ ei6);
+
 	QCGA translatorY = t.translatorExponential(20, distance);
+	QCGA translatorY2 = T1*T2*T3*T4;
 
 	QCGA C = MujUp(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
 	QCGA target = MujUp(1, 2 + distance, 3);
 
 	QCGA translated = translatorY * C * ~translatorY;
+	QCGA translated2 = translatorY2 * C * ~translatorY2;
 
 	std::cout << "Translated: " << translated << std::endl;
+	std::cout << "Translated: " << translated2 << std::endl;
 	std::cout << "    Target: " << target << std::endl;
 	std::cout << "      Good: " << (translated == target) << std::endl;
+	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
 
 void TranslatorZ()
@@ -388,18 +449,27 @@ void TranslatorZMuj()
 	QCGA t4 = -1 * e2 ^ ei6;
 
 	QCGA t = t1 + t2 + t3 + t4;
+	int distance = -4;
 
-	int distance = 3;
+	QCGA T1 = one - 0.5 * distance * (e3 ^ ei1);
+	QCGA T2 = one + 0.5 * distance * (e3 ^ ei3) - 0.25 * pow(distance, 2) * (ei1 ^ ei3);
+	QCGA T3 = one - 0.5 * distance * (e1 ^ ei5);
+	QCGA T4 = one - 0.5 * distance * (e2 ^ ei6);
+
 	QCGA translatorZ = t.translatorExponential(20, distance);
+	QCGA translatorZ2 = T1*T2*T3*T4;
 
 	QCGA C = MujUp(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
 	QCGA target = MujUp(1, 2, 3 + distance);
 
 	QCGA translated = translatorZ * C * ~translatorZ;
+	QCGA translated2 = translatorZ2 * C * ~translatorZ2;
 
 	std::cout << "Translated: " << translated << std::endl;
+	std::cout << "Translated: " << translated2 << std::endl;
 	std::cout << "    Target: " << target << std::endl;
 	std::cout << "      Good: " << (translated == target) << std::endl;
+	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
 
 void Scalor()
@@ -428,52 +498,16 @@ void PokusHitzer()
 
 int main()
 {
-	QCGA::generateGeneratingBlades();
+	QCGA::generateGeneratingBlades(); //generates generating basis, 1,e1,e2,e3,e4,...,e15
 	
+	Blade A = MujUp(3.14, 2.72, -1);
+	Blade B = MujUp(1, 1, 3);
 
-	//RotorXYMuj();
-	//RotorXZMuj();
-	//RotorYZMuj();
-	//TranslatorXMuj();
-	//TranslatorYMuj();
-	//TranslatorZMuj();
-	
-	//QCGA t1 = -1*e1 ^ ei1;
-	//QCGA t2 = -1*e1 ^ ei2;
-	//QCGA t3 = -1*e1 ^ ei3;
-	//QCGA t4 = -1*e2 ^ ei4;
-	//QCGA t5 = -1*e3 ^ ei5;
-	//double distance = 3;
-	//QCGA T1 = one - 0.5 * distance * (e1 ^ ei1);
-	//QCGA T2 = one - 0.5 * distance * (e1 ^ ei2) +0.25 * pow(distance, 2) * (ei1 ^ ei2);
-	//QCGA T3 = one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3);
-	//QCGA T4 = one - 0.5 * distance * (e2 ^ ei4);
-	//QCGA T5 = one - 0.5 * distance * (e3 ^ ei5);
-	//QCGA Translator = (t1 + t2 + t3 + t4 + t5).translatorExponential(20,distance);
-	//std::cout << "    Translator: " << Translator << std::endl << std::endl;
-	//std::cout << "T1*T2*T3*T4*T5: " << T1 * T2 * T3 * T4 * T5 << std::endl << std::endl;
-	//std::cout << "	GOOD: " << (Translator==(T1 * T2 * T3 * T4 * T5)) << std::endl << std::endl;
-
-
-	QCGA r1 = e1 ^ e2;
-	QCGA r2 = eo6 ^ ei5;
-	QCGA r3 = ei6 ^ eo5;
-	QCGA r4 = 2 * (eo4 ^ ei2);
-	QCGA r5 = 2 * (ei4 ^ eo2);
-	QCGA r6 = eo4 ^ ei3;
-
-	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
-
-	std::cout << com(r,eo1) << std::endl;
-	std::cout << com(r,e1) << std::endl;
-	std::cout << com(r,e2) << std::endl;
-	std::cout << com(r,e3) << std::endl;
-	std::cout << com(r,ei1) << std::endl;
-	std::cout << com(r,ei2) << std::endl;
-	std::cout << com(r,ei3) << std::endl;
-	std::cout << com(r,ei4) << std::endl;
-	std::cout << com(r,ei5) << std::endl;
-	std::cout << com(r,ei6) << std::endl;
+	std::cout << "	   A: " << A << std::endl;	//Original position of A
+	std::cout << "	   B: " << B << std::endl;	//Original position of B
+	std::cout << std::endl;
+	std::cout << "Translated A: " << QCGA::translate(A, x, -1.14) << std::endl;	//Translatin A by -1.14 in x direction
+	std::cout << "   Rotated B: " << QCGA::rotate(B, xy, std::numbers::pi / 4) << std::endl;	//Rotating B in xy plane by angle pi/4
 
 	return 0;
 }
