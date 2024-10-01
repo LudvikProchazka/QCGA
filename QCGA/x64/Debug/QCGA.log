@@ -1,8 +1,0 @@
-﻿  QCGA.cpp
-C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(76,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(90,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Luda4\source\repos\QCGA\QCGA\QCGA.cpp(442,10): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  main.cpp
-C:\Users\Luda4\source\repos\QCGA\QCGA\main.cpp(345,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  Generating Code...
-  QCGA.vcxproj -> C:\Users\Luda4\source\repos\QCGA\x64\Debug\QCGA.exe
