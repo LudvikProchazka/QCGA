@@ -4,6 +4,7 @@
 #include <iostream>
 #include <numbers>
 #include <iomanip>      // std::setprecision
+#include <chrono>
 
 enum rotation_planes
 {
@@ -472,53 +473,23 @@ void TranslatorZMuj()
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
 
-void Scalor()
-{
-}
+static int s_allocation_count = 0; //for debugging purposes
 
-void PokusHitzer()
-{
-	QCGA r = (e1 ^ e2) + (ei4 ^ (eo1 - eo2)) + (eo6 ^ ei5) + (ei6 ^ eo5) + (eo4 ^ (ei1 - ei2)) + (ei1 ^ ei2);
-
-	std::cout << com(r, eo1) << std::endl;
-	std::cout << com(r, eo2) << std::endl;
-	std::cout << com(r, eo3) << std::endl;
-	std::cout << com(r, e1) << std::endl;
-	std::cout << com(r, e2) << std::endl;
-	std::cout << com(r, e3) << std::endl;
-	std::cout << com(r, ei1) << std::endl;
-	std::cout << com(r, ei2) << std::endl;
-	std::cout << com(r, ei3) << std::endl;
-	std::cout << com(r, ei4) << std::endl;
-	std::cout << com(r, ei5) << std::endl;
-	std::cout << com(r, ei6) << std::endl;
-
-	std::cout << std::endl;
-}
-
-static int s_allocation_count = 0;
-
-void* operator new(size_t size) //for optimizing purposes
-{
-	s_allocation_count++;
-	return malloc(size);
-}
+//void* operator new(size_t size) //for debugging purposes
+//{
+//	s_allocation_count++;
+//	return malloc(size);
+//}
 
 int main()
 {
+	auto start = std::chrono::high_resolution_clock::now();
 	QCGA::generateGeneratingBlades(); //Generates generating basis, 1,e1,e2,e3,e4,...,e15
 
-	QCGA r1 = e1 ^ e2;
-	QCGA r2 = eo6 ^ ei5;
-	QCGA r3 = ei6 ^ eo5;
-	QCGA r4 = 2 * (eo4 ^ ei2);
-	QCGA r5 = 2 * (ei4 ^ eo2);
-	QCGA r6 = eo4 ^ ei3;
+	RotorXYMuj();
 
-	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
-
-	QCGA rotor = r.rotorExponential(20, 1);
-
-	std::cout << "Allocations: " << s_allocation_count << std::endl;
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> elapsed = end - start;
+	std::cout << "Execution time: " << elapsed.count() << " ms" << std::endl;
 	return 0;
 }
