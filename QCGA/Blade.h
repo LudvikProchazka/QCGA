@@ -14,14 +14,16 @@ public:
 	//**********************************OPERATORS**********************************\\
 
 	Blade operator^(const Blade& other) const;
-	Blade operator ^(const int exponent) const; //exponent operator, mainly for inverse: A^(-1)
+	Blade operator^(const int exponent) const; //exponent operator, mainly for inverse: A^(-1)
 	Blade dual(); //dual: A.dual() = A * I^(-1)
-	Blade down() const; //dual: A.dual() = A * I^(-1)
+	Blade down() const;
 
 private:
 	int grade;
 	bool nullBlade;
 	static bool isBlade(QCGA& Multivector);  // Used in constructor, A is blade <=> A*~A is scalar. Well, i hope so
 };
-Blade up(float x, float y, float z); //Embedding of a 3D point. This has to be modified when changing algebra
+Blade up(long double x, long double y, long double z); //Embedding of a 3D point. This has to be modified when changing algebra
+Blade MujUp(long double x, long double y, long double z); //Embedding of a 3D point. This has to be modified when changing algebra
+Blade makeQuadric(long double vo6, long double vo5,long double vo4,long double vo3,long double vo2,long double vo1,long double ve1,long double ve2,long double ve3,long double vi1); //Embedding of a 3D point. This has to be modified when changing algebra
 #endif
