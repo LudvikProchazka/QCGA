@@ -145,7 +145,7 @@ bool QCGA::operator!=(const QCGA& other) const
 //grade projection operator
 QCGA QCGA::operator[](const int _grade) const
 {
-	std::vector<QCGA> left = makeCGAFromBasisBlades(*this);
+	std::vector<QCGA> left = makeQCGAFromBasisBlades(*this);
 
 	QCGA res = zero_vector;
 	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
@@ -266,8 +266,8 @@ QCGA QCGA::operator-(const QCGA& other) const
 QCGA QCGA::operator|(const QCGA& other) const
 {
 	//Make vectors from left and right operadns, they will store basis blades as CGA object and they will participate in product
-	std::vector<QCGA> left = makeCGAFromBasisBlades(*this);
-	std::vector<QCGA> right = makeCGAFromBasisBlades(other);
+	std::vector<QCGA> left = makeQCGAFromBasisBlades(*this);
+	std::vector<QCGA> right = makeQCGAFromBasisBlades(other);
 
 	QCGA res = zero_vector;
 	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
@@ -285,8 +285,8 @@ QCGA QCGA::operator|(const QCGA& other) const
 QCGA QCGA::operator^(const QCGA& other) const
 {
 	//Make vectors from left and right operadns, they will store basis blades as CGA object and they will participate in product
-	std::vector<QCGA> left = makeCGAFromBasisBlades(*this);
-	std::vector<QCGA> right = makeCGAFromBasisBlades(other);
+	std::vector<QCGA> left = makeQCGAFromBasisBlades(*this);
+	std::vector<QCGA> right = makeQCGAFromBasisBlades(other);
 
 	QCGA res = zero_vector;
 	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
@@ -571,7 +571,7 @@ std::ostream& operator<<(std::ostream& stream, const QCGA& vector)
 }
 
 //returns vector of basis blades in linear combination of general multivector
-std::vector<QCGA> makeCGAFromBasisBlades(const QCGA& multivector)
+std::vector<QCGA> makeQCGAFromBasisBlades(const QCGA& multivector)
 {
 	std::vector<QCGA> basisBlades;
 	basisBlades.reserve(20);

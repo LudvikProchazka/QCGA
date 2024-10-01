@@ -2,3 +2,8 @@
 .vs/QCGA/v17/Browse.VC.opendb
 *.vsidx
 *.vsidx
+*.db
+*.db
+*.ipch
+*.db
+*.ipch

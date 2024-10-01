@@ -483,13 +483,9 @@ static int s_allocation_count = 0; //for debugging purposes
 
 int main()
 {
-	auto start = std::chrono::high_resolution_clock::now();
 	QCGA::generateGeneratingBlades(); //Generates generating basis, 1,e1,e2,e3,e4,...,e15
 
 	RotorXYMuj();
 
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double, std::milli> elapsed = end - start;
-	std::cout << "Execution time: " << elapsed.count() << " ms" << std::endl;
 	return 0;
 }
