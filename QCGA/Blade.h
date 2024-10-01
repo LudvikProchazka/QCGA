@@ -26,4 +26,5 @@ private:
 Blade up(long double x, long double y, long double z); //Embedding of a 3D point. This has to be modified when changing algebra
 Blade MujUp(long double x, long double y, long double z); //Embedding of a 3D point. This has to be modified when changing algebra
 Blade makeQuadric(long double vo6, long double vo5,long double vo4,long double vo3,long double vo2,long double vo1,long double ve1,long double ve2,long double ve3,long double vi1); //Embedding of a 3D point. This has to be modified when changing algebra
+
 #endif

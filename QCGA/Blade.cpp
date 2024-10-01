@@ -27,7 +27,7 @@ Blade::Blade(const QCGA& Multivector) : QCGA(Multivector)
 		this->grade = -1;
 		std::cout << "WARNING: Multivector: " << Multivector << " is not a blade!, program will likely crash if it is being used as blade" << std::endl;
 	}
-	this->nullBlade = (Multivector | Multivector) == zero;
+	this->nullBlade = (Multivector | Multivector) == zero_vector;
 }
 
 Blade Blade::operator^(const Blade& other) const

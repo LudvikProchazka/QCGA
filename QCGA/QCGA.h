@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <map>
 #include <iomanip>
+#include <utility>
 
 
 
@@ -20,7 +21,7 @@
 #define ALGEBRA_Q 6 //number of negative squared vectors
 #define PRECISION 1000000000000 //constant for rounding
 
-#define zero (QCGA()) //zero vecor
+#define zero_vector (QCGA()) //zero vecor
 #define one (QCGA::generatingBlades[0]) //scalar
 
 #define	e1 (QCGA::generatingBlades[1]) //euclidean vectors
@@ -82,15 +83,16 @@
 class QCGA
 {
 public:
+
 	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en. Will be made protected after all is done. I want defined vectors to work in Blade now
 	static void generateGeneratingBlades(); //generates generatingBlades
 
-	explicit QCGA(std::string input); //constructor used for construct generatingBlades
-	explicit QCGA(std::map<std::string, long double> map);
-	QCGA(const QCGA& Multivector); //instanciate CGA object from given objects
-	QCGA(); //default constructor, calls CGA("0");
+	QCGA(const std::string& input); //constructor used for construct generatingBlades
+	QCGA(const std::map<std::string, long double>& map);//instanciate CGA object from map
+	QCGA(const std::pair<std::string,long double>& basis_blade); //instanciate CGA object from pair which is a basis blade
+	QCGA(); //default constructor creates zero vector;
 
-	std::map<std::string, long double> getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
+	const std::map<std::string, long double>& getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
 	long double toNumeric(); //returs coefficient at basis blade "1"
 
 
@@ -121,10 +123,9 @@ protected:
 	//**********************************STATIC_SUPPORT_FUNCTIONS**********************************\\
 
 	static int calculateSign(const std::vector<int>& permutation); //Helps in validating basis Element, calculates sign of permutation
-	static bool searchString(std::string string[], int size, std::string target); //returns bool depending if target string is present in string array
 	static void simplifyBasisBlade(std::string& label, int& sign); //simplifies label in a form of for example  e1e2e3e2e3 into e1
 	static void processVector(std::vector<int>& vec, int& sign); //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
-	static std::vector<int> extractIntegersFromBasisBlades(std::string label); //from a given label, for example e1*e2*e3, returns vector {1,2,3}
+	static std::vector<int> extractIntegersFromBasisBlades(const std::string& label); //from a given label, for example e1*e2*e3, returns vector {1,2,3}
 
 	//**********************************STATIC_SUPPORT_OPERATORS**********************************\\
 
@@ -139,6 +140,8 @@ protected:
 	//**********************************SUPPORT_FUNCTIONS**********************************\\
 
 	void deleteZeroFromVector(); //if multivector is of a form 0*1 + c1e1+ c2e1*e2 +... it removes 0*1
+
+	
 };
 //**********************************NON-MEMBER_OPERATORS**********************************\\
 
@@ -146,6 +149,7 @@ QCGA operator*(const long double scalar, const QCGA& onther); //multiplying by s
 std::ostream& operator<<(std::ostream& stream, const QCGA& vector); //operator for printing
 std::vector<QCGA> makeCGAFromBasisBlades(const QCGA& multivector); //returns vector of basis blades in linear combination of general multivector
 void removeOccurences(std::string& str, const std::string substr); //removes occurences of substring in string
+
 
 
 #endif
