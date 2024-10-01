@@ -496,18 +496,29 @@ void PokusHitzer()
 	std::cout << std::endl;
 }
 
+static int s_allocation_count = 0;
+
+void* operator new(size_t size) //for optimizing purposes
+{
+	s_allocation_count++;
+	return malloc(size);
+}
+
 int main()
 {
-	QCGA::generateGeneratingBlades(); //generates generating basis, 1,e1,e2,e3,e4,...,e15
-	
-	Blade A = MujUp(3.14, 2.72, -1);
-	Blade B = MujUp(1, 1, 3);
+	QCGA::generateGeneratingBlades(); //Generates generating basis, 1,e1,e2,e3,e4,...,e15
 
-	std::cout << "	   A: " << A << std::endl;	//Original position of A
-	std::cout << "	   B: " << B << std::endl;	//Original position of B
-	std::cout << std::endl;
-	std::cout << "Translated A: " << QCGA::translate(A, x, -1.14) << std::endl;	//Translatin A by -1.14 in x direction
-	std::cout << "   Rotated B: " << QCGA::rotate(B, xy, std::numbers::pi / 4) << std::endl;	//Rotating B in xy plane by angle pi/4
+	QCGA r1 = e1 ^ e2;
+	QCGA r2 = eo6 ^ ei5;
+	QCGA r3 = ei6 ^ eo5;
+	QCGA r4 = 2 * (eo4 ^ ei2);
+	QCGA r5 = 2 * (ei4 ^ eo2);
+	QCGA r6 = eo4 ^ ei3;
 
+	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
+
+	QCGA rotor = r.rotorExponential(20, 1);
+
+	std::cout << "Allocations: " << s_allocation_count << std::endl;
 	return 0;
 }

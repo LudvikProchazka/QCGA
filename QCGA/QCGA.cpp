@@ -75,7 +75,7 @@ QCGA QCGA::rotorExponential(unsigned int degree, long double phi)
 	QCGA res = one;
 	for (int i = 1; i < degree+1; i++)
 	{
-		unsigned long long factorial = i;
+		long double factorial = i;
 		for (int j = i; j > 1; j--)
 			factorial *= (j - 1);
 		res = res + (((phi / 2) * (*this)) ^ i)* (long double(1) / factorial);

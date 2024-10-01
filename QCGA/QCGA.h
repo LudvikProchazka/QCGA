@@ -41,7 +41,7 @@
 #define	e14 (QCGA::generatingBlades[14])
 #define	e15 (QCGA::generatingBlades[15])
 
-#define	eo6 (0.5*(QCGA::generatingBlades[15]-QCGA::generatingBlades[9])) 
+#define	eo6 (0.5*(QCGA::generatingBlades[15]-QCGA::generatingBlades[9]))//change of basis
 #define	eo5 (0.5*(QCGA::generatingBlades[14]-QCGA::generatingBlades[8])) 
 #define	eo4 (0.5*(QCGA::generatingBlades[13]-QCGA::generatingBlades[7])) 
 #define	eo3 (0.5*(QCGA::generatingBlades[12]-QCGA::generatingBlades[6])) 
