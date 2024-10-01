@@ -147,7 +147,7 @@ protected:
 
 QCGA operator*(const long double scalar, const QCGA& onther); //multiplying by scalar from the left
 std::ostream& operator<<(std::ostream& stream, const QCGA& vector); //operator for printing
-std::vector<QCGA> makeCGAFromBasisBlades(const QCGA& multivector); //returns vector of basis blades in linear combination of general multivector
+std::vector<QCGA> makeQCGAFromBasisBlades(const QCGA& multivector); //returns vector of basis blades in linear combination of general multivector
 void removeOccurences(std::string& str, const std::string substr); //removes occurences of substring in string
 
 
