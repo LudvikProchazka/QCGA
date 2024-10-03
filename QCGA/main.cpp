@@ -246,24 +246,8 @@ static int s_allocation_count = 0; //for debugging purposes
 int main()
 {
 	QCGA::generateGeneratingBlades(); //Generates generating basis, 1,e1,e2,e3,e4,...,e15
-
-	QCGA p1 = up(0, 0, 0);
-	QCGA p2 = up(1, -2, 1);
-	QCGA p4 = up(-1, -2, -1);
-	QCGA p3 = up(1, -2, -1);
-	QCGA p5 = up(-1, -2, 1);
-	QCGA p6 = up(1, -1, 0);
-	QCGA p7 = up(-1, -1, 0);
-	QCGA p8 = up(0, -1, 1);
-	QCGA p9 = up(0, -1, -1);
-
-	Blade OPNS = p1 ^ p2 ^ p3 ^ p4 ^ p5 ^ p6 ^ p7 ^ p8 ^ p9 ^ eo2 ^ eo3 ^ eo4 ^ eo5 ^ eo6;
-	Blade OPNS_dual = OPNS.dual();
 	
-	Blade IPNS = makeQuadric(0, 0, 0, double(2) / 3, -double(4) / 3,-double(4) / 3, 0, 1, 0, 0);
-	
-	std::cout << "1/48*OPNS_dual: " << OPNS_dual / 48 << std::endl;
-	std::cout << "          IPNS: " << IPNS << std::endl;
+	RotorXY();
 
 	return 0;
 }
