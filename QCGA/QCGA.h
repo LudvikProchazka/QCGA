@@ -83,18 +83,18 @@
 class QCGA
 {
 public:
-
 	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en. Will be made protected after all is done. I want defined vectors to work in Blade now
-	static void generateGeneratingBlades(); //generates generatingBlades
-
+public:
+	QCGA(); //default constructor creates zero vector;
+	QCGA(const QCGA& instance); 
 	QCGA(const std::string& input); //constructor used for construct generatingBlades
 	QCGA(const std::map<std::string, long double>& map);//instanciate CGA object from map
+	static void generateGeneratingBlades(); //generates generatingBlades
 	QCGA(const std::pair<std::string,long double>& basis_blade); //instanciate CGA object from pair which is a basis blade
-	QCGA(); //default constructor creates zero vector;
-
-	const std::map<std::string, long double>& getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
+	virtual ~QCGA() = default;
 	long double toNumeric(); //returs coefficient at basis blade "1"
 
+	const std::map<std::string, long double>& getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
 
 	//**********************************OPERATORS**********************************\\
 	
@@ -112,8 +112,8 @@ public:
 	QCGA operator^(const QCGA& other) const; //outer product operator
 	QCGA operator^(const int exponent) const; //exponent operator
 	QCGA operator/(const long double divider) const; //dividing operator
-	QCGA scalarProduct(const QCGA& b);
-	//QCGA conjugate(const QCGA& a);
+	QCGA scalarProduct(const QCGA& b) const;
+
 	static QCGA rotate(const QCGA& point, int plane, long double angle);
 	static QCGA translate(const QCGA& point, int plane, long double angle);
 

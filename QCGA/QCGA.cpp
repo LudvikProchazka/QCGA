@@ -52,6 +52,11 @@ QCGA::QCGA(const std::pair<std::string, long double>& basis_blade)
 //default constructor calls CGA("0")
 QCGA::QCGA() { STDmapLabelToCoefficient["1"] = 0; }
 
+QCGA::QCGA(const QCGA& instance)
+{
+	this->STDmapLabelToCoefficient = instance.STDmapLabelToCoefficient;
+}
+
 const std::map<std::string, long double>& QCGA::getSTDmapLabelToCoefficient() const
 {
 	return this->STDmapLabelToCoefficient;
@@ -324,7 +329,7 @@ QCGA QCGA::operator/(const long double divider) const
 	return *this * (1 / divider);
 }
 
-QCGA QCGA::scalarProduct(const QCGA& b)
+QCGA QCGA::scalarProduct(const QCGA& b) const
 {
 	return (*this * b)[0];
 }
