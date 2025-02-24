@@ -3,12 +3,191 @@
   "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
   "runs": [
     {
-      "results": [],
+      "results": [
+        {
+          "ruleId": "C28251",
+          "message": {
+            "text": "Inconsistent annotation for 'new': this instance has no annotations. See c:\\users\\luda4\\source\\repos\\qcga\\qcga\\predefined c++ types (compiler internal)(33). The first user-provided annotation on this built-in function is at line c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.41.34120\\include\\vcruntime_new.h(44). "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/Luda4/source/repos/QCGA/QCGA/main.cpp"
+                },
+                "region": {
+                  "startLine": 240,
+                  "startColumn": 7
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "new",
+                  "decoratedName": "??2@YAPEAX_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "C28196",
+          "message": {
+            "text": "The requirement that '(_Param_(1)>0)?(return!=0):(1)' is not satisfied. (The expression does not evaluate to true.)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/Luda4/source/repos/QCGA/QCGA/main.cpp"
+                },
+                "region": {
+                  "startLine": 240,
+                  "startColumn": 7
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "new",
+                  "decoratedName": "??2@YAPEAX_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///c:/users/luda4/source/repos/qcga/qcga/main.cpp"
+                          },
+                          "region": {
+                            "startLine": 242,
+                            "startColumn": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///c:/users/luda4/source/repos/qcga/qcga/main.cpp"
+                          },
+                          "region": {
+                            "startLine": 243,
+                            "startColumn": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "C6387",
+          "message": {
+            "text": "'return' could be '0':  this does not adhere to the specification for the function 'new'. "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/Luda4/source/repos/QCGA/QCGA/main.cpp"
+                },
+                "region": {
+                  "startLine": 240,
+                  "startColumn": 7
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "new",
+                  "decoratedName": "??2@YAPEAX_K@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/Luda4/source/repos/QCGA/QCGA/main.cpp"
+                          },
+                          "region": {
+                            "startLine": 242,
+                            "startColumn": 20
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/Luda4/source/repos/QCGA/QCGA/main.cpp"
+                          },
+                          "region": {
+                            "startLine": 243,
+                            "startColumn": 2
+                          }
+                        },
+                        "message": {
+                          "text": "'return' may be NULL"
+                        }
+                      },
+                      "kinds": [
+                        "declaration"
+                      ],
+                      "importance": "essential"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/Luda4/source/repos/QCGA/QCGA/main.cpp"
+                          },
+                          "region": {
+                            "startLine": 240,
+                            "startColumn": 7
+                          }
+                        },
+                        "message": {
+                          "text": "'return' should not be NULL, because this is not consistent with the SAL annotation on 'new'"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
       "tool": {
         "driver": {
           "name": "PREfast",
           "fullName": "PREfast Code Analysis",
-          "version": "14.39.33523.0",
+          "version": "14.41.34123.0",
           "informationUri": "https://aka.ms/cpp/ca"
         }
       },
@@ -20,13 +199,14 @@
       "artifacts": [
         {
           "location": {
-            "uri": "file:///c:/users/luda4/source/repos/qcga/qcga/main.cpp"
+            "uri": "file:///C:/Users/Luda4/source/repos/QCGA/QCGA/main.cpp"
           },
           "roles": [
-            "analysisTarget"
+            "analysisTarget",
+            "resultFile"
           ],
           "hashes": {
-            "sha-256": "4c35b2ea406d9dfab5d45a89a58416be7fdabcc5dae3c160218da26e61673e3f"
+            "sha-256": "9ecba730206e2e56a4888b2920e108c26606056e4975d60121a9b9ec48f1c5bd"
           }
         },
         {
@@ -34,7 +214,7 @@
             "uri": "file:///c:/users/luda4/source/repos/qcga/qcga/qcga.h"
           },
           "hashes": {
-            "sha-256": "a8261dba801f2da8a606fe4b377b1505409c84fe6d186a6c1afa574854ce514e"
+            "sha-256": "1588f1a1a54313cc5499e105c7513e0e3d4d27360afb4719bd7bdb1425c9a8fe"
           }
         },
         {
@@ -42,7 +222,7 @@
             "uri": "file:///c:/users/luda4/source/repos/qcga/qcga/blade.h"
           },
           "hashes": {
-            "sha-256": "40d1b64bd4ac3da8977a97f616fe8288d87d9857b4d0d2781919767186fa8309"
+            "sha-256": "9d159c555d2a7cd1b3eee5562e6873d66b36be33ebeb6606480004c3ab56ec14"
           }
         }
       ]

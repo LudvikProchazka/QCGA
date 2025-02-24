@@ -13,7 +13,7 @@ void QCGA::generateGeneratingBlades()
 	}
 }
 
-//Constructor which takes basis blade
+
 QCGA::QCGA(const std::string& input)
 {
 	if (input == "0")
@@ -23,6 +23,19 @@ QCGA::QCGA(const std::string& input)
 	else
 	{
 		STDmapLabelToCoefficient[input] = std::round(1 * PRECISION) / PRECISION;
+	}
+}
+
+QCGA::QCGA(std::string&& input) noexcept
+{
+	if (input == "0")
+	{
+		STDmapLabelToCoefficient["1"] = 0;
+		//std::cout << input << std::endl;
+	}
+	else
+	{
+		STDmapLabelToCoefficient[std::move(input)] = std::round(1 * PRECISION) / PRECISION;
 	}
 }
 
@@ -44,18 +57,43 @@ QCGA::QCGA(const std::map<std::string, long double>& map)
 	this->STDmapLabelToCoefficient = copyOfMap;
 }
 
+QCGA::QCGA(std::map<std::string, long double>&& map)
+{
+	this->STDmapLabelToCoefficient = std::move(map);
+
+	auto ptr = &map;
+	ptr = nullptr;
+}
+
 QCGA::QCGA(const std::pair<std::string, long double>& basis_blade)
 {
 	this->STDmapLabelToCoefficient.emplace(basis_blade);
 }
 
-//default constructor calls CGA("0")
+QCGA::QCGA(std::pair<std::string, long double>&& basis_blade)
+{
+	this->STDmapLabelToCoefficient.emplace(std::move(basis_blade));
+}
+
+
+QCGA::~QCGA()
+{
+	//std::cout << "DELETED\n";
+}
+
+//creates zero_vector
 QCGA::QCGA() { STDmapLabelToCoefficient["1"] = 0; }
 
 QCGA::QCGA(const QCGA& instance)
 {
 	this->STDmapLabelToCoefficient = instance.STDmapLabelToCoefficient;
 }
+
+QCGA::QCGA(QCGA&& instance) noexcept
+{
+	this->STDmapLabelToCoefficient = std::move(instance.STDmapLabelToCoefficient);
+}
+
 
 const std::map<std::string, long double>& QCGA::getSTDmapLabelToCoefficient() const
 {
@@ -77,10 +115,10 @@ long double QCGA::toNumeric() // returns coefficient at basis blade 1
 
 //************************************MEMBER_OPERATOR************************************\\
 
-QCGA QCGA::rotorExponential(unsigned int degree, long double phi)
+QCGA QCGA::rotorExponential(unsigned int degree, long double phi) const
 {
 	QCGA res = one;
-	for (int i = 1; i < degree+1; i++)
+	for (unsigned int i = 1; i < degree+1; i++)
 	{
 		long double factorial = i;
 		for (int j = i; j > 1; j--)
@@ -90,10 +128,10 @@ QCGA QCGA::rotorExponential(unsigned int degree, long double phi)
 	return res;
 }
 
-QCGA QCGA::translatorExponential(unsigned int degree, long double distance)
+QCGA QCGA::translatorExponential(unsigned int degree, long double distance) const
 {
 	QCGA res = one;
-	for (int i = 1; i < degree + 1; i++)
+	for (unsigned int i = 1; i < degree + 1; i++)
 	{
 		long long unsigned int factorial = i;
 		for (int j = i; j > 1; j--)
@@ -103,6 +141,32 @@ QCGA QCGA::translatorExponential(unsigned int degree, long double distance)
 	}
 	return res;
 }
+
+QCGA QCGA::bivectorExponential(unsigned int degree, long double parameter) const
+{
+	QCGA res = one;
+	for (unsigned int i = 1; i < degree + 1; i++)
+	{
+		long double factorial = i;
+		for (int j = i; j > 1; j--)
+			factorial *= (j - 1);
+		res = res + (((parameter / 2) * (*this)) ^ i) * (long double(1) / factorial);
+	}
+	return res;
+}
+
+QCGA& QCGA::operator=(const QCGA& other)
+{
+	this->STDmapLabelToCoefficient = other.STDmapLabelToCoefficient;
+	return *this;
+}
+
+QCGA& QCGA::operator=(QCGA&& other) noexcept
+{
+	this->STDmapLabelToCoefficient = std::move(other.STDmapLabelToCoefficient);
+	return *this;
+}
+
 
 
 //equal operator
@@ -148,7 +212,7 @@ bool QCGA::operator!=(const QCGA& other) const
 }
 
 //grade projection operator
-QCGA QCGA::operator[](const int _grade) const
+QCGA QCGA::operator[](const int& _grade) const
 {
 	std::vector<QCGA> left = makeQCGAFromBasisBlades(*this);
 
@@ -179,7 +243,8 @@ QCGA QCGA::operator*(const QCGA& other) const
 		std::string copyOfBasisBlade = basisBlade;
 		int sign = 1; //sign for controling sing when swaps happen
 
-		if (basisBlade.find("e") == std::string::npos)//if there are just greade 0 elements, label is 1
+		//if (basisBlade.find("e")==std::string::npos) //if there are just greade 0 elements, label is 1
+		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
 			copyOfBasisBlade = "1";
 		
 		else if ((basisBlade.find_last_of("*") + 1) != basisBlade.find_last_of("e")) //if there is ei*1, label will be ei
@@ -188,17 +253,17 @@ QCGA QCGA::operator*(const QCGA& other) const
 		else if (basisBlade.find("e") > 0) //if there is 1*ei, label will be ei
 			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
 
-		if (copyOfBasisBlade != "1")
+		if (copyOfBasisBlade != "1") //_LIKELY
 			simplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
 
-		res = res + QCGA(std::make_pair(copyOfBasisBlade, oldCoef * sign));
+		res = (res + std::move(QCGA(std::move(std::make_pair(copyOfBasisBlade, oldCoef * sign)))));
 	}
 	res.deleteZeroFromVector();
 	return res;
 }
 
 //multiplying by scalar from the right
-QCGA QCGA::operator*(const long double scalar) const
+QCGA QCGA::operator*(const long double& scalar) const
 {
 	//std::map<std::string, long double> map;
 	std::map<std::string, long double> map = this->STDmapLabelToCoefficient;
@@ -208,7 +273,7 @@ QCGA QCGA::operator*(const long double scalar) const
 		//map.emplace(std::make_pair(basisBlade, coef * scalar));// *= scalar;
 		map.at(basisBlade) *= scalar;
 	}
-	return QCGA(map);
+	return QCGA((std::map<std::string, long double>&&)map);
 }
 
 //reverse operator
@@ -218,7 +283,7 @@ QCGA QCGA::operator~() const
 
 	for (const auto& [basisBlade, coef] : STDmapLabelToCoefficient) //it is sufficient to check sign of reversed permutation of basis blades
 	{
-		if (basisBlade == "1")
+		if (basisBlade == "1") _UNLIKELY
 			map["1"] = coef;//coefficients.push_back(this->coefficients[0]);
 		else
 		{
@@ -227,7 +292,7 @@ QCGA QCGA::operator~() const
 			map[basisBlade] = coef * calculateSign(permutation);//coefficients.push_back(this->coefficients[iter] * calculateSign(permutation));
 		}
 	}
-	return QCGA(map);
+	return QCGA((std::map<std::string, long double>&&)map);
 }
 
 //addition operator
@@ -273,7 +338,6 @@ QCGA QCGA::operator|(const QCGA& other) const
 	//Make vectors from left and right operadns, they will store basis blades as CGA object and they will participate in product
 	std::vector<QCGA> left = makeQCGAFromBasisBlades(*this);
 	std::vector<QCGA> right = makeQCGAFromBasisBlades(other);
-
 	QCGA res = zero_vector;
 	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
 	{
@@ -305,12 +369,13 @@ QCGA QCGA::operator^(const QCGA& other) const
 	return res;
 }
 
-QCGA QCGA::operator^(const int exponent) const
+QCGA QCGA::operator^(const int& exponent) const
 {
-	if (exponent < 0)
+	if (exponent < 0) _UNLIKELY
 	{
 		std::cout << "Warning, calling an inverse of QCGA, not of a blade, this might fail!\n";
-		QCGA res = (~*this) / ((*this * ~(*this)).toNumeric());
+		long double denominator = (((*this) * (~(*this))).toNumeric());
+		QCGA res = denominator * (~(*this));
 		return res;
 	}
 	else
@@ -324,7 +389,7 @@ QCGA QCGA::operator^(const int exponent) const
 	}
 }
 
-QCGA QCGA::operator/(const long double divider) const
+QCGA QCGA::operator/(const long double& divider) const
 {
 	return *this * (1 / divider);
 }
@@ -407,7 +472,7 @@ std::string QCGA::log() const
 				continue;
 			}
 			coef = std::to_string(a.second);
-			int j = coef.length() - 1;
+			size_t j{ coef.length() - 1 };
 			while (coef[j] == '0' && coef[j] != '.')
 			{
 				coef.erase(coef.end() - 1);
@@ -445,7 +510,7 @@ void QCGA::simplifyBasisBlade(std::string& label, int& sign)
 	std::vector<int> permutations; //keeps numbers next to individual e's
 	permutations.reserve(30);
 	std::string s = "";
-	while (label.find("*") != std::string::npos)
+	while (label.contains('*'))
 	{
 		permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.find("*") - 1)));
 		label = label.substr(label.find("*") + 1, label.size());
@@ -505,25 +570,20 @@ void QCGA::processVector(std::vector<int>& vec, int& sign) {
 }
 
 //from a given label, for example e1*e2*e3, returns vector {1,2,3}
-std::vector<int> QCGA::extractIntegersFromBasisBlades(const std::string& label)
+std::vector<int> QCGA::extractIntegersFromBasisBlades(const std::string_view& label)
 {
 	std::vector<int> permutation;
-	std::string vec = label;
-	while (vec.size() != 0) //checks, if idividual ei are presented in algebra. Otherwise, it crashes
+	permutation.reserve(15);
+	int basis_vec_number;
+	auto position = label.begin();
+	while (position < label.end()) //checks, if idividual ei are presented in algebra. Otherwise, it crashes
 	{
-		std::string test;
-		if (vec.substr(1, vec.length()).find("e") == std::string::npos)
-		{
-			test = vec.substr(1, vec.length());
-			vec = "";
+		auto [ptr, error] {std::from_chars(position._Unwrapped(), position._Unwrapped()+2, basis_vec_number)};
+		if (error == std::errc{}) {
+			permutation.push_back(basis_vec_number);
+			if (basis_vec_number > 9) { position++; }
 		}
-		else
-		{
-			size_t positionOfNext = vec.substr(1, vec.length()).find("e") + 1;
-			test = vec.substr(1, positionOfNext - 2);
-			vec = vec.substr(positionOfNext, vec.length());
-		}
-		permutation.emplace_back(std::stoi(test));
+		position++;
 	}
 	return permutation;
 }
@@ -533,6 +593,7 @@ std::vector<int> QCGA::extractIntegersFromBasisBlades(const std::string& label)
 //inner product of two basis blades operator. Usefull in inner product of two general multivectors
 QCGA QCGA::operator||(const QCGA& other) const
 {
+
 	return QCGA((*this * other)[abs(this->grade(this->STDmapLabelToCoefficient.begin()->first) - other.grade(other.STDmapLabelToCoefficient.begin()->first))]);
 }
 
@@ -543,7 +604,7 @@ QCGA QCGA::operator&&(const QCGA& other) const
 }
 
 //grade projection of basis blade
-QCGA QCGA::operator()(const int grade) const
+QCGA QCGA::operator()(const int& grade) const
 {
 	return (this->grade(this->STDmapLabelToCoefficient.begin()->first) == grade) ? *this : QCGA("0");
 }
@@ -563,7 +624,7 @@ void QCGA::deleteZeroFromVector()
 //**********************************NON-MEMBER_OPERATORS**********************************\\
 
 //multiplying by scalar from the left
-QCGA operator*(const long double scalar, const QCGA& other)
+QCGA operator*(const long double& scalar, const QCGA& other)
 {
 	return other * scalar;
 }
@@ -588,7 +649,7 @@ std::vector<QCGA> makeQCGAFromBasisBlades(const QCGA& multivector)
 }
 
 //removes occurences of substring in string
-void removeOccurences(std::string& str, const std::string subStr)
+void removeOccurences(std::string& str, const std::string_view& subStr)
 {
 	while (str.find(subStr) != std::string::npos)
 	{
