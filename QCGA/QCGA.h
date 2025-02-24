@@ -1,5 +1,4 @@
-#ifndef __QCGA_H__
-#define __QCGA_H__
+#pragma once
 
 #include <string>
 #include <cmath>
@@ -12,14 +11,13 @@
 #include <map>
 #include <iomanip>
 #include <utility>
+#include <string_view>
 
-
-
-#define TOTAL_DIMENSION 32768 //total dimension of an algebra (2^5)
-#define GENERATING_BASIS_DIMENSION 15 //dimension of generating space R^5
-#define ALGEBRA_P 9 //number of positive squared vectors
-#define ALGEBRA_Q 6 //number of negative squared vectors
-#define PRECISION 1000000000000 //constant for rounding
+constexpr size_t TOTAL_DIMENSION{32'768};  //total dimension of an algebra (2^5)
+constexpr size_t GENERATING_BASIS_DIMENSION{15};  //dimension of generating space R^5
+constexpr size_t ALGEBRA_P{9};  //number of positive squared vectors
+constexpr size_t ALGEBRA_Q{6};  //number of negative squared vectors
+constexpr long long PRECISION{1'000'000'000'000};  //constant for rounding
 
 #define zero_vector (QCGA()) //zero vecor
 #define one (QCGA::generatingBlades[0]) //scalar
@@ -87,14 +85,14 @@ public:
 public:
 	QCGA(); //default constructor creates zero vector;
 	QCGA(const QCGA& instance); 
-	QCGA(const std::string& input); //constructor used for construct generatingBlades
-	QCGA(const std::map<std::string, long double>& map);//instanciate CGA object from map
+	QCGA(const std::string_view& input); //constructor used for construct generatingBlades
+	QCGA(const std::map<std::string_view, long double>& map);//instanciate CGA object from map
 	static void generateGeneratingBlades(); //generates generatingBlades
-	QCGA(const std::pair<std::string,long double>& basis_blade); //instanciate CGA object from pair which is a basis blade
+	QCGA(const std::pair<std::string_view,long double>& basis_blade); //instanciate CGA object from pair which is a basis blade
 	virtual ~QCGA() = default;
 	long double toNumeric(); //returs coefficient at basis blade "1"
 
-	const std::map<std::string, long double>& getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
+	const std::map<std::string_view, long double>& getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
 
 	//**********************************OPERATORS**********************************\\
 	
@@ -117,7 +115,7 @@ public:
 	static QCGA rotate(const QCGA& point, int plane, long double angle);
 	static QCGA translate(const QCGA& point, int plane, long double angle);
 
-	int grade(const std::string& label) const; //returns grade of basis blade (if we give it appropriate label...)
+	int grade(const std::string_view& label) const; //returns grade of basis blade (if we give it appropriate label...)
 	std::string log() const; //returns multivector, used in << operator
 protected:
 	//**********************************STATIC_SUPPORT_FUNCTIONS**********************************\\
@@ -135,7 +133,7 @@ protected:
 
 	//**********************************ACTUAL_ATRIBUTES**********************************\\
 
-	std::map<std::string, long double> STDmapLabelToCoefficient; //representation of a general multivector
+	std::map<std::string_view, long double> STDmapLabelToCoefficient; //representation of a general multivector
 
 	//**********************************SUPPORT_FUNCTIONS**********************************\\
 
@@ -149,7 +147,3 @@ QCGA operator*(const long double scalar, const QCGA& onther); //multiplying by s
 std::ostream& operator<<(std::ostream& stream, const QCGA& vector); //operator for printing
 std::vector<QCGA> makeQCGAFromBasisBlades(const QCGA& multivector); //returns vector of basis blades in linear combination of general multivector
 void removeOccurences(std::string& str, const std::string substr); //removes occurences of substring in string
-
-
-
-#endif

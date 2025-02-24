@@ -151,7 +151,7 @@ void TranslatorX()
 	QCGA t5 = -1 * e3 ^ ei5;
 
 	QCGA t = t1 + t2 + t3 + t4 + t5;
-	int distance = -1/double(3);
+	long double distance = -1/double(3);
 
 	QCGA T1 = one - 0.5 * distance * (e1 ^ ei1);
 	QCGA T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);

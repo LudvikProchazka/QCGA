@@ -2,6 +2,8 @@
 #include <cmath>
 #include <numeric>
 
+using namespace std::string_literals;
+
 QCGA QCGA::generatingBlades[GENERATING_BASIS_DIMENSION + 1];
 //generates generatingBlades
 void QCGA::generateGeneratingBlades()
@@ -14,21 +16,14 @@ void QCGA::generateGeneratingBlades()
 }
 
 //Constructor which takes basis blade
-QCGA::QCGA(const std::string& input)
+QCGA::QCGA(const std::string_view& input)
 {
-	if (input == "0")
-	{
-		STDmapLabelToCoefficient["1"] = 0;
-	}
-	else
-	{
-		STDmapLabelToCoefficient[input] = std::round(1 * PRECISION) / PRECISION;
-	}
+	input == "0" ? STDmapLabelToCoefficient["1"s] = 0 : STDmapLabelToCoefficient[input] = std::round(1 * PRECISION) / PRECISION;
 }
 
-QCGA::QCGA(const std::map<std::string, long double>& map)
+QCGA::QCGA(const std::map<std::string_view, long double>& map)
 {
-	std::map<std::string, long double> copyOfMap = map;
+	std::map<std::string_view, long double> copyOfMap = map;
 	for (const auto& [basisBlade, coef] : map)
 	{
 		//copyOfMap.at(basisBlade) = std::round(coef * PRECISION) / PRECISION; //tried to fix rounding error in another way
@@ -44,7 +39,7 @@ QCGA::QCGA(const std::map<std::string, long double>& map)
 	this->STDmapLabelToCoefficient = copyOfMap;
 }
 
-QCGA::QCGA(const std::pair<std::string, long double>& basis_blade)
+QCGA::QCGA(const std::pair<std::string_view, long double>& basis_blade)
 {
 	this->STDmapLabelToCoefficient.emplace(basis_blade);
 }
@@ -57,7 +52,7 @@ QCGA::QCGA(const QCGA& instance)
 	this->STDmapLabelToCoefficient = instance.STDmapLabelToCoefficient;
 }
 
-const std::map<std::string, long double>& QCGA::getSTDmapLabelToCoefficient() const
+const std::map<std::string_view, long double>& QCGA::getSTDmapLabelToCoefficient() const
 {
 	return this->STDmapLabelToCoefficient;
 }
@@ -165,18 +160,18 @@ QCGA QCGA::operator[](const int _grade) const
 QCGA QCGA::operator*(const QCGA& other) const
 {
 	//these vectors will be used for constructor
-	std::map<std::string, long double> map;
+	std::map<std::string_view, long double> map;
 
 	for (const auto& [thisBasisBlade, thisCoef] : this->STDmapLabelToCoefficient)
 		for (const auto& [rightBasisBlade, rightCoef] : other.STDmapLabelToCoefficient)
-			map[thisBasisBlade + "*" + rightBasisBlade] = thisCoef * rightCoef;
+			map[std::string(thisBasisBlade) + "*" + std::string(rightBasisBlade)] = thisCoef * rightCoef;
 
 	QCGA res = zero_vector;
 	//now, try to simplify individual label
 	for (auto& [basisBlade, coef] : map) //each label in newLabel will be modified
 	{ 
 		long double oldCoef = coef;
-		std::string copyOfBasisBlade = basisBlade;
+		std::string copyOfBasisBlade = std::string(basisBlade);
 		int sign = 1; //sign for controling sing when swaps happen
 
 		if (basisBlade.find("e") == std::string::npos)//if there are just greade 0 elements, label is 1
@@ -201,7 +196,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 QCGA QCGA::operator*(const long double scalar) const
 {
 	//std::map<std::string, long double> map;
-	std::map<std::string, long double> map = this->STDmapLabelToCoefficient;
+	std::map<std::string_view, long double> map = this->STDmapLabelToCoefficient;
 
 	for (const auto& [basisBlade, coef] : STDmapLabelToCoefficient)
 	{
@@ -214,7 +209,7 @@ QCGA QCGA::operator*(const long double scalar) const
 //reverse operator
 QCGA QCGA::operator~() const
 {
-	std::map<std::string, long double> map;
+	std::map<std::string_view, long double> map;
 
 	for (const auto& [basisBlade, coef] : STDmapLabelToCoefficient) //it is sufficient to check sign of reversed permutation of basis blades
 	{
@@ -222,7 +217,7 @@ QCGA QCGA::operator~() const
 			map["1"] = coef;//coefficients.push_back(this->coefficients[0]);
 		else
 		{
-			std::vector<int> permutation = extractIntegersFromBasisBlades(basisBlade);
+			std::vector<int> permutation = extractIntegersFromBasisBlades(std::string(basisBlade));
 			std::reverse(permutation.begin(), permutation.end());
 			map[basisBlade] = coef * calculateSign(permutation);//coefficients.push_back(this->coefficients[iter] * calculateSign(permutation));
 		}
@@ -233,7 +228,7 @@ QCGA QCGA::operator~() const
 //addition operator
 QCGA QCGA::operator+(const QCGA& other) const
 {
-	std::map<std::string, long double> map = this->STDmapLabelToCoefficient;
+	std::map<std::string_view, long double> map = this->STDmapLabelToCoefficient;
 	for (const auto& [basisBlade, coefficient] : other.STDmapLabelToCoefficient)
 	{
 		//if labels are the same
@@ -378,7 +373,7 @@ QCGA QCGA::translate(const QCGA& point, int direction, long double distance)
 }
 
 //returns grade of basis blade (if we give it appropriate label...)
-int QCGA::grade(const std::string& label) const
+int QCGA::grade(const std::string_view& label) const
 {
 	int grade = 0;
 	for (const char c : label) {
@@ -415,7 +410,7 @@ std::string QCGA::log() const
 			}
 			if (coef[j] == '.')
 				coef.erase(coef.end() - 1);
-			s += coef + "*" + a.first + " + ";
+			s += coef + "*" + std::string(a.first) + " + ";
 		}
 	}
 	s = s.substr(0, s.size() - 3); //deletes " + " at the end
