@@ -17,3 +17,7 @@
 *.exe
 *.db-shm
 *.pdb
+*.recipe
+*.ilk
+*.log
+*.idb
