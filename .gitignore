@@ -7,3 +7,13 @@
 *.ipch
 *.db
 *.ipch
+*.suo
+*.db-wal
+*.json
+*.ifc
+*.command
+*.obj
+*.tlog
+*.exe
+*.db-shm
+*.pdb
