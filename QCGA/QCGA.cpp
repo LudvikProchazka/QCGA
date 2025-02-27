@@ -231,7 +231,7 @@ QCGA QCGA::operator[](const int& _grade) const
 QCGA QCGA::operator*(const QCGA& other) const
 {
 	//these vectors will be used for constructor
-	std::map<std::string_view, long double> map;
+	std::map<std::string, long double> map;
 
 	for (const auto& [thisBasisBlade, thisCoef] : this->STDmapLabelToCoefficient)
 		for (const auto& [rightBasisBlade, rightCoef] : other.STDmapLabelToCoefficient)
@@ -268,7 +268,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 QCGA QCGA::operator*(const long double& scalar) const
 {
 	//std::map<std::string, long double> map;
-	std::map<std::string_view, long double> map = this->STDmapLabelToCoefficient;
+	std::map<std::string, long double> map = this->STDmapLabelToCoefficient;
 
 	for (const auto& [basisBlade, coef] : STDmapLabelToCoefficient)
 	{
@@ -281,7 +281,7 @@ QCGA QCGA::operator*(const long double& scalar) const
 //reverse operator
 QCGA QCGA::operator~() const
 {
-	std::map<std::string_view, long double> map;
+	std::map<std::string, long double> map;
 
 	for (const auto& [basisBlade, coef] : STDmapLabelToCoefficient) //it is sufficient to check sign of reversed permutation of basis blades
 	{
@@ -300,7 +300,7 @@ QCGA QCGA::operator~() const
 //addition operator
 QCGA QCGA::operator+(const QCGA& other) const
 {
-	std::map<std::string_view, long double> map = this->STDmapLabelToCoefficient;
+	std::map<std::string, long double> map = this->STDmapLabelToCoefficient;
 	for (const auto& [basisBlade, coefficient] : other.STDmapLabelToCoefficient)
 	{
 		//if labels are the same
@@ -445,7 +445,7 @@ QCGA QCGA::translate(const QCGA& point, int direction, long double distance)
 }
 
 //returns grade of basis blade (if we give it appropriate label...)
-int QCGA::grade(const std::string_view& label) const
+int QCGA::grade(const std::string& label) const
 {
 	int grade = 0;
 	for (const char c : label) {
@@ -572,7 +572,7 @@ void QCGA::processVector(std::vector<int>& vec, int& sign) {
 }
 
 //from a given label, for example e1*e2*e3, returns vector {1,2,3}
-std::vector<int> QCGA::extractIntegersFromBasisBlades(const std::string_view& label)
+std::vector<int> QCGA::extractIntegersFromBasisBlades(const std::string& label)
 {
 	std::vector<int> permutation;
 	permutation.reserve(15);
@@ -651,7 +651,7 @@ std::vector<QCGA> makeQCGAFromBasisBlades(const QCGA& multivector)
 }
 
 //removes occurences of substring in string
-void removeOccurences(std::string& str, const std::string_view& subStr)
+void removeOccurences(std::string& str, const std::string& subStr)
 {
 	while (str.find(subStr) != std::string::npos)
 	{
