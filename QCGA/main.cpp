@@ -151,7 +151,7 @@ void TranslatorX()
 	QCGA t5 = -1 * e3 ^ ei5;
 
 	QCGA t = t1 + t2 + t3 + t4 + t5;
-	long double distance = -1/double(3);
+	double distance = -1/double(3);
 
 	QCGA T1 = one - 0.5 * distance * (e1 ^ ei1);
 	QCGA T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);
@@ -245,9 +245,14 @@ static int s_allocation_count = 0; //for debugging purposes
 
 int main()
 {
-	QCGA::generateGeneratingBlades(); //Generates generating basis, 1,e1,e2,e3,e4,...,e15
-	
+	auto start = std::chrono::high_resolution_clock::now();
+
+	QCGA::generateGeneratingBlades(); 
 	RotorXY();
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
+	std::cout << "Allocations   : " << s_allocation_count << " seconds" << std::endl;
 
 	return 0;
 }
