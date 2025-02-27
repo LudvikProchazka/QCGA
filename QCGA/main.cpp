@@ -8,15 +8,11 @@
 
 enum rotation_planes
 {
-	xy = 1,
-	xz,
-	yz
+	xy,	xz,	yz
 };
 enum translation_directions
 {
-	x = 1,
-	y,
-	z
+	x,	y,	z
 };
 
 QCGA com(const QCGA& a, const QCGA& b)
@@ -252,7 +248,7 @@ int main()
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> duration = end - start;
 	std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
-	std::cout << "Allocations   : " << s_allocation_count << " seconds" << std::endl;
+	//std::cout << "Allocations   : " << s_allocation_count << " allocations" << std::endl;
 
 	return 0;
 }

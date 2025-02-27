@@ -24,7 +24,7 @@ QCGA::QCGA(const std::string& input)
 	}
 	else
 	{
-		STDmapLabelToCoefficient[input] = std::round(1 * PRECISION) / PRECISION;
+		STDmapLabelToCoefficient[input] = 1;
 	}
 }
 
@@ -37,7 +37,7 @@ QCGA::QCGA(std::string&& input) noexcept
 	}
 	else
 	{
-		STDmapLabelToCoefficient[std::move(input)] = std::round(1 * PRECISION) / PRECISION;
+		STDmapLabelToCoefficient[std::move(input)] = 1;
 	}
 }
 
@@ -235,7 +235,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 
 	for (const auto& [thisBasisBlade, thisCoef] : this->STDmapLabelToCoefficient)
 		for (const auto& [rightBasisBlade, rightCoef] : other.STDmapLabelToCoefficient)
-			map[std::string(thisBasisBlade) + "*" + std::string(rightBasisBlade)] = thisCoef * rightCoef;
+			map[thisBasisBlade + "*"s + rightBasisBlade] = thisCoef * rightCoef;
 
 	QCGA res = zero_vector;
 	//now, try to simplify individual label
@@ -275,7 +275,7 @@ QCGA QCGA::operator*(const long double& scalar) const
 		//map.emplace(std::make_pair(basisBlade, coef * scalar));// *= scalar;
 		map.at(basisBlade) *= scalar;
 	}
-	return QCGA((std::map<std::string, long double>&&)map);
+	return QCGA(std::move(map));
 }
 
 //reverse operator
@@ -294,7 +294,7 @@ QCGA QCGA::operator~() const
 			map[basisBlade] = coef * calculateSign(permutation);//coefficients.push_back(this->coefficients[iter] * calculateSign(permutation));
 		}
 	}
-	return QCGA((std::map<std::string, long double>&&)map);
+	return QCGA(std::move(map));
 }
 
 //addition operator
