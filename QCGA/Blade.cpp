@@ -2,7 +2,7 @@
 #include <unordered_set>
 
 // Used in constructor, A is blade <=> A*~A is scalar (i think)
-bool Blade::isBlade(QCGA& Multivector) {
+bool Blade::isBlade(const QCGA& Multivector) {
 	if (Multivector[0] == Multivector)
 	{
 		return true;
@@ -59,19 +59,23 @@ Blade Blade::operator^(const int exponent) const
 	}
 }
 
-// returns dual blade
 Blade Blade::dual() const
 {
 	return Blade(*this * (I ^ (-1)));
 }
 
-Blade Blade::down() const
+Blade Blade::normalize() const
 {
 	double multiplicator = ((*this | (ei1 * ei2 * ei3 * ei4 * ei5 * ei6)) | (eo2 * eo3 * eo4 * eo5 * eo6)).toNumeric();
 	Blade res = (double(1) / multiplicator) * *this;
 	return res;
 }
 
+Blade Blade::down() const
+{
+	Blade res = (*this).normalize();
+	return res[e1] + res[e2] + res[e3];
+}
 
 //creates QCGA object as embedded 3D point
 Blade up(long double _x, long double _y, long double _z)

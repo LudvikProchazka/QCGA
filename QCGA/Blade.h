@@ -16,12 +16,12 @@ public:
 	Blade operator^(const Blade& other) const;
 	Blade operator^(const int exponent) const; //exponent operator, mainly for inverse: A^(-1)
 	Blade dual() const; //dual: A.dual() = A * I^(-1)
-	Blade down() const;
-
+	Blade normalize() const;	
+	Blade down() const;	
 private:
 	int grade;
 	bool nullBlade;
-	static bool isBlade(QCGA& Multivector);  // Used in constructor, A is blade <=> A*~A is scalar. Well, i hope so
+	static bool isBlade(const QCGA& Multivector); 
 };
 
 Blade up(long double x, long double y, long double z); //embedding of a 3D point.

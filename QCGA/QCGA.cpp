@@ -216,6 +216,18 @@ QCGA QCGA::operator[](int _grade) const
 	return res;
 }
 
+QCGA QCGA::operator[](const QCGA& other) const
+{
+	QCGA res;
+	for (const auto& [key, coeff] : STDmapLabelToCoefficient) {
+		if (other.STDmapLabelToCoefficient.contains(key)) { 
+			res = coeff * QCGA(key);
+			break;
+		}
+	}
+	return res;
+}
+
 //geometric product operator
 QCGA QCGA::operator*(const QCGA& other) const
 {
@@ -423,45 +435,40 @@ QCGA QCGA::scalarProduct(const QCGA& b) const
 }
 
 
-QCGA QCGA::rotate(const QCGA& point, int plane, long double angle)
+QCGA QCGA::rotate(const QCGA& point, rotation_planes plane, long double angle)
 {
 	QCGA rotor = zero_vector;
 	switch (plane)
 	{
-	case 1:
+	case xy:
 		rotor = rxy.rotorExponential(20, angle);
 		break;
-	case 2:
+	case xz:
 		rotor = rxz.rotorExponential(20, angle);
 		break;
-	case 3:
+	case yz:
 		rotor = ryz.rotorExponential(20, angle);
 		break;
 	default:
 		std::cout << "Wrong rotation plane" << std::endl;
 		return point;
-		break;
 	}
 	return (rotor * point * ~rotor)[1];
 }
 
-QCGA QCGA::translate(const QCGA& point, int direction, long double distance)
+QCGA QCGA::translate(const QCGA& point, translation_directions direction, long double distance)
 {
 	switch (direction)
 	{
-	case 1:
+	case x:
 		return Tx * point * ~Tx;
-		break;
-	case 2:
+	case y:
 		return Ty * point * ~Ty;
-		break;
-	case 3:
+	case z:
 		return Tz * point * ~Tz;
-		break;
 	default:
 		std::cout << "Wrong direction for translating" << std::endl;
 		return point;
-		break;
 	}
 }
 
@@ -588,11 +595,11 @@ void QCGA::processVector(std::vector<int>& vec, int& sign)
 			break;
 		}
 	}
-	//bubble sort, easy to track swaps... e3e2e1 -> e1e2e3
 	if (vec.empty())
 	{
 		return;
 	}
+	//bubble sort, easy to track swaps... e3e2e1 -> e1e2e3
 	int i, j;
 	for (i = 0; i < vec.size() - 1; i++)
 	{
@@ -635,7 +642,6 @@ std::vector<int> QCGA::extractIntegersFromBasisBlades(std::string_view label)
 //inner product of two basis blades operator. Usefull in inner product of two general multivectors
 QCGA QCGA::operator||(const QCGA& other) const
 {
-
 	return QCGA((*this * other)[abs(this->grade(this->STDmapLabelToCoefficient.begin()->first) - other.grade(other.STDmapLabelToCoefficient.begin()->first))]);
 }
 

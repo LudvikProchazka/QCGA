@@ -5,14 +5,7 @@
 #include <iomanip>      
 #include <chrono>
 
-enum class rotation_planes
-{
-	xy,	xz,	yz
-};
-enum class translation_directions
-{
-	x,	y,	z
-};
+
 
 QCGA com(const QCGA& a, const QCGA& b)
 {
@@ -21,41 +14,41 @@ QCGA com(const QCGA& a, const QCGA& b)
 
 void RotorXY()
 {
-	const QCGA r1 = e1 ^ e2;
-	const QCGA r2 = eo6 ^ ei5;
-	const QCGA r3 = ei6 ^ eo5;
-	const QCGA r4 = 2 * (eo4 ^ ei2);
-	const QCGA r5 = 2 * (ei4 ^ eo2);
-	const QCGA r6 = eo4 ^ ei3;
+	QCGA r1 = e1 ^ e2;
+	QCGA r2 = eo6 ^ ei5;
+	QCGA r3 = ei6 ^ eo5;
+	QCGA r4 = 2 * (eo4 ^ ei2);
+	QCGA r5 = 2 * (ei4 ^ eo2);
+	QCGA r6 = eo4 ^ ei3;
 
-	const QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
+	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
 
-	const double phi = std::numbers::pi / 4.0;
-	const QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
-	const QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
-	const QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
-	const QCGA R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
-	const QCGA R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
+	double phi = std::numbers::pi / 4.0;
+	QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
+	QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
+	QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
+	QCGA R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
+	QCGA R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
 
 
-	const QCGA C = up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
-	const QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
-	const QCGA c_24 = -1.5 * ei2 + 2 * ei4;
-	const QCGA c_56 = 3 * ei5 + 6 * ei6;
-	const QCGA c_3 = -4 * ei3;
+	QCGA C = up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+	QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
+	QCGA c_24 = -1.5 * ei2 + 2 * ei4;
+	QCGA c_56 = 3 * ei5 + 6 * ei6;
+	QCGA c_3 = -4 * ei3;
 
-	const double x = 1;
-	const double y = 2;
-	const double z = 3;
-	const double theta = atan(2) - phi;
-	const QCGA CC = up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
-	const QCGA _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) +c_3+ ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
+	double x = 1;
+	double y = 2;
+	double z = 3;
+	double theta = atan(2) - phi;
+	QCGA CC = up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
+	QCGA _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) +c_3+ ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
 	std::cout << "Rotated: " << _rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (_rotated == CC) << std::endl;
 
-	const QCGA rotor = r.rotorExponential(20, phi);
-	const QCGA rotated = (rotor * C * ~rotor)[1];
+	QCGA rotor = r.rotorExponential(20, phi);
+	QCGA rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
@@ -235,12 +228,36 @@ int main()
 	auto start = std::chrono::high_resolution_clock::now();
 	QCGA::generateGeneratingBlades(); 
 
-	RotorXY();
-	RotorXZ();
-	RotorYZ();
-	TranslatorX();
-	TranslatorY();
-	TranslatorZ();
+	QCGA A = eo1 + e2 + 2 * (ei1 ^ ei2) + 3 * ei5;
+	QCGA B = -3 * one + -1 * eo1 + 2 * e3 + 3 * e4 - 3 * (ei2 ^ ei3);
+	Blade C = -2*up(3.14, 2.72, -1);
+
+	A + B; // Addition
+	A - B; // Subtraction
+	A * B; // Geometric product
+	A ^ B; // Wedge product
+	A | B; // Inner product
+	A[2]; // Grade projection
+	A ^ 2; // Multivector power
+	//C ^ -1; // Blade inversion
+	5 * A; // Multiplying by a scalar
+	A == B; // Comparision of multivectors
+	A.scalarProduct(C); // Scalar product
+	QCGA::rotate(C, xy, 0.42); // Rotation of A in xy plane by 0.42 rad
+	QCGA::translate(C, z, 7); // Translation of B
+	std::cout << C << std::endl; // Normalizing a blade
+	std::cout << C.normalize() << std::endl; // Normalizing a blade
+	std::cout << C.down() << std::endl; // Projection to R^3
+	C.dual(); //Dual operation on C
+	(2 * eo1 | ei1).toNumeric(); // Returns long double when object is of 0 grade
+	std::cout << A << std::endl; // Printing into the console
+
+	//RotorXY();
+	//RotorXZ();
+	//RotorYZ();
+	//TranslatorX();
+	//TranslatorY();
+	//TranslatorZ();
 
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> duration = end - start;

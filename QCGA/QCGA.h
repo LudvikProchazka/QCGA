@@ -77,6 +77,15 @@ constexpr long long PRECISION{1'000'000'000'000};  //constant for rounding
 
 #define I Blade(e1*e2*e3*e4*e5*e6*e7*e8*e9*e10*e11*e12*e13*e14*e15) //Pseaudoscalar of an algebra
 
+enum rotation_planes
+{
+	xy, xz, yz
+};
+enum translation_directions
+{
+	x, y, z
+};
+
 class QCGA
 {
 public:
@@ -109,6 +118,7 @@ public:
 	bool operator==(const QCGA& other) const; //equals operator
 	bool operator!=(const QCGA& other) const; //not equals operator
 	QCGA operator[](int grade) const; //grade projection
+	QCGA operator[](const QCGA& other) const; //basis blade selection
 	QCGA operator*(const QCGA& other) const; //geometric product operator
 	QCGA operator*(QCGA&& other) const; //geometric product operator
 	QCGA operator*(long double scalar) const; //multiplying by scalar from the right operator
@@ -121,8 +131,8 @@ public:
 	QCGA operator/(long double divider) const; //dividing operator
 	QCGA scalarProduct(const QCGA& b) const;
 
-	static QCGA rotate(const QCGA& point, int plane, long double angle);
-	static QCGA translate(const QCGA& point, int plane, long double angle);
+	static QCGA rotate(const QCGA& point, rotation_planes plane, long double angle);
+	static QCGA translate(const QCGA& point, translation_directions plane, long double angle);
 
 	int grade(std::string_view label) const; //returns grade of basis blade (if we give it appropriate label...)
 	std::string log() const; //returns multivector, used in << operator
