@@ -12,6 +12,52 @@ QCGA com(const QCGA& a, const QCGA& b)
 	return 0.5*((a * b) - (b * a));
 }
 
+void RotationExample() //plane xy
+{
+	QCGA r1 = e1 ^ e2;
+	QCGA r2 = eo6 ^ ei5;
+	QCGA r3 = ei6 ^ eo5;
+	QCGA r4 = 2 * (eo4 ^ ei2);
+	QCGA r5 = 2 * (ei4 ^ eo2);
+	QCGA r6 = eo4 ^ ei3;
+
+	QCGA r = r1 + r2 + r3 + r4 + r5 + r6; //create generator
+
+	Blade C = up(1, 2, 3); //point which I want to rotate
+	double phi = std::numbers::pi / 4.0;
+
+	double theta = atan(2) - phi;
+	QCGA target = up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3); //for verification
+
+	QCGA rotor = r.rotorExponential(20, phi);
+	Blade rotated = (rotor * C * ~rotor)[1];
+	std::cout << "  Original Euc: " << C.down() << std::endl;
+	std::cout << "Original  QCGA: " << C << std::endl;
+	std::cout << "   Rotated Euc: " << rotated.down() << std::endl;
+	std::cout << "       Rotated: " << rotated << std::endl;
+	std::cout << "        Target: " << target << std::endl;
+	std::cout << "          Good: " << (rotated == target) << std::endl;
+
+	QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
+	QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
+	QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
+	QCGA R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
+	QCGA R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
+
+	QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
+	QCGA c_24 = -1.5 * ei2 + 2 * ei4;
+	QCGA c_56 = 3 * ei5 + 6 * ei6;
+	QCGA c_3 = -4 * ei3;
+
+	double x = 1;
+	double y = 2;
+	double z = 3;
+	QCGA _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) + c_3 + ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
+	std::cout << "Rotated: " << _rotated << std::endl;
+	std::cout << " Target: " << target << std::endl;
+	std::cout << "   Good: " << (_rotated == target) << std::endl;
+
+}
 void RotorXY()
 {
 	QCGA r1 = e1 ^ e2;
@@ -232,25 +278,27 @@ int main()
 	QCGA B = -3 * one + -1 * eo1 + 2 * e3 + 3 * e4 - 3 * (ei2 ^ ei3);
 	Blade C = -2*up(3.14, 2.72, -1);
 
-	A + B; // Addition
-	A - B; // Subtraction
-	A * B; // Geometric product
-	A ^ B; // Wedge product
-	A | B; // Inner product
-	A[2]; // Grade projection
-	A ^ 2; // Multivector power
-	//C ^ -1; // Blade inversion
-	5 * A; // Multiplying by a scalar
-	A == B; // Comparision of multivectors
-	A.scalarProduct(C); // Scalar product
-	QCGA::rotate(C, xy, 0.42); // Rotation of A in xy plane by 0.42 rad
-	QCGA::translate(C, z, 7); // Translation of B
-	std::cout << C << std::endl; // Normalizing a blade
-	std::cout << C.normalize() << std::endl; // Normalizing a blade
-	std::cout << C.down() << std::endl; // Projection to R^3
-	C.dual(); //Dual operation on C
-	(2 * eo1 | ei1).toNumeric(); // Returns long double when object is of 0 grade
-	std::cout << A << std::endl; // Printing into the console
+	//A + B; // Addition
+	//A - B; // Subtraction
+	//A * B; // Geometric product
+	//A ^ B; // Wedge product
+	//A | B; // Inner product
+	//A[2]; // Grade projection
+	//A ^ 2; // Multivector power
+	////C ^ -1; // Blade inversion
+	//5 * A; // Multiplying by a scalar
+	//A == B; // Comparision of multivectors
+	//A.scalarProduct(C); // Scalar product
+	//QCGA::rotate(C, xy, 0.42); // Rotation of A in xy plane by 0.42 rad
+	//QCGA::translate(C, z, 7); // Translation of B
+	//std::cout << C << std::endl; // Normalizing a blade
+	//std::cout << C.normalize() << std::endl; // Normalizing a blade
+	//std::cout << C.down() << std::endl; // Projection to R^3
+	//C.dual(); //Dual operation on C
+	//(2 * eo1 | ei1).toNumeric(); // Returns long double when object is of 0 grade
+	//std::cout << A << std::endl; // Printing into the console
+
+	RotationExample();
 
 	//RotorXY();
 	//RotorXZ();

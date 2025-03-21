@@ -231,22 +231,21 @@ QCGA QCGA::operator[](const QCGA& other) const
 //geometric product operator
 QCGA QCGA::operator*(const QCGA& other) const
 {
-	//these vectors will be used for constructor
 	std::map<std::string, long double> map;
 
-	for (const auto& [thisBasisBlade, thisCoef] : this->STDmapLabelToCoefficient)
-		for (const auto& [rightBasisBlade, rightCoef] : other.STDmapLabelToCoefficient)
-			map[thisBasisBlade + "*" + rightBasisBlade] = thisCoef * rightCoef;
+	for (const auto& [thisBasisBlade, thisCoef] : this->STDmapLabelToCoefficient) //e1+e1*e2*e3
+		for (const auto& [rightBasisBlade, rightCoef] : other.STDmapLabelToCoefficient) //2e2-e3*e4
+			map[thisBasisBlade + "*" + rightBasisBlade] = thisCoef * rightCoef; // e1*e2 | e1*e3*e4 | e1*e2*e3*e2 | e1*e2*e3*e3*e4
+																				//     2 |  	 -1 |			2 |				-1
 
 	QCGA res = zero_vector;
 	//now, try to simplify individual label
-	for (auto& [basisBlade, coef] : map) //each label in newLabel will be modified
+	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
 	{ 
 		const long double oldCoef = coef;
 		std::string copyOfBasisBlade = basisBlade;
 		int sign = 1; //sign for controling sing when swaps happen
 
-		//if (basisBlade.find("e")==std::string::npos) //if there are just greade 0 elements, label is 1
 		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
 			copyOfBasisBlade = "1";
 		
@@ -256,7 +255,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 		else if (basisBlade.find("e") > 0) //if there is 1*ei, label will be ei
 			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
 
-		if (copyOfBasisBlade != "1") //_LIKELY
+		if (copyOfBasisBlade != "1")
 			simplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
 
 		res = (res + std::move(QCGA(std::move(std::make_pair(copyOfBasisBlade, oldCoef * sign)))));
