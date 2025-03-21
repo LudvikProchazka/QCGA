@@ -1,9 +1,8 @@
 #include "QCGA.h"
 #include "Blade.h"
-
 #include <iostream>
 #include <numbers>
-#include <iomanip>      // std::setprecision
+#include <iomanip>      
 #include <chrono>
 
 enum rotation_planes
@@ -231,24 +230,21 @@ void TranslatorZ()
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
 
-static int s_allocation_count = 0; //for debugging purposes
-
-//void* operator new(size_t size) //for debugging purposes
-//{
-//	s_allocation_count++;
-//	return malloc(size);
-//}
-
 int main()
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
 	QCGA::generateGeneratingBlades(); 
+
 	RotorXY();
+	RotorXZ();
+	RotorYZ();
+	TranslatorX();
+	TranslatorY();
+	TranslatorZ();
+
+	//RotorXY();
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> duration = end - start;
 	std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
-	//std::cout << "Allocations   : " << s_allocation_count << " allocations" << std::endl;
-
-	return 0;
 }

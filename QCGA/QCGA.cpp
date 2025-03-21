@@ -580,7 +580,7 @@ std::vector<int> QCGA::extractIntegersFromBasisBlades(const std::string& label)
 	auto position = label.begin();
 	while (position < label.end()) //checks, if idividual ei are presented in algebra. Otherwise, it crashes
 	{
-		auto [ptr, error] {std::from_chars(position._Unwrapped(), position._Unwrapped()+2, basis_vec_number)};
+		auto [ptr, error] {std::from_chars(position._Unwrapped(), position._Unwrapped() + 2, basis_vec_number)};
 		if (error == std::errc{}) {
 			permutation.push_back(basis_vec_number);
 			if (basis_vec_number > 9) { position++; }
