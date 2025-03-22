@@ -54,7 +54,7 @@ Blade Blade::operator^(const int exponent) const
 	}
 	else
 	{
-		Blade _res = (QCGA)*this ^ exponent;
+		Blade _res = static_cast<QCGA>(*this) ^ exponent;
 		return _res;
 	}
 }
@@ -67,7 +67,7 @@ Blade Blade::dual() const
 Blade Blade::normalize() const
 {
 	double multiplicator = ((*this | (ei1 * ei2 * ei3 * ei4 * ei5 * ei6)) | (eo2 * eo3 * eo4 * eo5 * eo6)).toNumeric();
-	Blade res = (double(1) / multiplicator) * *this;
+	Blade res = (1.0 / multiplicator) * *this;
 	return res;
 }
 

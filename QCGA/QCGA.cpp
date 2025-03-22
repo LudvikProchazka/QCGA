@@ -242,7 +242,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 	//now, try to simplify individual label
 	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
 	{ 
-		const long double oldCoef = coef;
+		//const long double oldCoef = coef;
 		std::string copyOfBasisBlade = basisBlade;
 		int sign = 1; //sign for controling sing when swaps happen
 
@@ -258,7 +258,7 @@ QCGA QCGA::operator*(const QCGA& other) const
 		if (copyOfBasisBlade != "1")
 			simplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
 
-		res = (res + std::move(QCGA(std::move(std::make_pair(copyOfBasisBlade, oldCoef * sign)))));
+		res = (res + std::move(QCGA(std::move(std::make_pair(copyOfBasisBlade, coef * sign)))));
 	}
 	res.deleteZeroFromVector();
 	return res;
@@ -537,7 +537,6 @@ int QCGA::calculateSign(const std::vector<int>& permutation)
 //simplifies label in a form of for example  e1e2e3e2e3 into e1
 void QCGA::simplifyBasisBlade(std::string& label, int& sign)
 {
-	//std::cout << label << std::endl;
 	std::vector<int> permutations; //keeps numbers next to individual e's
 	permutations.reserve(30);
 	std::string s;
@@ -547,7 +546,7 @@ void QCGA::simplifyBasisBlade(std::string& label, int& sign)
 		label = label.substr(label.find("*") + 1, label.size());
 	}
 	permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.size())));
-	processVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
+	processVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented by numbers (1252345 -> 15345 ...)
 	for (int i = 0; i < permutations.size(); i++) //creates new proper label
 	{
 		s += "e";
@@ -651,7 +650,7 @@ QCGA QCGA::operator&&(const QCGA& other) const
 }
 
 //grade projection of basis blade
-QCGA QCGA::operator()(const int& grade) const
+QCGA QCGA::operator()(int grade) const
 {
 	return (this->grade(this->STDmapLabelToCoefficient.begin()->first) == grade) ? *this : QCGA("0");
 }

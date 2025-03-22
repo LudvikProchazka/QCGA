@@ -90,6 +90,8 @@ class QCGA
 {
 public:
 	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en. Will be made protected after all is done. I want defined vectors to work in Blade now
+protected:
+	std::map<std::string, long double> STDmapLabelToCoefficient; //representation of a general multivector
 public:
 	static void generateGeneratingBlades();
 	QCGA(); //creates zero vector;
@@ -120,7 +122,7 @@ public:
 	QCGA operator[](int grade) const; //grade projection
 	QCGA operator[](const QCGA& other) const; //basis blade selection
 	QCGA operator*(const QCGA& other) const; //geometric product operator
-	QCGA operator*(QCGA&& other) const; //geometric product operator
+	QCGA operator*(QCGA&& other) const; 
 	QCGA operator*(long double scalar) const; //multiplying by scalar from the right operator
 	QCGA operator~() const; //reverse operator
 	QCGA operator+(const QCGA& other) const; //multivector addition operator
@@ -148,11 +150,11 @@ protected:
 
 	QCGA operator||(const QCGA& other) const; //inner product of two basis blades operator
 	QCGA operator &&(const QCGA& other) const; //outer product of two basis blades operator
-	QCGA operator ()(const int& grade) const; //grade projection of basis blade operator
+	QCGA operator ()(int grade) const; //grade projection of basis blade operator
 
 	//**********************************ACTUAL_ATRIBUTES**********************************\\
 
-	std::map<std::string, long double> STDmapLabelToCoefficient; //representation of a general multivector
+	
 
 	//**********************************SUPPORT_FUNCTIONS**********************************\\
 

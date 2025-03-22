@@ -281,7 +281,7 @@ int main()
 	//A + B; // Addition
 	//A - B; // Subtraction
 	//A * B; // Geometric product
-	//A ^ B; // Wedge product
+	//A ^ B; // Outer product
 	//A | B; // Inner product
 	//A[2]; // Grade projection
 	//A ^ 2; // Multivector power
