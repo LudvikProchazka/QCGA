@@ -272,33 +272,43 @@ void TranslatorZ()
 int main()
 {
 	auto start = std::chrono::high_resolution_clock::now();
-	QCGA::generateGeneratingBlades(); 
+	QCGA::generateGeneratingBlades(); //creater an array of basis vectors in R^{9,6}... one, e1,e2,...,e15
 
 	QCGA A = eo1 + e2 + 2 * (ei1 ^ ei2) + 3 * ei5;
 	QCGA B = -3 * one + -1 * eo1 + 2 * e3 + 3 * e4 - 3 * (ei2 ^ ei3);
 	Blade C = -2*up(3.14, 2.72, -1);
 
-	//A + B; // Addition
-	//A - B; // Subtraction
-	//A * B; // Geometric product
-	//A ^ B; // Outer product
-	//A | B; // Inner product
-	//A[2]; // Grade projection
-	//A ^ 2; // Multivector power
-	////C ^ -1; // Blade inversion
-	//5 * A; // Multiplying by a scalar
-	//A == B; // Comparision of multivectors
-	//A.scalarProduct(C); // Scalar product
-	//QCGA::rotate(C, xy, 0.42); // Rotation of A in xy plane by 0.42 rad
-	//QCGA::translate(C, z, 7); // Translation of B
-	//std::cout << C << std::endl; // Normalizing a blade
-	//std::cout << C.normalize() << std::endl; // Normalizing a blade
-	//std::cout << C.down() << std::endl; // Projection to R^3
-	//C.dual(); //Dual operation on C
-	//(2 * eo1 | ei1).toNumeric(); // Returns long double when object is of 0 grade
-	//std::cout << A << std::endl; // Printing into the console
+	A + B; // Addition
+	A - B; // Subtraction
+	A * B; // Geometric product
+	A ^ B; // Outer product
+	A | B; // Inner product
+	A[2]; // Grade projection
+	A ^ 2; // Multivector power
+	C ^ -1; // Inversion
+	5 * A; // Multiplying by a scalar
+	A == B; // Comparision of multivectors
+	A.scalarProduct(C); // Scalar product
+	QCGA::rotate(C, xy, 0.42); // Rotation of A in xy plane by 0.42 rad
+	QCGA::translate(C, z, 7); // Translation of B
+	C.normalize(); // Normalizing a blade
+	C.down(); // Projection to R^3
+	C.dual(); //Dual
+	(2 * eo1 | ei1).toNumeric(); // Returns long double when object is of 0 grade
+	std::cout << A << std::endl; // Printing into the console
 
-	RotationExample();
+	//RotationExample();
+
+	//QCGA r1 = e1 ^ e2;
+	//QCGA r2 = eo6 ^ ei5;
+	//QCGA r3 = ei6 ^ eo5;
+	//QCGA r4 = 2 * (eo4 ^ ei2);
+	//QCGA r5 = 2 * (ei4 ^ eo2);
+	//QCGA r6 = eo4 ^ ei3;
+	//
+	//QCGA r = r1 + r2 + r3 + r4 + r5 + r6; //create generator
+	//
+	//std::cout << r << std::endl;
 
 	//RotorXY();
 	//RotorXZ();

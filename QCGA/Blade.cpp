@@ -20,7 +20,7 @@ Blade::Blade(const QCGA& Multivector) : QCGA(Multivector)
 
 	if (isBlade(*this))
 	{
-		this->grade = QCGA::grade(this->STDmapLabelToCoefficient.begin()->first);
+		this->grade = QCGA::grade(this->m_mapLabelToCoefficient.begin()->first);
 	}
 	else
 	{

@@ -17,21 +17,21 @@ void QCGA::generateGeneratingBlades()
 
 QCGA::QCGA()
 {
-	STDmapLabelToCoefficient["1"] = 0;
+	m_mapLabelToCoefficient["1"] = 0;
 }
 
 QCGA::QCGA(const std::string& input)
 {
 	input == "0" ?
-		  STDmapLabelToCoefficient["1"] = 0
-		: STDmapLabelToCoefficient[input] = 1;
+		  m_mapLabelToCoefficient["1"] = 0
+		: m_mapLabelToCoefficient[input] = 1;
 }
 
 QCGA::QCGA(std::string&& input) noexcept
 {
 	input == "0" ?
-		  STDmapLabelToCoefficient["1"] = 0
-		: STDmapLabelToCoefficient[input] = 1;
+		  m_mapLabelToCoefficient["1"] = 0
+		: m_mapLabelToCoefficient[input] = 1;
 }
 
 QCGA::QCGA(const std::map<std::string, long double>& map)
@@ -49,12 +49,12 @@ QCGA::QCGA(const std::map<std::string, long double>& map)
 	{
 		copyOfMap["1"] = 0;
 	}
-	this->STDmapLabelToCoefficient = copyOfMap;
+	this->m_mapLabelToCoefficient = copyOfMap;
 }
 
 QCGA::QCGA(std::map<std::string, long double>&& map)
 {
-	this->STDmapLabelToCoefficient = std::move(map);
+	this->m_mapLabelToCoefficient = std::move(map);
 
 	auto ptr = &map;
 	ptr = nullptr;
@@ -62,36 +62,36 @@ QCGA::QCGA(std::map<std::string, long double>&& map)
 
 QCGA::QCGA(const std::pair<std::string, long double>& basis_blade)
 {
-	this->STDmapLabelToCoefficient.emplace(basis_blade);
+	this->m_mapLabelToCoefficient.emplace(basis_blade);
 }
 
 QCGA::QCGA(std::pair<std::string, long double>&& basis_blade)
 {
-	this->STDmapLabelToCoefficient.emplace(std::move(basis_blade));
+	this->m_mapLabelToCoefficient.emplace(std::move(basis_blade));
 }
 
 
 QCGA::QCGA(const QCGA& instance)
 {
-	this->STDmapLabelToCoefficient = instance.STDmapLabelToCoefficient;
+	this->m_mapLabelToCoefficient = instance.m_mapLabelToCoefficient;
 }
 
 QCGA::QCGA(QCGA&& instance) noexcept
 {
-	this->STDmapLabelToCoefficient = std::move(instance.STDmapLabelToCoefficient);
+	this->m_mapLabelToCoefficient = std::move(instance.m_mapLabelToCoefficient);
 }
 
 
 const std::map<std::string, long double>& QCGA::getSTDmapLabelToCoefficient() const
 {
-	return this->STDmapLabelToCoefficient;
+	return this->m_mapLabelToCoefficient;
 }
 
 long double QCGA::toNumeric() // returns coefficient at basis blade 1
 {
-	if (this->STDmapLabelToCoefficient.find("1") != this->STDmapLabelToCoefficient.end())
+	if (this->m_mapLabelToCoefficient.find("1") != this->m_mapLabelToCoefficient.end())
 	{
-		return this->STDmapLabelToCoefficient.at("1");
+		return this->m_mapLabelToCoefficient.at("1");
 	}
 	else
 	{
@@ -148,13 +148,13 @@ QCGA QCGA::bivectorExponential(unsigned int degree, long double parameter) const
 
 QCGA& QCGA::operator=(const QCGA& other)
 {
-	this->STDmapLabelToCoefficient = other.STDmapLabelToCoefficient;
+	this->m_mapLabelToCoefficient = other.m_mapLabelToCoefficient;
 	return *this;
 }
 
 QCGA& QCGA::operator=(QCGA&& other) noexcept
 {
-	this->STDmapLabelToCoefficient = std::move(other.STDmapLabelToCoefficient);
+	this->m_mapLabelToCoefficient = std::move(other.m_mapLabelToCoefficient);
 	return *this;
 }
 
@@ -164,29 +164,29 @@ QCGA& QCGA::operator=(QCGA&& other) noexcept
 bool QCGA::operator==(const QCGA& other) const
 {
 	bool equal = true;
-	for (const auto& [basisBlade, value] : this->STDmapLabelToCoefficient)
+	for (const auto& [basisBlade, value] : this->m_mapLabelToCoefficient)
 	{
-		if (other.STDmapLabelToCoefficient.find(basisBlade) == other.STDmapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
+		if (other.m_mapLabelToCoefficient.find(basisBlade) == other.m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
 		{
 			equal = false;
 			break;
 		}
 		//if there is, check for coefs if they are the same
-		if (abs(other.STDmapLabelToCoefficient.at(basisBlade) - value) > long double(10000) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > long double(10000) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
 		{
 			equal = false;
 			break;
 		}
 	}
-	for (const auto& [basisBlade, value] : other.STDmapLabelToCoefficient) //now vice versa
+	for (const auto& [basisBlade, value] : other.m_mapLabelToCoefficient) //now vice versa
 	{
-		if (this->STDmapLabelToCoefficient.find(basisBlade) == this->STDmapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
+		if (this->m_mapLabelToCoefficient.find(basisBlade) == this->m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
 		{
 			equal = false;
 			break;
 		}
 		//if there is, check for coefs if they are the same
-		if (abs(other.STDmapLabelToCoefficient.at(basisBlade) - value) > long double(10000) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > long double(10000) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
 		{
 			equal = false;
 			break;
@@ -208,7 +208,7 @@ QCGA QCGA::operator[](int _grade) const
 	std::vector<QCGA> left = makeQCGAFromBasisBlades(*this);
 
 	QCGA res = zero_vector;
-	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
+	for (int i = 0; i < this->m_mapLabelToCoefficient.size(); i++)
 	{
 		res = res + (left[i])(_grade); //equivalent to standard formula 
 	}
@@ -219,8 +219,8 @@ QCGA QCGA::operator[](int _grade) const
 QCGA QCGA::operator[](const QCGA& other) const
 {
 	QCGA res;
-	for (const auto& [key, coeff] : STDmapLabelToCoefficient) {
-		if (other.STDmapLabelToCoefficient.contains(key)) { 
+	for (const auto& [key, coeff] : m_mapLabelToCoefficient) {
+		if (other.m_mapLabelToCoefficient.contains(key)) { 
 			res = coeff * QCGA(key);
 			break;
 		}
@@ -233,8 +233,8 @@ QCGA QCGA::operator*(const QCGA& other) const
 {
 	std::map<std::string, long double> map;
 
-	for (const auto& [thisBasisBlade, thisCoef] : this->STDmapLabelToCoefficient) //e1+e1*e2*e3
-		for (const auto& [rightBasisBlade, rightCoef] : other.STDmapLabelToCoefficient) //2e2-e3*e4
+	for (const auto& [thisBasisBlade, thisCoef] : this->m_mapLabelToCoefficient) //e1+e1*e2*e3
+		for (const auto& [rightBasisBlade, rightCoef] : other.m_mapLabelToCoefficient) //2e2-e3*e4
 			map[thisBasisBlade + "*" + rightBasisBlade] = thisCoef * rightCoef; // e1*e2 | e1*e3*e4 | e1*e2*e3*e2 | e1*e2*e3*e3*e4
 																				//     2 |  	 -1 |			2 |				-1
 
@@ -269,8 +269,8 @@ QCGA QCGA::operator*(QCGA&& other) const
 	//these vectors will be used for constructor
 	std::map<std::string, long double> map;
 
-	for (const auto& [thisBasisBlade, thisCoef] : this->STDmapLabelToCoefficient)
-		for (auto&& [rightBasisBlade, rightCoef] : other.STDmapLabelToCoefficient)
+	for (const auto& [thisBasisBlade, thisCoef] : this->m_mapLabelToCoefficient)
+		for (auto&& [rightBasisBlade, rightCoef] : other.m_mapLabelToCoefficient)
 			map[std::move(thisBasisBlade + "*" + rightBasisBlade)] = std::move(thisCoef * rightCoef);
 
 	QCGA res = zero_vector;
@@ -303,8 +303,8 @@ QCGA QCGA::operator*(QCGA&& other) const
 //multiplying by scalar from the right
 QCGA QCGA::operator*(long double scalar) const
 {
-	std::map<std::string, long double> map = this->STDmapLabelToCoefficient;
-	for (const auto& [basisBlade, coef] : STDmapLabelToCoefficient)
+	std::map<std::string, long double> map = this->m_mapLabelToCoefficient;
+	for (const auto& [basisBlade, coef] : m_mapLabelToCoefficient)
 	{
 		map.at(basisBlade) *= scalar;
 	}
@@ -315,7 +315,7 @@ QCGA QCGA::operator*(long double scalar) const
 QCGA QCGA::operator~() const
 {
 	std::map<std::string, long double> map;
-	for (const auto& [basisBlade, coef] : STDmapLabelToCoefficient) //it is sufficient to check sign of reversed permutation of basis blades
+	for (const auto& [basisBlade, coef] : m_mapLabelToCoefficient) //it is sufficient to check sign of reversed permutation of basis blades
 	{
 		if (basisBlade == "1") _UNLIKELY
 			map["1"] = coef;
@@ -332,8 +332,8 @@ QCGA QCGA::operator~() const
 //addition operator
 QCGA QCGA::operator+(const QCGA& other) const
 {
-	std::map<std::string, long double> map = this->STDmapLabelToCoefficient;
-	for (const auto& [basisBlade, coefficient] : other.STDmapLabelToCoefficient)
+	std::map<std::string, long double> map = this->m_mapLabelToCoefficient;
+	for (const auto& [basisBlade, coefficient] : other.m_mapLabelToCoefficient)
 	{
 		//if labels are the same
 		if (map.find(basisBlade) != map.end())
@@ -373,9 +373,9 @@ QCGA QCGA::operator|(const QCGA& other) const
 	std::vector<QCGA> left = makeQCGAFromBasisBlades(*this);
 	std::vector<QCGA> right = makeQCGAFromBasisBlades(other);
 	QCGA res = zero_vector;
-	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
+	for (int i = 0; i < this->m_mapLabelToCoefficient.size(); i++)
 	{
-		for (int j = 0; j < other.STDmapLabelToCoefficient.size(); j++)
+		for (int j = 0; j < other.m_mapLabelToCoefficient.size(); j++)
 		{
 			res = res + (left[i] || right[j]); //equivalent to standard formula 
 		}
@@ -392,9 +392,9 @@ QCGA QCGA::operator^(const QCGA& other) const
 	std::vector<QCGA> right = makeQCGAFromBasisBlades(other);
 
 	QCGA res = zero_vector;
-	for (int i = 0; i < this->STDmapLabelToCoefficient.size(); i++)
+	for (int i = 0; i < this->m_mapLabelToCoefficient.size(); i++)
 	{
-		for (int j = 0; j < other.STDmapLabelToCoefficient.size(); j++)
+		for (int j = 0; j < other.m_mapLabelToCoefficient.size(); j++)
 		{
 			res = res + (left[i] && right[j]); //equivalent to standard formula 
 		}
@@ -487,14 +487,14 @@ int QCGA::grade(std::string_view label) const
 std::string QCGA::log() const
 {
 	std::string s;
-	if (this->STDmapLabelToCoefficient.find("1") != this->STDmapLabelToCoefficient.end() && this->STDmapLabelToCoefficient.at("1") == 0)
+	if (this->m_mapLabelToCoefficient.find("1") != this->m_mapLabelToCoefficient.end() && this->m_mapLabelToCoefficient.at("1") == 0)
 	{
 		s = "0";
 	}
 	else
 	{
 		std::string coef;
-		for (auto& a : STDmapLabelToCoefficient)
+		for (auto& a : m_mapLabelToCoefficient)
 		{
 			if (abs(a.second) < (double(1000000)/PRECISION))
 			{
@@ -640,28 +640,28 @@ std::vector<int> QCGA::extractIntegersFromBasisBlades(std::string_view label)
 //inner product of two basis blades operator. Usefull in inner product of two general multivectors
 QCGA QCGA::operator||(const QCGA& other) const
 {
-	return QCGA((*this * other)[abs(this->grade(this->STDmapLabelToCoefficient.begin()->first) - other.grade(other.STDmapLabelToCoefficient.begin()->first))]);
+	return QCGA((*this * other)[abs(this->grade(this->m_mapLabelToCoefficient.begin()->first) - other.grade(other.m_mapLabelToCoefficient.begin()->first))]);
 }
 
 //outer product of two basis blades operator
 QCGA QCGA::operator&&(const QCGA& other) const
 {
-	return QCGA((*this * other)[abs(this->grade(this->STDmapLabelToCoefficient.begin()->first) + other.grade(other.STDmapLabelToCoefficient.begin()->first))]);
+	return QCGA((*this * other)[abs(this->grade(this->m_mapLabelToCoefficient.begin()->first) + other.grade(other.m_mapLabelToCoefficient.begin()->first))]);
 }
 
 //grade projection of basis blade
 QCGA QCGA::operator()(int grade) const
 {
-	return (this->grade(this->STDmapLabelToCoefficient.begin()->first) == grade) ? *this : QCGA("0");
+	return (this->grade(this->m_mapLabelToCoefficient.begin()->first) == grade) ? *this : QCGA("0");
 }
 
 void QCGA::deleteZeroFromVector()
 {
-	if (this->STDmapLabelToCoefficient.find("1") != this->STDmapLabelToCoefficient.end())
+	if (this->m_mapLabelToCoefficient.find("1") != this->m_mapLabelToCoefficient.end())
 	{
-		if (this->STDmapLabelToCoefficient.at("1") == 0 && this->STDmapLabelToCoefficient.size() > 1)
+		if (this->m_mapLabelToCoefficient.at("1") == 0 && this->m_mapLabelToCoefficient.size() > 1)
 		{
-			STDmapLabelToCoefficient.erase("1");
+			m_mapLabelToCoefficient.erase("1");
 		}
 	}
 }

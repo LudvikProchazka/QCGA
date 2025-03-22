@@ -75,7 +75,7 @@ constexpr long long PRECISION{1'000'000'000'000};  //constant for rounding
 #define T4z	(one - 0.5 * distance * (e2 ^ ei6))
 #define Tz (T1z*T2z*T3z*T4z) //Translator in z
 
-#define I Blade(e1*e2*e3*e4*e5*e6*e7*e8*e9*e10*e11*e12*e13*e14*e15) //Pseaudoscalar of an algebra
+#define I Blade(e1*e2*e3*e4*e5*e6*e7*e8*e9*e10*e11*e12*e13*e14*e15) //Pseaudoscalar
 
 enum rotation_planes
 {
@@ -91,7 +91,11 @@ class QCGA
 public:
 	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en. Will be made protected after all is done. I want defined vectors to work in Blade now
 protected:
-	std::map<std::string, long double> STDmapLabelToCoefficient; //representation of a general multivector
+	std::map<std::string, long double> m_mapLabelToCoefficient; //representation of a general multivector
+	// 3 + 2e1 - e1*e2*e3
+	// ==================
+	// 1 |  e1 | e1*e2*e3 
+	// 3 |   2 |       -1
 public:
 	static void generateGeneratingBlades();
 	QCGA(); //creates zero vector;
