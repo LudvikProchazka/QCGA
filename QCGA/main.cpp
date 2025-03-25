@@ -12,52 +12,51 @@ QCGA com(const QCGA& a, const QCGA& b)
 	return 0.5*((a * b) - (b * a));
 }
 
-void RotationExample() //plane xy
+void RotationExample() //Parabolas
 {
-	QCGA r1 = e1 ^ e2;
-	QCGA r2 = eo6 ^ ei5;
-	QCGA r3 = ei6 ^ eo5;
-	QCGA r4 = 2 * (eo4 ^ ei2);
-	QCGA r5 = 2 * (ei4 ^ eo2);
-	QCGA r6 = eo4 ^ ei3;
+	QCGA r1 = e2 ^ e3;
+	QCGA r2 = eo6 ^ ei3;
+	QCGA r3 = ei5 ^ eo4;
+	QCGA r4 = 2 * (ei6 ^ eo3);
+	QCGA r5 = 2 * (eo2 ^ ei6);
+	QCGA r6 = ei2 ^ eo6;
+	QCGA r7 = eo5 ^ ei4;
 
-	QCGA r = r1 + r2 + r3 + r4 + r5 + r6; //create generator
 
-	Blade C = up(1, 2, 3); //point which I want to rotate
-	double phi = std::numbers::pi / 4.0;
+	double phi = std::numbers::pi / 2.0;
 
-	double theta = atan(2) - phi;
-	QCGA target = up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3); //for verification
+	QCGA Q = makeQuadric(0, 0, 0, 2.0 / 3.0, -4.0 / 3.0, -4.0 / 3.0, 0, 1, 0, 0);
 
-	QCGA rotor = r.rotorExponential(20, phi);
-	Blade rotated = (rotor * C * ~rotor)[1];
-	std::cout << "  Original Euc: " << C.down() << std::endl;
-	std::cout << "Original  QCGA: " << C << std::endl;
-	std::cout << "   Rotated Euc: " << rotated.down() << std::endl;
-	std::cout << "       Rotated: " << rotated << std::endl;
-	std::cout << "        Target: " << target << std::endl;
-	std::cout << "          Good: " << (rotated == target) << std::endl;
+	QCGA r = r1 + r2 + r3 + r4 + r5 + r6 + r7; //create generator
 
-	QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
-	QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
-	QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
-	QCGA R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
-	QCGA R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
-
-	QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
-	QCGA c_24 = -1.5 * ei2 + 2 * ei4;
-	QCGA c_56 = 3 * ei5 + 6 * ei6;
-	QCGA c_3 = -4 * ei3;
-
-	double x = 1;
-	double y = 2;
-	double z = 3;
-	QCGA _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) + c_3 + ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
-	std::cout << "Rotated: " << _rotated << std::endl;
-	std::cout << " Target: " << target << std::endl;
-	std::cout << "   Good: " << (_rotated == target) << std::endl;
-
+	QCGA rotor = r.rotorExponential(30, phi);
+	Blade rotated = (rotor * Q * ~rotor)[1];
+	std::cout << "Quadric: " << Q << std::endl;
+	std::cout << "Rotated: " << rotated << std::endl;
 }
+
+void OPNS_IPNS_Duality() //Parabolas
+{
+	QCGA p1 = up(0.0, 0.0, 0.0);
+	QCGA p2 = up(1.0, -2.0, 1.0);
+	QCGA p3 = up(-1.0, -2.0, -1.0);
+	QCGA p4 = up(1.0, -2.0, -1.0);
+	QCGA p5 = up(-1.0, -2.0, 1.0);
+	QCGA p6 = up(1.0, -1.0, 0.0);
+	QCGA p7 = up(-1.0, -1.0, 0.0);
+	QCGA p8 = up(0.0, -1.0, 1.0);
+	QCGA p9 = up(0.0, -1.0, -1.0);
+
+	Blade OPNS = p1 ^ p2 ^ p3 ^ p4 ^ p5 ^ p6 ^ p7 ^ p8 ^ p9 ^ eo2 ^ eo3 ^ eo4 ^ eo5 ^ eo6;
+	Blade OPNS_dual = OPNS.dual();
+
+	Blade IPNS = makeQuadric(0, 0, 0, 2.0 / 3.0, -4.0 / 3.0, -4.0 / 3.0, 0, 1, 0, 0);
+
+	std::cout << "-1/48*OPNS: " << ((-1.0 / 48.0) * OPNS_dual) << std::endl;
+	std::cout << "      IPNS: " << IPNS << std::endl;
+}
+
+
 void RotorXY()
 {
 	QCGA r1 = e1 ^ e2;
@@ -274,41 +273,8 @@ int main()
 	auto start = std::chrono::high_resolution_clock::now();
 	QCGA::generateGeneratingBlades(); //creater an array of basis vectors in R^{9,6}... one, e1,e2,...,e15
 
-	QCGA A = eo1 + e2 + 2 * (ei1 ^ ei2) + 3 * ei5;
-	QCGA B = -3 * one + -1 * eo1 + 2 * e3 + 3 * e4 - 3 * (ei2 ^ ei3);
-	Blade C = -2*up(3.14, 2.72, -1);
-
-	A + B; // Addition
-	A - B; // Subtraction
-	A * B; // Geometric product
-	A ^ B; // Outer product
-	A | B; // Inner product
-	A[2]; // Grade projection
-	A ^ 2; // Multivector power
-	C ^ -1; // Inversion
-	5 * A; // Multiplying by a scalar
-	A == B; // Comparision of multivectors
-	A.scalarProduct(C); // Scalar product
-	QCGA::rotate(C, xy, 0.42); // Rotation of A in xy plane by 0.42 rad
-	QCGA::translate(C, z, 7); // Translation of B
-	C.normalize(); // Normalizing a blade
-	C.down(); // Projection to R^3
-	C.dual(); //Dual
-	(2 * eo1 | ei1).toNumeric(); // Returns long double when object is of 0 grade
-	std::cout << A << std::endl; // Printing into the console
-
 	//RotationExample();
-
-	//QCGA r1 = e1 ^ e2;
-	//QCGA r2 = eo6 ^ ei5;
-	//QCGA r3 = ei6 ^ eo5;
-	//QCGA r4 = 2 * (eo4 ^ ei2);
-	//QCGA r5 = 2 * (ei4 ^ eo2);
-	//QCGA r6 = eo4 ^ ei3;
-	//
-	//QCGA r = r1 + r2 + r3 + r4 + r5 + r6; //create generator
-	//
-	//std::cout << r << std::endl;
+	OPNS_IPNS_Duality();
 
 	//RotorXY();
 	//RotorXZ();
