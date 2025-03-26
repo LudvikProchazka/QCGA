@@ -35,7 +35,7 @@ void RotationExample() //Parabolas
 	std::cout << "Rotated: " << rotated << std::endl;
 }
 
-void OPNS_IPNS_Duality() //Parabolas
+void OPNS_IPNS_Duality()
 {
 	QCGA p1 = up(0.0, 0.0, 0.0);
 	QCGA p2 = up(1.0, -2.0, 1.0);
@@ -56,6 +56,33 @@ void OPNS_IPNS_Duality() //Parabolas
 	std::cout << "      IPNS: " << IPNS << std::endl;
 }
 
+void Elipsoid()
+{
+	Blade Q = makeQuadric(0.0, 0.0, 0.0, 5.0 / 3.0, -1.0 / 3.0, -7.0 / 3.0, 5.0, 3.0, -5.0, 5.0); 
+
+	double distance = -10.0;
+	QCGA T1 = one - 0.5 * distance * (e1 ^ ei1);
+	QCGA T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);
+	QCGA T3 = one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3);
+	QCGA T4 = one - 0.5 * distance * (e2 ^ ei4);
+	QCGA T5 = one - 0.5 * distance * (e3 ^ ei5);
+	QCGA T = T1*T2*T3*T4*T5; //Translator in x direction
+
+	double phi = std::numbers::pi / 4.0;
+	QCGA r1 = e1 ^ e2;
+	QCGA r2 = eo6 ^ ei5;
+	QCGA r3 = ei6 ^ eo5;
+	QCGA r4 = 2 * (eo4 ^ ei2);
+	QCGA r5 = 2 * (ei4 ^ eo2);
+	QCGA r6 = eo4 ^ ei3;
+	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
+	QCGA R = r.rotorExponential(30, phi);
+
+	Blade transformed = (R * (T * Q * ~T) * ~R)[1];
+
+	std::cout << "Quadric: " << Q << std::endl;
+	std::cout << "transformed: " << transformed << std::endl;
+}
 
 void RotorXY()
 {
@@ -274,7 +301,8 @@ int main()
 	QCGA::generateGeneratingBlades(); //creater an array of basis vectors in R^{9,6}... one, e1,e2,...,e15
 
 	//RotationExample();
-	OPNS_IPNS_Duality();
+	//OPNS_IPNS_Duality();
+	Elipsoid();
 
 	//RotorXY();
 	//RotorXZ();
