@@ -89,7 +89,7 @@ void Elipsoid2()
 	Blade Q = makeQuadric(0.0, 0.0, 0.0, 5.0 / 3.0, -1.0 / 3.0, -7.0 / 3.0, 5.0, 3.0, -5.0, 5.0);
 
 	double distance1x = 5.0;
-	double distance1y = 3.0;
+	double distance1y = 3.0 / 2;
 	double distance2x = 10.0;
 	double distance2y = 6;
 	double phi = 3.0 * std::numbers::pi / 4.0;
@@ -101,21 +101,20 @@ void Elipsoid2()
 	QCGA T5_x = one - 0.5 * distance1x * (e3 ^ ei5);
 	QCGA T_x = T1_x * T2_x * T3_x * T4_x * T5_x; //Translator in x direction into origin
 
-	QCGA T1_y = one - 0.5 * distance1y * (e1 ^ ei1);
-	QCGA T2_y = one - 0.5 * distance1y * (e1 ^ ei2) + 0.25 * pow(distance1y, 2) * (ei1 ^ ei2);
-	QCGA T3_y = one - 0.5 * distance1y * (e1 ^ ei3) + 0.25 * pow(distance1y, 2) * (ei1 ^ ei3) + 0.25 * pow(distance1y, 2) * (ei2 ^ ei3);
-	QCGA T4_y = one - 0.5 * distance1y * (e2 ^ ei4);
-	QCGA T5_y = one - 0.5 * distance1y * (e3 ^ ei5);
-	QCGA T_y = T1_y * T2_y * T3_y * T4_y * T5_y; //Translator in y direction into origin
+	QCGA T1_y = one - 0.5 * distance1y * (e2 ^ ei1); 
+	QCGA T2_y = one + 0.5 * distance1y * (e2 ^ ei2) - 0.25 * pow(distance1y, 2) * (ei1 ^ ei2);
+	QCGA T3_y = one - 0.5 * distance1y * (e1 ^ ei4);
+	QCGA T4_y = one - 0.5 * distance1y * (e3 ^ ei6);
+	QCGA T_y = T1_y * T2_y * T3_y * T4_y; //Translator in y direction into origin
 
-	QCGA r1 = e1 ^ e2;
-	QCGA r2 = eo6 ^ ei5;
-	QCGA r3 = ei6 ^ eo5;
+	QCGA r1 = e1 ^ e2; 
+	QCGA r2 = eo6 ^ ei5; 
+	QCGA r3 = ei6 ^ eo5; 
 	QCGA r4 = 2 * (eo4 ^ ei2);
 	QCGA r5 = 2 * (ei4 ^ eo2);
 	QCGA r6 = eo4 ^ ei3;
 	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
-	QCGA R = r.rotorExponential(30, phi); //Rotor in the xy-plane
+	QCGA R = r.rotorExponential(40, phi); //Rotor in the xy-plane
 
 	Blade rotatedInOrigin = (R * (T_y * (T_x * Q * ~T_x)[1] * ~T_y)[1] * ~R)[1];
 
@@ -126,14 +125,13 @@ void Elipsoid2()
 	T5_x = one - 0.5 * distance2x * (e3 ^ ei5);
 	T_x = T1_x * T2_x * T3_x * T4_x * T5_x; //Translator in x direction into origin
 
-	T1_y = one - 0.5 * distance2y * (e1 ^ ei1);
-	T2_y = one - 0.5 * distance2y * (e1 ^ ei2) + 0.25 * pow(distance2y, 2) * (ei1 ^ ei2);
-	T3_y = one - 0.5 * distance2y * (e1 ^ ei3) + 0.25 * pow(distance2y, 2) * (ei1 ^ ei3) + 0.25 * pow(distance2y, 2) * (ei2 ^ ei3);
-	T4_y = one - 0.5 * distance2y * (e2 ^ ei4);
-	T5_y = one - 0.5 * distance2y * (e3 ^ ei5);
-	T_y = T1_y * T2_y * T3_y * T4_y * T5_y; //Translator in y direction into origin
+	T1_y = one - 0.5 * distance2y * (e2 ^ ei1);
+	T2_y = one + 0.5 * distance2y * (e2 ^ ei2) - 0.25 * pow(distance2y, 2) * (ei1 ^ ei2);
+	T3_y = one - 0.5 * distance2y * (e1 ^ ei4);
+	T4_y = one - 0.5 * distance2y * (e3 ^ ei6);
+	T_y = T1_y * T2_y * T3_y * T4_y; 
 
-	Blade transformed = (T_y * (T_x * Q * ~T_x)[1] * ~T_y)[1];
+	Blade transformed = (T_y * (T_x * rotatedInOrigin * ~T_x)[1] * ~T_y)[1];
 
 	std::cout << "Quadric: " << Q << std::endl;
 	std::cout << "transformed: " << transformed << std::endl;
@@ -354,6 +352,8 @@ int main()
 {
 	auto start = std::chrono::high_resolution_clock::now();
 	QCGA::generateGeneratingBlades(); //create an array of basis vectors in R^{9,6}... one, e1,e2,...,e15
+
+	//std::cout << (eo1 | ei1);
 
 	//RotationExample();
 	//OPNS_IPNS_Duality();
