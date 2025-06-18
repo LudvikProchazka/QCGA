@@ -32,5 +32,8 @@
     <ClInclude Include="Blade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Examples.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
