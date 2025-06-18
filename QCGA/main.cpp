@@ -91,7 +91,7 @@ void Elipsoid2()
 	double distance1x = 5.0;
 	double distance1y = 3.0 / 2;
 	double distance2x = 10.0;
-	double distance2y = 6;
+	double distance2y = 6.0;
 	double phi = 3.0 * std::numbers::pi / 4.0;
 
 	QCGA T1_x = one - 0.5 * distance1x * (e1 ^ ei1);
@@ -123,7 +123,7 @@ void Elipsoid2()
 	T3_x = one - 0.5 * distance2x * (e1 ^ ei3) + 0.25 * pow(distance2x, 2) * (ei1 ^ ei3) + 0.25 * pow(distance2x, 2) * (ei2 ^ ei3);
 	T4_x = one - 0.5 * distance2x * (e2 ^ ei4);
 	T5_x = one - 0.5 * distance2x * (e3 ^ ei5);
-	T_x = T1_x * T2_x * T3_x * T4_x * T5_x; //Translator in x direction into origin
+	T_x = T1_x * T2_x * T3_x * T4_x * T5_x; 
 
 	T1_y = one - 0.5 * distance2y * (e2 ^ ei1);
 	T2_y = one + 0.5 * distance2y * (e2 ^ ei2) - 0.25 * pow(distance2y, 2) * (ei1 ^ ei2);
@@ -350,22 +350,6 @@ void TranslatorZ()
 
 int main()
 {
-	auto start = std::chrono::high_resolution_clock::now();
 	QCGA::generateGeneratingBlades(); //create an array of basis vectors in R^{9,6}... one, e1,e2,...,e15
 
-	//std::cout << (eo1 | ei1);
-
-	//RotationExample();
-	//OPNS_IPNS_Duality();
-	Elipsoid2();
-	//RotorXY();
-	//RotorXZ();
-	//RotorYZ();
-	//TranslatorX();
-	//TranslatorY();
-	//TranslatorZ();
-
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> duration = end - start;
-	std::cout << "Execution time: " << duration.count() << " seconds" << std::endl;
 }

@@ -54,7 +54,7 @@ constexpr long long PRECISION{1'000'000'000'000};  //constant for rounding
 
 #define rxy ((e1 ^ e2) + (eo6 ^ ei5) + (ei6 ^ eo5) + (2 * (eo4 ^ ei2)) + (2 * (ei4 ^ eo2)) + (eo4 ^ ei3)) //generator for rotation in the xy-plane
 #define rxz ((-1 * (e3 ^ e1)) + (-1 * (ei4 ^ eo6)) + (-2 * (ei3 ^ eo5)) + (-1 * (ei2 ^ eo5)) + (-1 * (eo4 ^ ei6)) + (-2 * (eo3 ^ ei5))) //generator for rotation in the xz-plane
-#define ryz ((e2 ^ e3) + (eo6 ^ ei3) + (ei5 ^ eo4) + (2 * (ei6 ^ eo3)) + (2 * (eo2 ^ ei6)) + (ei2 ^ eo6)+(eo5 ^ ei4)) //generator for rotation in the yz-plane
+#define ryz ((e2 ^ e3) + (eo6 ^ ei3) + (ei5 ^ eo4) + (2 * (ei6 ^ eo3)) + (2 * (eo2 ^ ei6)) + (ei2 ^ eo6) + (eo5 ^ ei4)) //generator for rotation in the yz-plane
 
 #define T1x (one - 0.5 * distance * (e1 ^ ei1))
 #define T2x (one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2))
