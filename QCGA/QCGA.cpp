@@ -87,22 +87,19 @@ const std::map<std::string, long double>& QCGA::getSTDmapLabelToCoefficient() co
 	return this->m_mapLabelToCoefficient;
 }
 
-long double QCGA::toNumeric() // returns coefficient at basis blade 1
+long double QCGA::ToNumeric() // returns coefficient at basis blade 1
 {
 	if (this->m_mapLabelToCoefficient.find("1") != this->m_mapLabelToCoefficient.end())
 	{
 		return this->m_mapLabelToCoefficient.at("1");
 	}
-	else
-	{
-		std::cout << "WARNING! toNumeric found no zero-degree basis blade, returned number 1";
-		return 1.0;
-	}
+	std::cout << "WARNING! ToNumeric found no zero-degree basis blade, returned number 1";
+	return 1.0;
 }
 
 //************************************MEMBER_OPERATOR************************************\\
 
-QCGA QCGA::rotorExponential(unsigned int degree, long double phi) const
+QCGA QCGA::RotorExponential(unsigned int degree, long double phi) const
 {
 	QCGA res = one;
 	for (unsigned int i = 1; i < degree + 1; i++)
@@ -133,7 +130,7 @@ QCGA QCGA::translatorExponential(unsigned int degree, long double distance) cons
 	return res;
 }
 
-QCGA QCGA::bivectorExponential(unsigned int degree, long double parameter) const
+QCGA QCGA::BivectorExponential(unsigned int degree, long double parameter) const
 {
 	QCGA res = one;
 	for (unsigned int i = 1; i < degree + 1; i++)
@@ -219,8 +216,10 @@ QCGA QCGA::operator[](int _grade) const
 QCGA QCGA::operator[](const QCGA& other) const
 {
 	QCGA res;
-	for (const auto& [key, coeff] : m_mapLabelToCoefficient) {
-		if (other.m_mapLabelToCoefficient.contains(key)) { 
+	for (const auto& [key, coeff] : m_mapLabelToCoefficient) 
+	{
+		if (other.m_mapLabelToCoefficient.contains(key)) 
+		{ 
 			res = coeff * QCGA(key);
 			break;
 		}
@@ -408,7 +407,7 @@ QCGA QCGA::operator^(int exponent) const
 	if (exponent < 0)
 	{
 		std::cout << "Warning, calling an inverse of QCGA, not of a blade, this might fail!\n";
-		long double denominator = (((*this) * (~(*this))).toNumeric());
+		long double denominator = (((*this) * (~(*this))).ToNumeric());
 		QCGA res = denominator * (~(*this));
 		return res;
 	}
@@ -440,13 +439,13 @@ QCGA QCGA::rotate(const QCGA& point, rotation_planes plane, long double angle)
 	switch (plane)
 	{
 	case xy:
-		rotor = rxy.rotorExponential(20, angle);
+		rotor = rxy.RotorExponential(20, angle);
 		break;
 	case xz:
-		rotor = rxz.rotorExponential(20, angle);
+		rotor = rxz.RotorExponential(20, angle);
 		break;
 	case yz:
-		rotor = ryz.rotorExponential(20, angle);
+		rotor = ryz.RotorExponential(20, angle);
 		break;
 	default:
 		std::cout << "Wrong rotation plane" << std::endl;
@@ -475,8 +474,10 @@ QCGA QCGA::translate(const QCGA& point, translation_directions direction, long d
 int QCGA::grade(std::string_view label) const
 {
 	int grade = 0;
-	for (const char c : label) {
-		if (c == 'e') {
+	for (char c : label) 
+	{
+		if (c == 'e') 
+		{
 			grade++;
 		}
 	}
@@ -508,7 +509,9 @@ std::string QCGA::log() const
 				j--;
 			}
 			if (coef[j] == '.')
+			{
 				coef.erase(coef.end() - 1);
+			}
 			s += coef + "*" + std::string(a.first) + " + ";
 		}
 	}
@@ -558,7 +561,9 @@ void QCGA::simplifyBasisBlade(std::string& label, int& sign)
 		s += "1";
 	}
 	else
+	{
 		s = s.substr(0, s.length() - 1);
+	}
 	label = s;
 }
 
@@ -569,24 +574,25 @@ void QCGA::processVector(std::vector<int>& vec, int& sign)
 	{
 		for (int j = i + 1; j < vec.size(); j++) 
 		{
-			if (vec[i] == vec[j])
+			if (vec[i] != vec[j])
 			{
-				if (vec[i] > ALGEBRA_P)
-				{
-					sign *= -1;
-				}
-				for (int k = 0; k < j - i - 1; k++)
-				{
-					std::swap(vec[j - k - 1], vec[j - k]);
-					sign *= -1;
-				}
-				vec.erase(vec.begin() + i, vec.begin() + i + 2);
-				if (vec.empty())
-				{
-					break;
-				}
-				processVector(vec, sign);
+				continue;
 			}
+			if (vec[i] > ALGEBRA_P)
+			{
+				sign *= -1;
+			}
+			for (int k = 0; k < j - i - 1; k++)
+			{
+				std::swap(vec[j - k - 1], vec[j - k]);
+				sign *= -1;
+			}
+			vec.erase(vec.begin() + i, vec.begin() + i + 2);
+			if (vec.empty())
+			{
+				break;
+			}
+			processVector(vec, sign);
 		}
 		if (vec.empty())
 		{
@@ -676,9 +682,9 @@ QCGA operator*(const long double& scalar, const QCGA& other)
 }
 
 // Operator for printing
-std::ostream& operator<<(std::ostream& stream, const QCGA& vector)
+std::ostream& operator<<(std::ostream& stream, const QCGA& multivector)
 {
-	stream << vector.log();
+	stream << multivector.log();
 	return stream;
 }
 

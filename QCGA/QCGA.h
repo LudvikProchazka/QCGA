@@ -84,14 +84,6 @@ enum translation_directions
 class QCGA
 {
 public:
-	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en. Will be made protected after all is done. I want defined vectors to work in Blade now
-protected:
-	std::map<std::string, long double> m_mapLabelToCoefficient; //representation of a general multivector
-	// 3 + 2e1 - e1*e2*e3
-	// ==================
-	// 1 |  e1 | e1*e2*e3 
-	// 3 |   2 |       -1
-public:
 	static void generateGeneratingBlades();
 	QCGA(); //creates zero vector;
 	QCGA(const std::string& input); 
@@ -105,15 +97,15 @@ public:
 	QCGA(QCGA&& instance) noexcept; 
 	virtual ~QCGA() = default;
 
-	long double toNumeric(); //returs coefficient at basis blade "1"
+	long double ToNumeric(); //returs coefficient at basis blade "1"
 
 	const std::map<std::string, long double>& getSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
 
 	//**********************************OPERATORS**********************************\\
 	
-	QCGA rotorExponential(unsigned int degree, long double phi) const;
+	QCGA RotorExponential(unsigned int degree, long double phi) const;
 	QCGA translatorExponential(unsigned int degree, long double distance) const;
-	QCGA bivectorExponential(unsigned int degree, long double parameter) const;
+	QCGA BivectorExponential(unsigned int degree, long double parameter) const;
 	QCGA& operator=(const QCGA& other); 
 	QCGA& operator=(QCGA&& other) noexcept; 
 	bool operator==(const QCGA& other) const; //equals operator
@@ -137,26 +129,27 @@ public:
 
 	int grade(std::string_view label) const; //returns grade of basis blade (if we give it appropriate label...)
 	std::string log() const; //returns multivector, used in << operator
+	
+	static QCGA generatingBlades[]; //stores 1,e1,e2,...,en.
+
 protected:
-	//**********************************STATIC_SUPPORT_FUNCTIONS**********************************\\
 
 	static int calculateSign(const std::vector<int>& permutation); //Helps in validating basis Element, calculates sign of permutation
 	static void simplifyBasisBlade(std::string& label, int& sign); //simplifies label in a form of for example  e1e2e3e2e3 into e1
 	static void processVector(std::vector<int>& vec, int& sign); //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
 	static std::vector<int> extractIntegersFromBasisBlades(std::string_view label); //from a given label, for example e1*e2*e3, returns vector {1,2,3}
 
-	//**********************************STATIC_SUPPORT_OPERATORS**********************************\\
-
-	QCGA operator||(const QCGA& other) const; //inner product of two basis blades operator
-	QCGA operator &&(const QCGA& other) const; //outer product of two basis blades operator
-	QCGA operator ()(int grade) const; //grade projection of basis blade operator
-
-	//**********************************ACTUAL_ATRIBUTES**********************************\\
-
+	QCGA operator||(const QCGA& other) const; //inner product of two basis blades
+	QCGA operator &&(const QCGA& other) const; //outer product of two basis blades
+	QCGA operator ()(int grade) const; //grade projection of basis blade
 	
+	std::map<std::string, long double> m_mapLabelToCoefficient; //representation of a general multivector
+	// 3 + 2e1 - e1*e2*e3
+	// ==================
+	// 1 |  e1 | e1*e2*e3 
+	// 3 |   2 |       -1
 
-	//**********************************SUPPORT_FUNCTIONS**********************************\\
-
+private:
 	void deleteZeroFromVector(); //if multivector is of a form 0*1 + c1e1+ c2e1*e2 +... it removes 0*1
 };
 //**********************************NON-MEMBER_OPERATORS**********************************\\

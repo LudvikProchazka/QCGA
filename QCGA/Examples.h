@@ -25,7 +25,7 @@ void RotationExample() //Parabolas
 
 	QCGA r = r1 + r2 + r3 + r4 + r5 + r6 + r7; //create generator
 
-	QCGA rotor = r.rotorExponential(30, phi);
+	QCGA rotor = r.RotorExponential(30, phi);
 	Blade rotated = (rotor * Q * ~rotor)[1];
 	std::cout << "Quadric: " << Q << std::endl;
 	std::cout << "Rotated: " << rotated << std::endl;
@@ -72,7 +72,7 @@ void Elipsoid()
 	QCGA r5 = 2 * (ei4 ^ eo2);
 	QCGA r6 = eo4 ^ ei3;
 	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
-	QCGA R = r.rotorExponential(30, phi); //Rotor in the xy-plane
+	QCGA R = r.RotorExponential(30, phi); //Rotor in the xy-plane
 
 	Blade transformed = (R * (T * Q * ~T)[1] * ~R)[1];
 
@@ -110,7 +110,7 @@ void Elipsoid2()
 	QCGA r5 = 2 * (ei4 ^ eo2);
 	QCGA r6 = eo4 ^ ei3;
 	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
-	QCGA R = r.rotorExponential(40, phi); //Rotor in the xy-plane
+	QCGA R = r.RotorExponential(40, phi); //Rotor in the xy-plane
 
 	Blade rotatedInOrigin = (R * (T_y * (T_x * Q * ~T_x)[1] * ~T_y)[1] * ~R)[1];
 
@@ -168,7 +168,7 @@ void RotorXY()
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (_rotated == CC) << std::endl;
 
-	QCGA rotor = r.rotorExponential(20, phi);
+	QCGA rotor = r.RotorExponential(20, phi);
 	QCGA rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
@@ -200,7 +200,7 @@ void RotorXZ()
 	//QCGA CC = up(2*sqrt(2), 2, sqrt(2));
 	const double theta = atan(2) - phi;
 	const QCGA CC = up(sqrt(5) * cos(theta), 3, sqrt(5) * sin(theta));
-	const QCGA rotor = r.rotorExponential(20, phi);
+	const QCGA rotor = r.RotorExponential(20, phi);
 	const QCGA rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
@@ -237,7 +237,7 @@ void RotorYZ()
 
 	const QCGA target = up(1, 0.5 * 5 * sqrt(2), 0.5 * sqrt(2));
 	//QCGA target = MujUp(2, -1, -3);
-	const QCGA rot_236 = (r2 + r4 + r5 + r6).rotorExponential(20, phi);
+	const QCGA rot_236 = (r2 + r4 + r5 + r6).RotorExponential(20, phi);
 
 	const QCGA _rotated = ((R1 * c_cga * ~R1) + ((R3 ^ R7) * c_45 * (~R7 ^ ~R3)) + (rot_236 * c_236 * ~rot_236))[1];
 	std::cout << "Rotated: " << _rotated << std::endl;
@@ -245,7 +245,7 @@ void RotorYZ()
 	std::cout << "   Good: " << (_rotated == target) << std::endl;
 
 
-	const QCGA rotor = r.rotorExponential(20, phi);
+	const QCGA rotor = r.RotorExponential(20, phi);
 	const QCGA rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << target << std::endl;

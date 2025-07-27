@@ -10,5 +10,4 @@ int main()
 	TranslatorX();
 	TranslatorY();
 	TranslatorZ();
-
 }
