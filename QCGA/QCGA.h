@@ -4,13 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <iomanip>
-#include <sstream>
 #include <stdexcept>
 #include <map>
-#include <iomanip>
-#include <utility>
-#include <string_view>
 
 constexpr size_t TOTAL_DIMENSION{32'768};  //total dimension of an algebra (2^5)
 constexpr size_t GENERATING_BASIS_SIZE{15};  //dimension of generating space R^(9,6)

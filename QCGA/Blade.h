@@ -8,20 +8,22 @@ class Blade : public QCGA
 public:
 	Blade(const QCGA& Multivector); //creates blade from given Multivector, if possible. If given multivector is not blade, warning occurs and program might crash
 	virtual ~Blade() = default;
-	int getGrade() const { return this->grade; };
-	bool isNullBlade() const { return this->nullBlade; };
+
+	int getGrade() const;
+	bool isNullBlade() const;
 
 	//**********************************OPERATORS**********************************\\
 
 	Blade operator^(const Blade& other) const;
-	Blade operator^(const int exponent) const; //exponent operator, mainly for inverse: A^(-1)
+	Blade operator^(int exponent) const; //exponent operator, mainly for inverse: A^(-1)
 	Blade dual() const; //dual: A.dual() = A * I^(-1)
 	Blade normalize() const;	
 	Blade down() const;	
+
 private:
-	int grade;
-	bool nullBlade;
-	static bool isBlade(const QCGA& Multivector); 
+	int m_grade;
+	bool m_isNullBlade;
+	bool IsBlade(); 
 };
 
 Blade up(long double x, long double y, long double z); //embedding of a 3D point.
