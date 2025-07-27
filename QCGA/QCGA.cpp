@@ -317,7 +317,7 @@ QCGA QCGA::operator~() const
 	std::map<std::string, long double> map;
 	for (const auto& [basisBlade, coef] : m_mapLabelToCoefficient) //it is sufficient to check sign of reversed permutation of basis blades
 	{
-		if (basisBlade == "1") _UNLIKELY
+		if (basisBlade == "1")
 			map["1"] = coef;
 		else
 		{
@@ -405,7 +405,7 @@ QCGA QCGA::operator^(const QCGA& other) const
 
 QCGA QCGA::operator^(int exponent) const
 {
-	if (exponent < 0) _UNLIKELY
+	if (exponent < 0)
 	{
 		std::cout << "Warning, calling an inverse of QCGA, not of a blade, this might fail!\n";
 		long double denominator = (((*this) * (~(*this))).toNumeric());
