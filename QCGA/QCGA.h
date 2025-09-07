@@ -103,9 +103,9 @@ public:
 
 	//**********************************OPERATORS**********************************\\
 	
-	QCGA RotorExponential(unsigned int degree, long double phi) const;
-	QCGA TranslatorExponential(unsigned int degree, long double distance) const;
-	QCGA BivectorExponential(unsigned int degree, long double parameter) const;
+	QCGA RotorExponential(unsigned int degree, long double phi) const;			// Use carefully! Only works for specific elements, may crash otherwise
+	QCGA TranslatorExponential(unsigned int degree, long double distance) const;// Use carefully! Only works for specific elements, may crash otherwise
+	QCGA BivectorExponential(unsigned int degree, long double parameter) const;	// Use carefully! Only works for specific elements, may crash otherwise
 	QCGA& operator=(const QCGA& other); 
 	QCGA& operator=(QCGA&& other) noexcept; 
 	bool operator==(const QCGA& other) const;	//equals operator

@@ -1,13 +1,7 @@
 #pragma once
 #include "QCGA.h"
 #include "Blade.h"
-
 #include <numbers>
-
-QCGA com(const QCGA& a, const QCGA& b)
-{
-	return 0.5 * ((a * b) - (b * a));
-}
 
 void RotationExample() //Parabolas
 {
@@ -342,4 +336,9 @@ void TranslatorZ()
 	std::cout << "    Target: " << target << std::endl;
 	std::cout << "      Good: " << (translated == target) << std::endl;
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
+}
+
+QCGA Com(const QCGA& a, const QCGA& b)
+{
+	return 0.5 * ((a * b) - (b * a));
 }
