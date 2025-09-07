@@ -9,16 +9,16 @@ public:
 	Blade(const QCGA& Multivector); //creates blade from given Multivector, if possible. If given multivector is not blade, warning occurs and program might crash
 	virtual ~Blade() = default;
 
-	int getGrade() const;
-	bool isNullBlade() const;
+	int GetGrade() const;
+	bool IsNullBlade() const;
 
 	//**********************************OPERATORS**********************************\\
 
 	Blade operator^(const Blade& other) const;
 	Blade operator^(int exponent) const; //exponent operator, mainly for inverse: A^(-1)
-	Blade dual() const; //dual: A.dual() = A * I^(-1)
-	Blade normalize() const;	
-	Blade down() const;	
+	Blade Dual() const; //Dual: A.Dual() = A * I^(-1)
+	Blade Normalize() const;	
+	Blade Down() const;	
 
 private:
 	int m_grade;
@@ -26,7 +26,7 @@ private:
 	bool IsBlade(); 
 };
 
-Blade up(long double x, long double y, long double z); //embedding of a 3D point.
-Blade makeQuadric(long double vo6, long double vo5,long double vo4,long double vo3,long double vo2,long double vo1,long double ve1,long double ve2,long double ve3,long double vi1); //IPNS representation of a quadric
+Blade Up(long double x, long double y, long double z); //embedding of a 3D point.
+Blade MakeQuadric(long double vo6, long double vo5, long double vo4, long double vo3, long double vo2, long double vo1, long double ve1, long double ve2, long double ve3, long double vi1); //IPNS representation of a quadric
 
 #endif
