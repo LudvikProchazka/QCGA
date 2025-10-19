@@ -137,12 +137,12 @@
   <ItemGroup>
     <ClCompile Include="Blade.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="QCGA.cpp" />
+    <ClCompile Include="GAQ.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Blade.h" />
     <ClInclude Include="Examples.h" />
-    <ClInclude Include="QCGA.h" />
+    <ClInclude Include="GAQ.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

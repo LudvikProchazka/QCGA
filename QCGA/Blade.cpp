@@ -11,12 +11,12 @@ bool Blade::IsBlade()
 }
 
 //creates blade from given Multivector
-Blade::Blade(const QCGA& Multivector) : QCGA(Multivector)
+Blade::Blade(const GAQ& Multivector) : GAQ(Multivector)
 {
 
 	if (IsBlade())
 	{
-		m_grade = QCGA::Grade(m_mapLabelToCoefficient.begin()->first);
+		m_grade = GAQ::Grade(m_mapLabelToCoefficient.begin()->first);
 	}
 	else
 	{
@@ -38,7 +38,7 @@ bool Blade::IsNullBlade() const
 
 Blade Blade::operator^(const Blade& other) const
 {
-	return Blade(static_cast<QCGA>(*this) ^ other);
+	return Blade(static_cast<GAQ>(*this) ^ other);
 }
 
 //returns inverse and exponent
@@ -49,13 +49,13 @@ Blade Blade::operator^(const int exponent) const
 		if (m_isNullBlade)
 		{
 			std::cout << "WARNING, Blade:" << *this << " is a null-blade, cant make inversion! returned with positive exponent" << std::endl;
-			return static_cast<QCGA>(*this) ^ (-1 * exponent);
+			return static_cast<GAQ>(*this) ^ (-1 * exponent);
 		}
 		Blade res{(~*this) / ((*this * ~(*this)).ToNumeric())};
-		res = static_cast<QCGA>(res) ^ (-1 * exponent);
+		res = static_cast<GAQ>(res) ^ (-1 * exponent);
 		return res;
 	}
-	return static_cast<QCGA>(*this) ^ exponent;
+	return static_cast<GAQ>(*this) ^ exponent;
 }
 
 Blade Blade::Dual() const
@@ -75,7 +75,7 @@ Blade Blade::Down() const
 	return res[e1] + res[e2] + res[e3];
 }
 
-//creates QCGA object as embedded 3D point
+//creates GAQ object as embedded 3D point
 Blade Up(long double _x, long double _y, long double _z)
 {
 	Blade x{(_x * e1) + (_y * e2) + (_z * e3)}; //eucledian point

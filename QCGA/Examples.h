@@ -1,25 +1,25 @@
 #pragma once
-#include "QCGA.h"
+#include "GAQ.h"
 #include "Blade.h"
 #include <numbers>
 
 void RotationExample() //Parabolas
 {
-	QCGA r1 = e2 ^ e3;
-	QCGA r2 = eo6 ^ ei3;
-	QCGA r3 = ei5 ^ eo4;
-	QCGA r4 = 2 * (ei6 ^ eo3);
-	QCGA r5 = 2 * (eo2 ^ ei6);
-	QCGA r6 = ei2 ^ eo6;
-	QCGA r7 = eo5 ^ ei4;
+	GAQ r1 = e2 ^ e3;
+	GAQ r2 = eo6 ^ ei3;
+	GAQ r3 = ei5 ^ eo4;
+	GAQ r4 = 2 * (ei6 ^ eo3);
+	GAQ r5 = 2 * (eo2 ^ ei6);
+	GAQ r6 = ei2 ^ eo6;
+	GAQ r7 = eo5 ^ ei4;
 
 	double phi = std::numbers::pi / 2.0;
 
-	QCGA Q = MakeQuadric(0, 0, 0, 2.0 / 3.0, -4.0 / 3.0, -4.0 / 3.0, 0, 1, 0, 0);
+	GAQ Q = MakeQuadric(0, 0, 0, 2.0 / 3.0, -4.0 / 3.0, -4.0 / 3.0, 0, 1, 0, 0);
 
-	QCGA r = r1 + r2 + r3 + r4 + r5 + r6 + r7; //create generator
+	GAQ r = r1 + r2 + r3 + r4 + r5 + r6 + r7; //create generator
 
-	QCGA rotor = r.RotorExponential(30, phi);
+	GAQ rotor = r.RotorExponential(30, phi);
 	Blade rotated = (rotor * Q * ~rotor)[1];
 	std::cout << "Quadric: " << Q << std::endl;
 	std::cout << "Rotated: " << rotated << std::endl;
@@ -27,15 +27,15 @@ void RotationExample() //Parabolas
 
 void OPNS_IPNS_Duality()
 {
-	QCGA p1 = Up(0.0, 0.0, 0.0);
-	QCGA p2 = Up(1.0, -2.0, 1.0);
-	QCGA p3 = Up(-1.0, -2.0, -1.0);
-	QCGA p4 = Up(1.0, -2.0, -1.0);
-	QCGA p5 = Up(-1.0, -2.0, 1.0);
-	QCGA p6 = Up(1.0, -1.0, 0.0);
-	QCGA p7 = Up(-1.0, -1.0, 0.0);
-	QCGA p8 = Up(0.0, -1.0, 1.0);
-	QCGA p9 = Up(0.0, -1.0, -1.0);
+	GAQ p1 = Up(0.0, 0.0, 0.0);
+	GAQ p2 = Up(1.0, -2.0, 1.0);
+	GAQ p3 = Up(-1.0, -2.0, -1.0);
+	GAQ p4 = Up(1.0, -2.0, -1.0);
+	GAQ p5 = Up(-1.0, -2.0, 1.0);
+	GAQ p6 = Up(1.0, -1.0, 0.0);
+	GAQ p7 = Up(-1.0, -1.0, 0.0);
+	GAQ p8 = Up(0.0, -1.0, 1.0);
+	GAQ p9 = Up(0.0, -1.0, -1.0);
 
 	Blade OPNS = p1 ^ p2 ^ p3 ^ p4 ^ p5 ^ p6 ^ p7 ^ p8 ^ p9 ^ eo2 ^ eo3 ^ eo4 ^ eo5 ^ eo6;
 	Blade OPNS_dual = OPNS.Dual();
@@ -51,22 +51,22 @@ void Elipsoid()
 	Blade Q = MakeQuadric(0.0, 0.0, 0.0, 5.0 / 3.0, -1.0 / 3.0, -7.0 / 3.0, 5.0, 3.0, -5.0, 5.0);
 
 	double distance = -10.0;
-	QCGA T1 = one - 0.5 * distance * (e1 ^ ei1);
-	QCGA T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);
-	QCGA T3 = one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3);
-	QCGA T4 = one - 0.5 * distance * (e2 ^ ei4);
-	QCGA T5 = one - 0.5 * distance * (e3 ^ ei5);
-	QCGA T = T1 * T2 * T3 * T4 * T5; //Translator in x direction
+	GAQ T1 = one - 0.5 * distance * (e1 ^ ei1);
+	GAQ T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);
+	GAQ T3 = one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3);
+	GAQ T4 = one - 0.5 * distance * (e2 ^ ei4);
+	GAQ T5 = one - 0.5 * distance * (e3 ^ ei5);
+	GAQ T = T1 * T2 * T3 * T4 * T5; //Translator in x direction
 
 	double phi = std::numbers::pi / 4.0;
-	QCGA r1 = e1 ^ e2;
-	QCGA r2 = eo6 ^ ei5;
-	QCGA r3 = ei6 ^ eo5;
-	QCGA r4 = 2 * (eo4 ^ ei2);
-	QCGA r5 = 2 * (ei4 ^ eo2);
-	QCGA r6 = eo4 ^ ei3;
-	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
-	QCGA R = r.RotorExponential(30, phi); //Rotor in the xy-plane
+	GAQ r1 = e1 ^ e2;
+	GAQ r2 = eo6 ^ ei5;
+	GAQ r3 = ei6 ^ eo5;
+	GAQ r4 = 2 * (eo4 ^ ei2);
+	GAQ r5 = 2 * (ei4 ^ eo2);
+	GAQ r6 = eo4 ^ ei3;
+	GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
+	GAQ R = r.RotorExponential(30, phi); //Rotor in the xy-plane
 
 	Blade transformed = (R * (T * Q * ~T)[1] * ~R)[1];
 
@@ -84,27 +84,27 @@ void Elipsoid2()
 	double distance2y = 6.0;
 	double phi = 3.0 * std::numbers::pi / 4.0;
 
-	QCGA T1_x = one - 0.5 * distance1x * (e1 ^ ei1);
-	QCGA T2_x = one - 0.5 * distance1x * (e1 ^ ei2) + 0.25 * pow(distance1x, 2) * (ei1 ^ ei2);
-	QCGA T3_x = one - 0.5 * distance1x * (e1 ^ ei3) + 0.25 * pow(distance1x, 2) * (ei1 ^ ei3) + 0.25 * pow(distance1x, 2) * (ei2 ^ ei3);
-	QCGA T4_x = one - 0.5 * distance1x * (e2 ^ ei4);
-	QCGA T5_x = one - 0.5 * distance1x * (e3 ^ ei5);
-	QCGA T_x = T1_x * T2_x * T3_x * T4_x * T5_x; //Translator in x direction into origin
+	GAQ T1_x = one - 0.5 * distance1x * (e1 ^ ei1);
+	GAQ T2_x = one - 0.5 * distance1x * (e1 ^ ei2) + 0.25 * pow(distance1x, 2) * (ei1 ^ ei2);
+	GAQ T3_x = one - 0.5 * distance1x * (e1 ^ ei3) + 0.25 * pow(distance1x, 2) * (ei1 ^ ei3) + 0.25 * pow(distance1x, 2) * (ei2 ^ ei3);
+	GAQ T4_x = one - 0.5 * distance1x * (e2 ^ ei4);
+	GAQ T5_x = one - 0.5 * distance1x * (e3 ^ ei5);
+	GAQ T_x = T1_x * T2_x * T3_x * T4_x * T5_x; //Translator in x direction into origin
 
-	QCGA T1_y = one - 0.5 * distance1y * (e2 ^ ei1);
-	QCGA T2_y = one + 0.5 * distance1y * (e2 ^ ei2) - 0.25 * pow(distance1y, 2) * (ei1 ^ ei2);
-	QCGA T3_y = one - 0.5 * distance1y * (e1 ^ ei4);
-	QCGA T4_y = one - 0.5 * distance1y * (e3 ^ ei6);
-	QCGA T_y = T1_y * T2_y * T3_y * T4_y; //Translator in y direction into origin
+	GAQ T1_y = one - 0.5 * distance1y * (e2 ^ ei1);
+	GAQ T2_y = one + 0.5 * distance1y * (e2 ^ ei2) - 0.25 * pow(distance1y, 2) * (ei1 ^ ei2);
+	GAQ T3_y = one - 0.5 * distance1y * (e1 ^ ei4);
+	GAQ T4_y = one - 0.5 * distance1y * (e3 ^ ei6);
+	GAQ T_y = T1_y * T2_y * T3_y * T4_y; //Translator in y direction into origin
 
-	QCGA r1 = e1 ^ e2;
-	QCGA r2 = eo6 ^ ei5;
-	QCGA r3 = ei6 ^ eo5;
-	QCGA r4 = 2 * (eo4 ^ ei2);
-	QCGA r5 = 2 * (ei4 ^ eo2);
-	QCGA r6 = eo4 ^ ei3;
-	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
-	QCGA R = r.RotorExponential(40, phi); //Rotor in the xy-plane
+	GAQ r1 = e1 ^ e2;
+	GAQ r2 = eo6 ^ ei5;
+	GAQ r3 = ei6 ^ eo5;
+	GAQ r4 = 2 * (eo4 ^ ei2);
+	GAQ r5 = 2 * (ei4 ^ eo2);
+	GAQ r6 = eo4 ^ ei3;
+	GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
+	GAQ R = r.RotorExponential(40, phi); //Rotor in the xy-plane
 
 	Blade rotatedInOrigin = (R * (T_y * (T_x * Q * ~T_x)[1] * ~T_y)[1] * ~R)[1];
 
@@ -129,147 +129,147 @@ void Elipsoid2()
 
 void RotorXY()
 {
-	QCGA r1 = e1 ^ e2;
-	QCGA r2 = eo6 ^ ei5;
-	QCGA r3 = ei6 ^ eo5;
-	QCGA r4 = 2 * (eo4 ^ ei2);
-	QCGA r5 = 2 * (ei4 ^ eo2);
-	QCGA r6 = eo4 ^ ei3;
+	GAQ r1 = e1 ^ e2;
+	GAQ r2 = eo6 ^ ei5;
+	GAQ r3 = ei6 ^ eo5;
+	GAQ r4 = 2 * (eo4 ^ ei2);
+	GAQ r5 = 2 * (ei4 ^ eo2);
+	GAQ r6 = eo4 ^ ei3;
 
-	QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
+	GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
 
 	double phi = std::numbers::pi / 4.0;
-	QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
-	QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
-	QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
-	QCGA R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
-	QCGA R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
+	GAQ R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
+	GAQ R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
+	GAQ R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
+	GAQ R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
+	GAQ R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
 
 
-	QCGA C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
-	QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
-	QCGA c_24 = -1.5 * ei2 + 2 * ei4;
-	QCGA c_56 = 3 * ei5 + 6 * ei6;
-	QCGA c_3 = -4 * ei3;
+	GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+	GAQ c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
+	GAQ c_24 = -1.5 * ei2 + 2 * ei4;
+	GAQ c_56 = 3 * ei5 + 6 * ei6;
+	GAQ c_3 = -4 * ei3;
 
 	double x = 1;
 	double y = 2;
 	double z = 3;
 	double theta = atan(2) - phi;
-	QCGA CC = Up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
-	QCGA _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) + c_3 + ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
+	GAQ CC = Up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
+	GAQ _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) + c_3 + ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
 	std::cout << "Rotated: " << _rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (_rotated == CC) << std::endl;
 
-	QCGA rotor = r.RotorExponential(20, phi);
-	QCGA rotated = (rotor * C * ~rotor)[1];
+	GAQ rotor = r.RotorExponential(20, phi);
+	GAQ rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
 }
 void RotorXZ()
 {
-	const QCGA r1 = -1 * e3 ^ e1; //rotating in opposite direction, thus -1*, viz corresponding matrices
-	const QCGA r2 = -1 * ei4 ^ eo6;
-	const QCGA r3 = -2 * (ei3 ^ eo5);
-	const QCGA r4 = -1 * (ei2 ^ eo5);
-	const QCGA r5 = -1 * eo4 ^ ei6;
-	const QCGA r6 = -2 * (eo3 ^ ei5);
+	const GAQ r1 = -1 * e3 ^ e1; //rotating in opposite direction, thus -1*, viz corresponding matrices
+	const GAQ r2 = -1 * ei4 ^ eo6;
+	const GAQ r3 = -2 * (ei3 ^ eo5);
+	const GAQ r4 = -1 * (ei2 ^ eo5);
+	const GAQ r5 = -1 * eo4 ^ ei6;
+	const GAQ r6 = -2 * (eo3 ^ ei5);
 
-	const QCGA r = r1 + r2 + r3 + r4 + r5 + r6;
+	const GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
 	//double phi = std::numbers::pi / 2;
 	const double phi = std::numbers::pi / 4.0;
 
 
-	//QCGA C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
-	const QCGA C = Up(1, 3, 2); //eo1+e1+3*e2+2*e3+7*ei1-2*ei2-3*ei3+3*ei4+2*ei5+6*ei6
-	const QCGA c_euc = eo1 + e1 + 3 * e2 + 2 * e3 + 7 * ei1;
-	const QCGA c_35 = -3 * ei3 + 2 * ei5;
-	const QCGA c_2 = -2 * ei2;
-	const QCGA c_46 = 3 * ei4 + 6 * ei6;
+	//GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
+	const GAQ C = Up(1, 3, 2); //eo1+e1+3*e2+2*e3+7*ei1-2*ei2-3*ei3+3*ei4+2*ei5+6*ei6
+	const GAQ c_euc = eo1 + e1 + 3 * e2 + 2 * e3 + 7 * ei1;
+	const GAQ c_35 = -3 * ei3 + 2 * ei5;
+	const GAQ c_2 = -2 * ei2;
+	const GAQ c_46 = 3 * ei4 + 6 * ei6;
 
 	//double y = 2;
 	const double y = 3;
-	//QCGA CC = Up(2*sqrt(2), 2, sqrt(2));
+	//GAQ CC = Up(2*sqrt(2), 2, sqrt(2));
 	const double theta = atan(2) - phi;
-	const QCGA CC = Up(sqrt(5) * cos(theta), 3, sqrt(5) * sin(theta));
-	const QCGA rotor = r.RotorExponential(20, phi);
-	const QCGA rotated = (rotor * C * ~rotor)[1];
+	const GAQ CC = Up(sqrt(5) * cos(theta), 3, sqrt(5) * sin(theta));
+	const GAQ rotor = r.RotorExponential(20, phi);
+	const GAQ rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
 }
 void RotorYZ()
 {
-	const QCGA r1 = e2 ^ e3;
-	const QCGA r2 = eo6 ^ ei3;
-	const QCGA r3 = ei5 ^ eo4;
-	const QCGA r4 = 2 * (ei6 ^ eo3);
-	const QCGA r5 = 2 * (eo2 ^ ei6);
-	const QCGA r6 = ei2 ^ eo6;
-	const QCGA r7 = eo5 ^ ei4;
+	const GAQ r1 = e2 ^ e3;
+	const GAQ r2 = eo6 ^ ei3;
+	const GAQ r3 = ei5 ^ eo4;
+	const GAQ r4 = 2 * (ei6 ^ eo3);
+	const GAQ r5 = 2 * (eo2 ^ ei6);
+	const GAQ r6 = ei2 ^ eo6;
+	const GAQ r7 = eo5 ^ ei4;
 
-	const QCGA r = r1 + r2 + r3 + r4 + r5 + r6 + r7;
+	const GAQ r = r1 + r2 + r3 + r4 + r5 + r6 + r7;
 	const long double phi = std::numbers::pi / 4;
 	//long double phi = std::numbers::pi / 2;
 
-	const QCGA R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
-	const QCGA R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
-	const QCGA R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
-	const QCGA R4 = cos(phi / 2) * one + sin(phi / 2) * r4;
-	const QCGA R5 = cos(phi / 2) * one + sin(phi / 2) * r5;
-	const QCGA R6 = cos(phi / 2) * one + sin(phi / 2) * r6;
-	const QCGA R7 = cos(phi / 2) * one + sin(phi / 2) * r7;
+	const GAQ R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
+	const GAQ R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
+	const GAQ R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
+	const GAQ R4 = cos(phi / 2) * one + sin(phi / 2) * r4;
+	const GAQ R5 = cos(phi / 2) * one + sin(phi / 2) * r5;
+	const GAQ R6 = cos(phi / 2) * one + sin(phi / 2) * r6;
+	const GAQ R7 = cos(phi / 2) * one + sin(phi / 2) * r7;
 
-	const QCGA C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
-	const QCGA c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
-	const QCGA c_45 = 2 * ei4 + 3 * ei5;
-	const QCGA c_236 = -1.5 * ei2 - 4 * ei3 + 6 * ei6;
-	//QCGA C = MujUp(2, 3, -1); 
+	const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+	const GAQ c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
+	const GAQ c_45 = 2 * ei4 + 3 * ei5;
+	const GAQ c_236 = -1.5 * ei2 - 4 * ei3 + 6 * ei6;
+	//GAQ C = MujUp(2, 3, -1); 
 
 
-	const QCGA target = Up(1, 0.5 * 5 * sqrt(2), 0.5 * sqrt(2));
-	//QCGA target = MujUp(2, -1, -3);
-	const QCGA rot_236 = (r2 + r4 + r5 + r6).RotorExponential(20, phi);
+	const GAQ target = Up(1, 0.5 * 5 * sqrt(2), 0.5 * sqrt(2));
+	//GAQ target = MujUp(2, -1, -3);
+	const GAQ rot_236 = (r2 + r4 + r5 + r6).RotorExponential(20, phi);
 
-	const QCGA _rotated = ((R1 * c_cga * ~R1) + ((R3 ^ R7) * c_45 * (~R7 ^ ~R3)) + (rot_236 * c_236 * ~rot_236))[1];
+	const GAQ _rotated = ((R1 * c_cga * ~R1) + ((R3 ^ R7) * c_45 * (~R7 ^ ~R3)) + (rot_236 * c_236 * ~rot_236))[1];
 	std::cout << "Rotated: " << _rotated << std::endl;
 	std::cout << " Target: " << target << std::endl;
 	std::cout << "   Good: " << (_rotated == target) << std::endl;
 
 
-	const QCGA rotor = r.RotorExponential(20, phi);
-	const QCGA rotated = (rotor * C * ~rotor)[1];
+	const GAQ rotor = r.RotorExponential(20, phi);
+	const GAQ rotated = (rotor * C * ~rotor)[1];
 	std::cout << "Rotated: " << rotated << std::endl;
 	std::cout << " Target: " << target << std::endl;
 	std::cout << "   Good: " << (rotated == target) << std::endl;
 }
 void TranslatorX()
 {
-	const QCGA t1 = -1 * e1 ^ ei1;
-	const QCGA t2 = -1 * e1 ^ ei2;
-	const QCGA t3 = -1 * e1 ^ ei3;
-	const QCGA t4 = -1 * e2 ^ ei4;
-	const QCGA t5 = -1 * e3 ^ ei5;
+	const GAQ t1 = -1 * e1 ^ ei1;
+	const GAQ t2 = -1 * e1 ^ ei2;
+	const GAQ t3 = -1 * e1 ^ ei3;
+	const GAQ t4 = -1 * e2 ^ ei4;
+	const GAQ t5 = -1 * e3 ^ ei5;
 
-	const QCGA t = t1 + t2 + t3 + t4 + t5;
+	const GAQ t = t1 + t2 + t3 + t4 + t5;
 	const double distance = -1 / double(3);
 
-	const QCGA T1 = one - 0.5 * distance * (e1 ^ ei1);
-	const QCGA T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);
-	const QCGA T3 = one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3);
-	const QCGA T4 = one - 0.5 * distance * (e2 ^ ei4);
-	const QCGA T5 = one - 0.5 * distance * (e3 ^ ei5);
+	const GAQ T1 = one - 0.5 * distance * (e1 ^ ei1);
+	const GAQ T2 = one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2);
+	const GAQ T3 = one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3);
+	const GAQ T4 = one - 0.5 * distance * (e2 ^ ei4);
+	const GAQ T5 = one - 0.5 * distance * (e3 ^ ei5);
 
-	const QCGA translatorX = t.TranslatorExponential(20, distance);
-	const QCGA translatorX2 = T1 * T2 * T3 * T4 * T5;
+	const GAQ translatorX = t.TranslatorExponential(20, distance);
+	const GAQ translatorX2 = T1 * T2 * T3 * T4 * T5;
 
-	const QCGA C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
-	const QCGA target = Up(1 + distance, 2, 3);
+	const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
+	const GAQ target = Up(1 + distance, 2, 3);
 
-	const QCGA translated = translatorX * C * ~translatorX;
-	const QCGA translated2 = translatorX2 * C * ~translatorX2;
+	const GAQ translated = translatorX * C * ~translatorX;
+	const GAQ translated2 = translatorX2 * C * ~translatorX2;
 
 	std::cout << "Translated: " << translated << std::endl;
 	std::cout << "Translated: " << translated2 << std::endl;
@@ -279,27 +279,27 @@ void TranslatorX()
 }
 void TranslatorY()
 {
-	const QCGA t1 = -1 * e2 ^ ei1;
-	const QCGA t2 = 1 * e2 ^ ei2;
-	const QCGA t3 = -1 * e1 ^ ei4;
-	const QCGA t4 = -1 * e3 ^ ei6;
+	const GAQ t1 = -1 * e2 ^ ei1;
+	const GAQ t2 = 1 * e2 ^ ei2;
+	const GAQ t3 = -1 * e1 ^ ei4;
+	const GAQ t4 = -1 * e3 ^ ei6;
 
-	const QCGA t = t1 + t2 + t3 + t4;
+	const GAQ t = t1 + t2 + t3 + t4;
 	const int distance = 7;
 
-	const QCGA T1 = one - 0.5 * distance * (e2 ^ ei1);
-	const QCGA T2 = one + 0.5 * distance * (e2 ^ ei2) - 0.25 * pow(distance, 2) * (ei1 ^ ei2);
-	const QCGA T3 = one - 0.5 * distance * (e1 ^ ei4);
-	const QCGA T4 = one - 0.5 * distance * (e3 ^ ei6);
+	const GAQ T1 = one - 0.5 * distance * (e2 ^ ei1);
+	const GAQ T2 = one + 0.5 * distance * (e2 ^ ei2) - 0.25 * pow(distance, 2) * (ei1 ^ ei2);
+	const GAQ T3 = one - 0.5 * distance * (e1 ^ ei4);
+	const GAQ T4 = one - 0.5 * distance * (e3 ^ ei6);
 
-	const QCGA translatorY = t.TranslatorExponential(20, distance);
-	const QCGA translatorY2 = T1 * T2 * T3 * T4;
+	const GAQ translatorY = t.TranslatorExponential(20, distance);
+	const GAQ translatorY2 = T1 * T2 * T3 * T4;
 
-	const QCGA C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
-	const QCGA target = Up(1, 2 + distance, 3);
+	const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
+	const GAQ target = Up(1, 2 + distance, 3);
 
-	const QCGA translated = translatorY * C * ~translatorY;
-	const QCGA translated2 = translatorY2 * C * ~translatorY2;
+	const GAQ translated = translatorY * C * ~translatorY;
+	const GAQ translated2 = translatorY2 * C * ~translatorY2;
 
 	std::cout << "Translated: " << translated << std::endl;
 	std::cout << "Translated: " << translated2 << std::endl;
@@ -309,27 +309,27 @@ void TranslatorY()
 }
 void TranslatorZ()
 {
-	const QCGA t1 = -1 * e3 ^ ei1;
-	const QCGA t2 = 1 * e3 ^ ei3;
-	const QCGA t3 = -1 * e1 ^ ei5;
-	const QCGA t4 = -1 * e2 ^ ei6;
+	const GAQ t1 = -1 * e3 ^ ei1;
+	const GAQ t2 = 1 * e3 ^ ei3;
+	const GAQ t3 = -1 * e1 ^ ei5;
+	const GAQ t4 = -1 * e2 ^ ei6;
 
-	const QCGA t = t1 + t2 + t3 + t4;
+	const GAQ t = t1 + t2 + t3 + t4;
 	const int distance = -4;
 
-	const QCGA T1 = one - 0.5 * distance * (e3 ^ ei1);
-	const QCGA T2 = one + 0.5 * distance * (e3 ^ ei3) - 0.25 * pow(distance, 2) * (ei1 ^ ei3);
-	const QCGA T3 = one - 0.5 * distance * (e1 ^ ei5);
-	const QCGA T4 = one - 0.5 * distance * (e2 ^ ei6);
+	const GAQ T1 = one - 0.5 * distance * (e3 ^ ei1);
+	const GAQ T2 = one + 0.5 * distance * (e3 ^ ei3) - 0.25 * pow(distance, 2) * (ei1 ^ ei3);
+	const GAQ T3 = one - 0.5 * distance * (e1 ^ ei5);
+	const GAQ T4 = one - 0.5 * distance * (e2 ^ ei6);
 
-	const QCGA translatorZ = t.TranslatorExponential(20, distance);
-	const QCGA translatorZ2 = T1 * T2 * T3 * T4;
+	const GAQ translatorZ = t.TranslatorExponential(20, distance);
+	const GAQ translatorZ2 = T1 * T2 * T3 * T4;
 
-	const QCGA C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
-	const QCGA target = Up(1, 2, 3 + distance);
+	const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
+	const GAQ target = Up(1, 2, 3 + distance);
 
-	const QCGA translated = translatorZ * C * ~translatorZ;
-	const QCGA translated2 = translatorZ2 * C * ~translatorZ2;
+	const GAQ translated = translatorZ * C * ~translatorZ;
+	const GAQ translated2 = translatorZ2 * C * ~translatorZ2;
 
 	std::cout << "Translated: " << translated << std::endl;
 	std::cout << "Translated: " << translated2 << std::endl;
@@ -338,7 +338,7 @@ void TranslatorZ()
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
 
-QCGA Com(const QCGA& a, const QCGA& b)
+GAQ Com(const GAQ& a, const GAQ& b)
 {
 	return 0.5 * ((a * b) - (b * a));
 }
