@@ -1,12 +1,10 @@
-#ifndef _BLADE_H_
-#define _BLADE_H_
+#pragma once
+#include "GAQ.h"
 
-#include "QCGA.h"
-
-class Blade : public QCGA
+class Blade : public GAQ
 {
 public:
-	Blade(const QCGA& Multivector); //creates blade from given Multivector, if possible. If given multivector is not blade, warning occurs and program might crash
+	Blade(const GAQ& Multivector); //creates blade from given Multivector, if possible. If given multivector is not blade, warning occurs and program might crash
 	virtual ~Blade() = default;
 
 	int GetGrade() const;
@@ -21,12 +19,12 @@ public:
 	Blade Down() const;	
 
 private:
+	bool IsBlade(); 
+
+private:
 	int m_grade;
 	bool m_isNullBlade;
-	bool IsBlade(); 
 };
 
 Blade Up(long double x, long double y, long double z); //embedding of a 3D point.
 Blade MakeQuadric(long double vo6, long double vo5, long double vo4, long double vo3, long double vo2, long double vo1, long double ve1, long double ve2, long double ve3, long double vi1); //IPNS representation of a quadric
-
-#endif
