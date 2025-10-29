@@ -12,14 +12,11 @@ public:
 
 	//**********************************OPERATORS**********************************\\
 
-	Blade operator^(const Blade& other) const;
 	Blade operator^(int exponent) const; //exponent operator, mainly for inverse: A^(-1)
 	Blade Dual() const; //Dual: A.Dual() = A * I^(-1)
 	Blade Normalize() const;	
 	Blade Down() const;	
-
-private:
-	bool IsBlade(); 
+	bool IsBlade() const; 
 
 private:
 	int m_grade;

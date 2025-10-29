@@ -1,5 +1,5 @@
 
-.vs/QCGA/v17/Browse.VC.opendb
+.vs/
 *.vsidx
 *.vsidx
 *.db
@@ -14,24 +14,12 @@
 *.db-shm
 *.suo
 *.db-wal
-/QCGA/Release/
-/QCGA/Release/QCGA.tlog/CL.command.1.tlog
-/QCGA/Release/QCGA.tlog/Cl.items.tlog
-/QCGA/Release/QCGA.tlog/CL.read.1.tlog
-/QCGA/Release/QCGA.tlog/CL.write.1.tlog
-/QCGA/Release/QCGA.tlog/link.command.1.tlog
-/QCGA/Release/QCGA.tlog/link.read.1.tlog
-/QCGA/Release/QCGA.tlog/link.secondary.1.tlog
-/QCGA/Release/QCGA.tlog/link.write.1.tlog
-/QCGA/Release/QCGA.tlog/QCGA.lastbuildstate
+/GAQ/Release/
 *.tlog
-/QCGA/Release/Blade.obj
-/QCGA/Release/main.obj
-/QCGA/Release/QCGA.iobj
-/QCGA/Release/QCGA.ipdb
-/QCGA/Release/QCGA.log
-/QCGA/Release/QCGA.obj
-/QCGA/Release/vc143.pdb
 *.exe
 *.pdb
-/QCGA/x64
+*.dll
+*.exp
+*.lib
+/GAQ/x64
+/GAQ_MSUT/x64

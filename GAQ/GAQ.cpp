@@ -37,7 +37,7 @@ GAQ::GAQ(std::string&& input) noexcept
 GAQ::GAQ(const std::map<std::string, long double>& map)
 {
 	std::map<std::string, long double> copyOfMap{map};
-	for (const auto& [basisBlade, coef] : copyOfMap)
+	for (const auto& [basisBlade, coef] : map)
 	{
 		if (abs(coef) <= long double(1) / PRECISION)
 		{
@@ -416,13 +416,13 @@ GAQ GAQ::operator^(const GAQ& other) const
 
 GAQ GAQ::operator^(int exponent) const
 {
-	GAQ res{*this};
 	if (exponent < 0)
 	{
 		std::cout << "Warning, calling an inverse of GAQ, not of a blade, this might fail!\n";
 		const long double denominator{(((*this) * (~(*this))).ToNumeric())};
 		return denominator * (~(*this));;
 	}
+	GAQ res{*this};
 	for (int i = 0; i < exponent - 1; i++)
 	{
 		res = res * *this;

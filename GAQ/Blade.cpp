@@ -1,7 +1,7 @@
 #include "Blade.h"
 #include <unordered_set>
 
-bool Blade::IsBlade() 
+bool Blade::IsBlade() const
 {
 	if ((*this)[0] == *this)
 	{
@@ -13,7 +13,6 @@ bool Blade::IsBlade()
 //creates blade from given Multivector
 Blade::Blade(const GAQ& Multivector) : GAQ(Multivector)
 {
-
 	if (IsBlade())
 	{
 		m_grade = GAQ::Grade(m_mapLabelToCoefficient.begin()->first);
@@ -36,11 +35,6 @@ bool Blade::IsNullBlade() const
 	return m_isNullBlade;
 }
 
-Blade Blade::operator^(const Blade& other) const
-{
-	return Blade(static_cast<GAQ>(*this) ^ other);
-}
-
 //returns inverse and exponent
 Blade Blade::operator^(const int exponent) const
 {
@@ -51,6 +45,7 @@ Blade Blade::operator^(const int exponent) const
 			std::cout << "WARNING, Blade:" << *this << " is a null-blade, cant make inversion! returned with positive exponent" << std::endl;
 			return static_cast<GAQ>(*this) ^ (-1 * exponent);
 		}
+		// inputting -exp results in an inversion and that is exponentiated to the exp power
 		Blade res{(~*this) / ((*this * ~(*this)).ToNumeric())};
 		res = static_cast<GAQ>(res) ^ (-1 * exponent);
 		return res;
