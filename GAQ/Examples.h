@@ -168,6 +168,7 @@ void RotorXY()
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
 }
+
 void RotorXZ()
 {
 	const GAQ r1 = -1 * e3 ^ e1; //rotating in opposite direction, thus -1*, viz corresponding matrices
@@ -200,6 +201,7 @@ void RotorXZ()
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
 }
+
 void RotorYZ()
 {
 	const GAQ r1 = e2 ^ e3;
@@ -245,6 +247,7 @@ void RotorYZ()
 	std::cout << " Target: " << target << std::endl;
 	std::cout << "   Good: " << (rotated == target) << std::endl;
 }
+
 void TranslatorX()
 {
 	const GAQ t1 = -1 * e1 ^ ei1;
@@ -277,6 +280,7 @@ void TranslatorX()
 	std::cout << "      Good: " << (translated == target) << std::endl;
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
+
 void TranslatorY()
 {
 	const GAQ t1 = -1 * e2 ^ ei1;
@@ -307,6 +311,7 @@ void TranslatorY()
 	std::cout << "      Good: " << (translated == target) << std::endl;
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
+
 void TranslatorZ()
 {
 	const GAQ t1 = -1 * e3 ^ ei1;

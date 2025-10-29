@@ -104,7 +104,7 @@ public:
 	//**********************************OPERATORS**********************************\\
 	
 	GAQ RotorExponential(unsigned int degree, long double phi) const;			// Use carefully! Only works for specific elements, may crash otherwise
-	GAQ TranslatorExponential(unsigned int degree, long double distance) const;// Use carefully! Only works for specific elements, may crash otherwise
+	GAQ TranslatorExponential(unsigned int degree, long double distance) const; // Use carefully! Only works for specific elements, may crash otherwise
 	GAQ BivectorExponential(unsigned int degree, long double parameter) const;	// Use carefully! Only works for specific elements, may crash otherwise
 	GAQ& operator=(const GAQ& other); 
 	GAQ& operator=(GAQ&& other) noexcept; 
