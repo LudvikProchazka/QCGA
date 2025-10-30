@@ -13,10 +13,12 @@ int main()
 	GAQ multivecorExample4 = 3 * multivecorExample2 + eo1;
 	*/
 	
-	RotorXY();
-	RotorXZ();
-	RotorYZ();
-	TranslatorX();
-	TranslatorY();
-	TranslatorZ();
+	//RotorXY();
+	//RotorXZ();
+	//RotorYZ();
+	//TranslatorX();
+	//TranslatorY();
+	//TranslatorZ();
+
+	std::cout << rxy.RotorExponential(20, std::numbers::pi / 4) << std::endl;
 }

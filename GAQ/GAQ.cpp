@@ -93,6 +93,40 @@ long double GAQ::ToNumeric() // returns coefficient at basis blade 1
 	return 1.0;
 }
 
+bool GAQ::IsEqual(const GAQ& other, double precision) const
+{
+	bool equal{true};
+	for (const auto& [basisBlade, value] : m_mapLabelToCoefficient)
+	{
+		if (other.m_mapLabelToCoefficient.find(basisBlade) == other.m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
+		{
+			equal = false;
+			break;
+		}
+		//if there is, check for coefs if they are the same
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > precision)
+		{
+			equal = false;
+			break;
+		}
+	}
+	for (const auto& [basisBlade, value] : other.m_mapLabelToCoefficient) //now vice versa
+	{
+		if (m_mapLabelToCoefficient.find(basisBlade) == m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
+		{
+			equal = false;
+			break;
+		}
+		//if there is, check for coefs if they are the same
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > precision)
+		{
+			equal = false;
+			break;
+		}
+	}
+	return equal;
+}
+
 //************************************MEMBER_OPERATOR************************************\\
 
 GAQ GAQ::RotorExponential(unsigned int degree, long double phi) const
@@ -126,21 +160,6 @@ GAQ GAQ::TranslatorExponential(unsigned int degree, long double distance) const
 	return res;
 }
 
-GAQ GAQ::BivectorExponential(unsigned int degree, long double parameter) const
-{
-	GAQ res{one};
-	for (unsigned int i = 1; i < degree + 1; i++)
-	{
-		long double factorial = i;
-		for (int j = i; j > 1; j--)
-		{
-			factorial *= (j - 1);
-		}
-		res = res + (((parameter / 2) * (*this)) ^ i) * (long double(1) / factorial);
-	}
-	return res;
-}
-
 GAQ& GAQ::operator=(const GAQ& other)
 {
 	m_mapLabelToCoefficient = other.m_mapLabelToCoefficient;
@@ -155,36 +174,7 @@ GAQ& GAQ::operator=(GAQ&& other) noexcept
 
 bool GAQ::operator==(const GAQ& other) const
 {
-	bool equal{true};
-	for (const auto& [basisBlade, value] : m_mapLabelToCoefficient)
-	{
-		if (other.m_mapLabelToCoefficient.find(basisBlade) == other.m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
-		{
-			equal = false;
-			break;
-		}
-		//if there is, check for coefs if they are the same
-		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > long double(10000.0) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
-		{
-			equal = false;
-			break;
-		}
-	}
-	for (const auto& [basisBlade, value] : other.m_mapLabelToCoefficient) //now vice versa
-	{
-		if (m_mapLabelToCoefficient.find(basisBlade) == m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
-		{
-			equal = false;
-			break;
-		}
-		//if there is, check for coefs if they are the same
-		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > long double(10000.0) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
-		{
-			equal = false;
-			break;
-		}
-	}
-	return equal;
+	return this->IsEqual(other, 1e6);
 }
 
 bool GAQ::operator!=(const GAQ& other) const

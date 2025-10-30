@@ -162,8 +162,9 @@
   <ItemGroup>
     <ClCompile Include="..\GAQ\Blade.cpp" />
     <ClCompile Include="..\GAQ\GAQ.cpp" />
-    <ClCompile Include="Blade_MSUT.cpp" />
-    <ClCompile Include="GAQ_MSUT.cpp" />
+    <ClCompile Include="Test_Blade.cpp" />
+    <ClCompile Include="Test_GAQ_MainFunctionality.cpp" />
+    <ClCompile Include="Test_GAQ_PartialTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GAQ\Blade.h" />

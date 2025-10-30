@@ -98,6 +98,7 @@ public:
 	virtual ~GAQ() = default;
 
 	long double ToNumeric(); //returs coefficient at basis blade "1"
+	bool IsEqual(const GAQ& second, double precision) const;
 
 	const std::map<std::string, long double>& GetSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
 
@@ -105,7 +106,6 @@ public:
 	
 	GAQ RotorExponential(unsigned int degree, long double phi) const;			// Use carefully! Only works for specific elements, may crash otherwise
 	GAQ TranslatorExponential(unsigned int degree, long double distance) const; // Use carefully! Only works for specific elements, may crash otherwise
-	GAQ BivectorExponential(unsigned int degree, long double parameter) const;	// Use carefully! Only works for specific elements, may crash otherwise
 	GAQ& operator=(const GAQ& other); 
 	GAQ& operator=(GAQ&& other) noexcept; 
 	bool operator==(const GAQ& other) const;	//equals operator
