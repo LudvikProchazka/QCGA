@@ -9,6 +9,72 @@ namespace GAQ_MSUT
 	TEST_CLASS(GAQ_Partial)
 	{
 	public:
+		TEST_METHOD(Test_GradeProjection)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			GAQ zero1 = 1.41421356237 * zero_vector;
+			GAQ zero2 = 1.41421356237 * one;
+			GAQ _1 = e1;
+			GAQ _2 = 2 * e1 ^ e2;
+			GAQ _3 = 3 * e1 ^ e2 ^ e3;
+			GAQ _4 = 4 * e1 ^ e2 ^ e3 ^ e4;
+			GAQ _5 = 5 * e1 ^ e2 ^ e3 ^ e4 ^ e5;
+			GAQ _6 = 6 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6;
+			GAQ _7 = 7 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7;
+			GAQ _8 = 8 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8;
+			GAQ _9 = 9 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8 ^ e9;
+			GAQ _10 = 10 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8 ^ e9 ^ e10;
+			GAQ _11 = 11 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8 ^ e9 ^ e10 ^ e11;
+			GAQ _12 = 12 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8 ^ e9 ^ e10 ^ e11 ^ e12;
+			GAQ _13 = 13 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8 ^ e9 ^ e10 ^ e11 ^ e12 ^ e13;
+			GAQ _14 = 14 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8 ^ e9 ^ e10 ^ e11 ^ e12 ^ e13 ^ e14;
+			GAQ _15 = 15 * e1 ^ e2 ^ e3 ^ e4 ^ e5 ^ e6 ^ e7 ^ e8 ^ e9 ^ e10 ^ e11 ^ e12 ^ e13 ^ e14 ^ e15;
+			GAQ allGrades = zero1 + zero2 + _1 + _2 + _3 + _4 + _5 + _6 + _7 + _8 + _9 + _10 + _11 + _12 + _13 + _14 + _15;
+
+			Assert::IsTrue(allGrades[0] == 1.41421356237 * one);
+			Assert::IsTrue(allGrades[1] == _1);
+			Assert::IsTrue(allGrades[2] == _2);
+			Assert::IsTrue(allGrades[3] == _3);
+			Assert::IsTrue(allGrades[4] == _4);
+			Assert::IsTrue(allGrades[5] == _5);
+			Assert::IsTrue(allGrades[6] == _6);
+			Assert::IsTrue(allGrades[7] == _7);
+			Assert::IsTrue(allGrades[8] == _8);
+			Assert::IsTrue(allGrades[9] == _9);
+			Assert::IsTrue(allGrades[10] == _10);
+			Assert::IsTrue(allGrades[11] == _11);
+			Assert::IsTrue(allGrades[12] == _12);
+			Assert::IsTrue(allGrades[13] == _13);
+			Assert::IsTrue(allGrades[14] == _14);
+			Assert::IsTrue(allGrades[15] == _15);
+		}
+
+		TEST_METHOD(Test_NotEqualOperator)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			double distance = std::numbers::pi;
+			GAQ precise = Tx(distance);
+			GAQ closeEnough = precise * (1 + 1e-10);
+			GAQ outOfPrecision = precise * (1 + 1e-8);
+
+			Assert::IsFalse(precise != closeEnough);
+			Assert::IsTrue(precise != outOfPrecision);
+		}
+
+		TEST_METHOD(Test_EqualEqualOperator)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			double distance = std::numbers::pi;
+			GAQ precise = Tx(distance);
+			GAQ closeEnough = precise * (1 + 1e-10);
+			GAQ outOfPrecision = precise * (1 + 1e-8);
+
+			Assert::IsTrue(precise == closeEnough);
+			Assert::IsFalse(precise == outOfPrecision);
+		}
 
 		TEST_METHOD(Test_ToNumeric)
 		{

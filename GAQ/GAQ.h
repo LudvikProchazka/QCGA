@@ -11,16 +11,16 @@ constexpr size_t TOTAL_DIMENSION{32'768};				//total dimension of an algebra (2^
 constexpr size_t GENERATING_BASIS_SIZE{15};				//dimension of generating space R^(9,6)
 constexpr size_t ALGEBRA_P{9};							//number of positive squared vectors
 constexpr size_t ALGEBRA_Q{6};							//number of negative squared vectors
-constexpr long double PRECISION{1'000'000'000'000.0};	//constant for rounding
+constexpr long double PRECISION{1e9};
 
-#define zero_vector (GAQ())			//zero vecor
-#define one (GAQ::generatingBlades[0]) //scalar
+#define zero_vector (GAQ())				//zero vecor
+#define one (GAQ::generatingBlades[0])	//scalar
 
-#define	e1 (GAQ::generatingBlades[1]) //euclidean vectors
+#define	e1 (GAQ::generatingBlades[1])	//euclidean vectors
 #define	e2 (GAQ::generatingBlades[2])
 #define	e3 (GAQ::generatingBlades[3])
 
-#define	e4 (GAQ::generatingBlades[4]) //e+: positive squared vectors
+#define	e4 (GAQ::generatingBlades[4])	//e+: positive squared vectors
 #define	e5 (GAQ::generatingBlades[5])
 #define	e6 (GAQ::generatingBlades[6])
 #define	e7 (GAQ::generatingBlades[7])
@@ -84,14 +84,15 @@ enum translation_directions
 class GAQ
 {
 public:
-	static void GenerateGeneratingBlades();
 	GAQ(); //creates zero vector;
-	GAQ(const std::string& input); 
+	GAQ(const std::string& input);
 	GAQ(std::string&& input) noexcept;
 	GAQ(const std::map<std::string, long double>& map);
 	GAQ(std::map<std::string, long double>&& map);
-	GAQ(const std::pair<std::string,long double>& basisBlade); 
-	GAQ(std::pair<std::string,long double>&& basisBlade);
+	GAQ(const std::pair<std::string, long double>& basisBlade);
+	GAQ(std::pair<std::string, long double>&& basisBlade);
+
+	static void GenerateGeneratingBlades();
 
 	GAQ(const GAQ& other); 
 	GAQ& operator=(const GAQ& other); 
@@ -110,7 +111,7 @@ public:
 	GAQ TranslatorExponential(unsigned int degree, long double distance) const; // Use carefully! Only works for specific elements, may crash otherwise
 	bool operator==(const GAQ& other) const;	//equals operator
 	bool operator!=(const GAQ& other) const;	//not equals operator
-	GAQ operator[](int Grade) const;			//Grade projection
+	GAQ operator[](int grade) const;			//Grade projection
 	GAQ operator[](const GAQ& other) const;	//basis blade selection
 	GAQ operator*(const GAQ& other) const;	//geometric product operator
 	GAQ operator*(GAQ&& other) const; 
@@ -133,7 +134,6 @@ public:
 	static GAQ generatingBlades[];				//stores 1,e1,e2,...,en.
 
 protected:
-
 	static int CalculateSign(const std::vector<int>& permutation); //Helps in validating basis Element, calculates sign of permutation
 	static void SimplifyBasisBlade(std::string& label, int& sign); //simplifies label in a form of for example  e1e2e3e2e3 into e1
 	static void processVector(std::vector<int>& vec, int& sign); //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
@@ -150,6 +150,7 @@ protected:
 	// 3 |   2 |       -1
 
 private:
+	
 	void DeleteZeroFromVector(); //if multivector is of a form 0*1 + c1e1+ c2e1*e2 +... it removes 0*1
 };
 //**********************************NON-MEMBER_OPERATORS**********************************\\

@@ -66,7 +66,6 @@ GAQ::GAQ(std::pair<std::string, long double>&& basis_blade)
 	m_mapLabelToCoefficient.emplace(std::move(basis_blade));
 }
 
-
 GAQ::GAQ(const GAQ& instance)
 {
 	m_mapLabelToCoefficient = instance.m_mapLabelToCoefficient;
@@ -76,7 +75,6 @@ GAQ::GAQ(GAQ&& instance) noexcept
 {
 	m_mapLabelToCoefficient = std::move(instance.m_mapLabelToCoefficient);
 }
-
 
 const std::map<std::string, long double>& GAQ::GetSTDmapLabelToCoefficient() const
 {
@@ -112,7 +110,7 @@ bool GAQ::IsEqual(const GAQ& other, double precision) const
 	}
 	for (const auto& [basisBlade, value] : other.m_mapLabelToCoefficient) //now vice versa
 	{
-		if (m_mapLabelToCoefficient.find(basisBlade) == m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
+		if (m_mapLabelToCoefficient.find(basisBlade) == m_mapLabelToCoefficient.end())
 		{
 			equal = false;
 			break;
