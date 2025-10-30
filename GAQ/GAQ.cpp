@@ -61,31 +61,37 @@ GAQ::GAQ(const std::map<std::string, long double>& map)
 		copyOfMap["1"] = 0;
 	}
 	m_mapLabelToCoefficient = copyOfMap;
+	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(std::map<std::string, long double>&& map)
 {
 	m_mapLabelToCoefficient = std::move(map);
+	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(const std::pair<std::string, long double>& basis_blade)
 {
 	m_mapLabelToCoefficient.emplace(basis_blade);
+	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(std::pair<std::string, long double>&& basis_blade)
 {
 	m_mapLabelToCoefficient.emplace(std::move(basis_blade));
+	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(const GAQ& instance)
 {
 	m_mapLabelToCoefficient = instance.m_mapLabelToCoefficient;
+	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(GAQ&& instance) noexcept
 {
 	m_mapLabelToCoefficient = std::move(instance.m_mapLabelToCoefficient);
+	DeleteZeroFromVector();
 }
 
 const std::map<std::string, long double>& GAQ::GetSTDmapLabelToCoefficient() const
@@ -202,7 +208,6 @@ GAQ GAQ::operator[](size_t _grade) const
 	{
 		res = res + (left[i])(_grade); //equivalent to standard formula 
 	}
-	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -262,7 +267,6 @@ GAQ GAQ::operator*(const GAQ& other) const
 
 		res = (res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign)))));
 	}
-	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -305,7 +309,6 @@ GAQ GAQ::operator*(GAQ&& other) const
 
 		res = std::move((res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign))))));
 	}
-	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -381,8 +384,8 @@ GAQ GAQ::operator-(const GAQ& other) const
 GAQ GAQ::operator|(const GAQ& other) const
 {
 	//Make vectors from left and right operadns, they will store basis blades as CGA object and they will participate in product
-	std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
-	std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
+	const std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
+	const std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
 	GAQ res;
 	for (size_t i = 0; i < m_mapLabelToCoefficient.size(); i++)
 	{
@@ -391,7 +394,6 @@ GAQ GAQ::operator|(const GAQ& other) const
 			res = res + (left[i] || right[j]); //equivalent to standard formula 
 		}
 	}
-	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -399,8 +401,8 @@ GAQ GAQ::operator|(const GAQ& other) const
 GAQ GAQ::operator^(const GAQ& other) const
 {
 	//Make vectors from left and right operadns, they will store basis blades as CGA object and they will participate in product
-	std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
-	std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
+	const std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
+	const std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
 
 	GAQ res;
 	for (size_t i = 0; i < m_mapLabelToCoefficient.size(); i++)
@@ -410,7 +412,6 @@ GAQ GAQ::operator^(const GAQ& other) const
 			res = res + (left[i] && right[j]); //equivalent to standard formula 
 		}
 	}
-	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -623,7 +624,7 @@ std::vector<int> GAQ::ExtractIntegersFromBasisBlades(std::string_view label)
 	permutation.reserve(15);
 	int basis_vec_number;
 	auto position = label.begin();
-	while (position < label.end()) //checks, if idividual ei are present in algebra. Otherwise, it crashes
+	while (position < label.end())
 	{
 		auto [ptr, error] {std::from_chars(position._Unwrapped(), position._Unwrapped() + 2, basis_vec_number)};
 		if (error == std::errc{}) 
@@ -661,12 +662,12 @@ GAQ GAQ::operator()(size_t grade) const
 
 void GAQ::DeleteZeroFromVector()
 {
-	if (m_mapLabelToCoefficient.find("1") != m_mapLabelToCoefficient.end())
+	if (auto it = m_mapLabelToCoefficient.find("1");
+		it != m_mapLabelToCoefficient.end() &&
+		it->second == 0 &&
+		m_mapLabelToCoefficient.size() > 1)
 	{
-		if (m_mapLabelToCoefficient.at("1") == 0 && m_mapLabelToCoefficient.size() > 1)
-		{
-			m_mapLabelToCoefficient.erase("1");
-		}
+		m_mapLabelToCoefficient.erase(it);
 	}
 }
 
