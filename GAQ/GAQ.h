@@ -102,6 +102,7 @@ public:
 
 	long double ToNumeric(); //returs coefficient at basis blade "1"
 	bool IsEqual(const GAQ& second, double precision) const;
+	void DeleteZeroFromVector(); //if multivector is of a form 0*1 + c1e1+ c2e1*e2 +... it removes 0*1
 
 	const std::map<std::string, long double>& GetSTDmapLabelToCoefficient() const; //returns map (=representation of multivector)
 
@@ -111,7 +112,7 @@ public:
 	GAQ TranslatorExponential(unsigned int degree, long double distance) const; // Use carefully! Only works for specific elements, may crash otherwise
 	bool operator==(const GAQ& other) const;	//equals operator
 	bool operator!=(const GAQ& other) const;	//not equals operator
-	GAQ operator[](int grade) const;			//Grade projection
+	GAQ operator[](size_t grade) const;			//Grade projection
 	GAQ operator[](const GAQ& other) const;	//basis blade selection
 	GAQ operator*(const GAQ& other) const;	//geometric product operator
 	GAQ operator*(GAQ&& other) const; 
@@ -128,7 +129,7 @@ public:
 	static GAQ Rotate(const GAQ& point, rotation_planes plane, long double angle);
 	static GAQ Translate(const GAQ& point, translation_directions plane, long double angle);
 
-	int Grade(std::string_view label) const;	//returns Grade of basis blade (if we give it appropriate label...)
+	size_t Grade(std::string_view label) const;	//returns Grade of basis blade (if we give it appropriate label...)
 	std::string Log() const;					//returns multivector, used in << operator
 	
 	static GAQ generatingBlades[];				//stores 1,e1,e2,...,en.
@@ -141,17 +142,13 @@ protected:
 
 	GAQ operator||(const GAQ& other) const; //inner product of two basis blades
 	GAQ operator &&(const GAQ& other) const; //outer product of two basis blades
-	GAQ operator ()(int Grade) const; //Grade projection of basis blade
+	GAQ operator ()(size_t Grade) const; //Grade projection of basis blade
 	
 	std::map<std::string, long double> m_mapLabelToCoefficient; //representation of a general multivector
 	// 3 + 2e1 - e1*e2*e3
 	// ==================
 	// 1 |  e1 | e1*e2*e3 
 	// 3 |   2 |       -1
-
-private:
-	
-	void DeleteZeroFromVector(); //if multivector is of a form 0*1 + c1e1+ c2e1*e2 +... it removes 0*1
 };
 //**********************************NON-MEMBER_OPERATORS**********************************\\
 

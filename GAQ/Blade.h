@@ -7,7 +7,7 @@ public:
 	Blade(const GAQ& Multivector); //creates blade from given Multivector, if possible. If given multivector is not blade, warning occurs and program might crash
 	virtual ~Blade() = default;
 
-	int GetGrade() const;
+	size_t GetGrade() const;
 	bool IsNullBlade() const;
 
 	//**********************************OPERATORS**********************************\\
@@ -19,7 +19,7 @@ public:
 	bool IsBlade() const; 
 
 private:
-	int m_grade;
+	size_t m_grade;
 	bool m_isNullBlade;
 };
 

@@ -25,7 +25,7 @@ Blade::Blade(const GAQ& Multivector) : GAQ(Multivector)
 	m_isNullBlade = (Multivector | Multivector) == zero_vector;
 }
 
-int Blade::GetGrade() const
+size_t Blade::GetGrade() const
 {
 	return m_grade;
 }

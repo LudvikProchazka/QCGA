@@ -6,6 +6,18 @@ using namespace std::string_literals;
 
 GAQ GAQ::generatingBlades[GENERATING_BASIS_SIZE + 1];
 
+template <typename T>
+constexpr inline T abs_diff(T a, T b) {	return (a > b) ? (a - b) : (b - a); }
+template <typename T>
+constexpr inline T abs_sum(T a, T b) 
+{
+	if constexpr (std::is_signed_v<T>) 
+	{
+		return (a > 0 ? a : -a) + (b > 0 ? b : -b);
+	}
+	return a + b;
+}
+
 void GAQ::GenerateGeneratingBlades()
 {
 	GAQ::generatingBlades[0] = GAQ("1");
@@ -181,9 +193,9 @@ bool GAQ::operator!=(const GAQ& other) const
 }
 
 //Grade projection operator
-GAQ GAQ::operator[](int _grade) const
+GAQ GAQ::operator[](size_t _grade) const
 {
-	std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
+	const std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
 
 	GAQ res;
 	for (size_t i = 0; i < m_mapLabelToCoefficient.size(); i++)
@@ -196,16 +208,17 @@ GAQ GAQ::operator[](int _grade) const
 
 GAQ GAQ::operator[](const GAQ& other) const
 {
-	GAQ res;
-	for (const auto& [key, coeff] : m_mapLabelToCoefficient) 
+	const auto it = std::ranges::find_if(m_mapLabelToCoefficient,
+		[&](const auto& pair)
+		{
+			const auto& [key, coeff] = pair;
+			return other.m_mapLabelToCoefficient.contains(key);
+		});
+	if (it != m_mapLabelToCoefficient.end())
 	{
-		if (other.m_mapLabelToCoefficient.contains(key)) 
-		{ 
-			res = coeff * GAQ(key);
-			break;
-		}
+		return it->second * GAQ(it->first);
 	}
-	return res;
+	return {};
 }
 
 //geometric product operator
@@ -268,11 +281,9 @@ GAQ GAQ::operator*(GAQ&& other) const
 
 	GAQ res;
 	// try to simplify individual label
-	for (auto& [basisBlade, coef] : map) //each label in newLabel will be modified
+	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
 	{
 		std::string copyOfBasisBlade{basisBlade};
-		int sign{1}; //sign for controling sing when swaps happen
-
 		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
 		{
 			copyOfBasisBlade = "1";
@@ -286,6 +297,7 @@ GAQ GAQ::operator*(GAQ&& other) const
 			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
 		}
 
+		int sign{1}; //sign for controling sing when swaps happen
 		if (copyOfBasisBlade != "1")
 		{
 			SimplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
@@ -467,17 +479,9 @@ GAQ GAQ::Translate(const GAQ& point, translation_directions direction, long doub
 }
 
 //returns Grade of basis blade (if we give it appropriate label...)
-int GAQ::Grade(std::string_view label) const
+size_t GAQ::Grade(std::string_view label) const
 {
-	int grade{0};
-	for (char c : label) 
-	{
-		if (c == 'e') // LUDLUD std::ranges
-		{
-			grade++;
-		}
-	}
-	return grade;
+	return std::ranges::count(label, 'e');
 }
 
 //returns multivector in e_inf, e_o basis, used in << operator
@@ -640,19 +644,19 @@ std::vector<int> GAQ::ExtractIntegersFromBasisBlades(std::string_view label)
 //inner product of two basis blades operator. Usefull in inner product of two general multivectors
 GAQ GAQ::operator||(const GAQ& other) const
 {
-	return GAQ((*this * other)[abs(this->Grade(m_mapLabelToCoefficient.begin()->first) - other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
+	return GAQ((*this * other)[abs_diff(this->Grade(m_mapLabelToCoefficient.begin()->first), other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
 }
 
 //outer product of two basis blades operator
 GAQ GAQ::operator&&(const GAQ& other) const
 {
-	return GAQ((*this * other)[abs(this->Grade(m_mapLabelToCoefficient.begin()->first) + other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
+	return GAQ((*this * other)[abs_sum(this->Grade(m_mapLabelToCoefficient.begin()->first), other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
 }
 
 //Grade projection of basis blade
-GAQ GAQ::operator()(int Grade) const
+GAQ GAQ::operator()(size_t grade) const
 {
-	return (this->Grade(m_mapLabelToCoefficient.begin()->first) == Grade) ? *this : GAQ("0");
+	return (this->Grade(m_mapLabelToCoefficient.begin()->first) == grade) ? *this : GAQ("0");
 }
 
 void GAQ::DeleteZeroFromVector()
@@ -665,7 +669,6 @@ void GAQ::DeleteZeroFromVector()
 		}
 	}
 }
-
 
 //**********************************NON-MEMBER_OPERATORS**********************************\\
 

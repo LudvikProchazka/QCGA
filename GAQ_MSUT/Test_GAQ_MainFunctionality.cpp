@@ -131,7 +131,7 @@ namespace GAQ_MSUT
 			const GAQ T4 = one - 0.5 * distance * (e2 ^ ei4);
 			const GAQ T5 = one - 0.5 * distance * (e3 ^ ei5);
 
-			const GAQ translatorX = t.TranslatorExponential(20, distance);
+			const GAQ translatorX = t.TranslatorExponential(3, distance);
 			const GAQ translatorX2 = T1 * T2 * T3 * T4 * T5;
 
 			const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
@@ -159,7 +159,7 @@ namespace GAQ_MSUT
 			const GAQ T3 = one - 0.5 * distance * (e1 ^ ei4);
 			const GAQ T4 = one - 0.5 * distance * (e3 ^ ei6);
 
-			const GAQ translatorY = t.TranslatorExponential(20, distance);
+			const GAQ translatorY = t.TranslatorExponential(3, distance);
 			const GAQ translatorY2 = T1 * T2 * T3 * T4;
 
 			const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
@@ -187,7 +187,7 @@ namespace GAQ_MSUT
 			const GAQ T3 = one - 0.5 * distance * (e1 ^ ei5);
 			const GAQ T4 = one - 0.5 * distance * (e2 ^ ei6);
 
-			const GAQ translatorZ = t.TranslatorExponential(20, distance);
+			const GAQ translatorZ = t.TranslatorExponential(3, distance);
 			const GAQ translatorZ2 = T1 * T2 * T3 * T4;
 
 			const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
