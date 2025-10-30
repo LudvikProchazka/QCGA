@@ -457,11 +457,11 @@ GAQ GAQ::Translate(const GAQ& point, translation_directions direction, long doub
 	switch (direction)
 	{
 	case x:
-		return Tx * point * ~Tx;
+		return Tx(distance) * point * ~Tx(distance);
 	case y:
-		return Ty * point * ~Ty;
+		return Ty(distance) * point * ~Ty(distance);
 	case z:
-		return Tz * point * ~Tz;
+		return Tz(distance) * point * ~Tz(distance);
 	default:
 		std::cout << "Wrong direction for translating" << std::endl;
 		return point;
@@ -474,7 +474,7 @@ int GAQ::Grade(std::string_view label) const
 	int grade{0};
 	for (char c : label) 
 	{
-		if (c == 'e') 
+		if (c == 'e') // LUDLUD std::ranges
 		{
 			grade++;
 		}

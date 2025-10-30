@@ -51,24 +51,24 @@ constexpr long double PRECISION{1'000'000'000'000.0};	//constant for rounding
 #define rxz ((-1 * (e3 ^ e1)) + (-1 * (ei4 ^ eo6)) + (-2 * (ei3 ^ eo5)) + (-1 * (ei2 ^ eo5)) + (-1 * (eo4 ^ ei6)) + (-2 * (eo3 ^ ei5))) //generator for rotation in the xz-plane
 #define ryz ((e2 ^ e3) + (eo6 ^ ei3) + (ei5 ^ eo4) + (2 * (ei6 ^ eo3)) + (2 * (eo2 ^ ei6)) + (ei2 ^ eo6) + (eo5 ^ ei4)) //generator for rotation in the yz-plane
 
-#define T1x (one - 0.5 * distance * (e1 ^ ei1))
-#define T2x (one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2))
-#define T3x (one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3))
-#define T4x (one - 0.5 * distance * (e2 ^ ei4))
-#define T5x (one - 0.5 * distance * (e3 ^ ei5))
-#define Tx (T1x*T2x*T3x*T4x*T5x) //Translator in x
+#define T1x(distance) (one - 0.5 * distance * (e1 ^ ei1))
+#define T2x(distance) (one - 0.5 * distance * (e1 ^ ei2) + 0.25 * pow(distance, 2) * (ei1 ^ ei2))
+#define T3x(distance) (one - 0.5 * distance * (e1 ^ ei3) + 0.25 * pow(distance, 2) * (ei1 ^ ei3) + 0.25 * pow(distance, 2) * (ei2 ^ ei3))
+#define T4x(distance) (one - 0.5 * distance * (e2 ^ ei4))
+#define T5x(distance) (one - 0.5 * distance * (e3 ^ ei5))
+#define Tx(distance) (T1x(distance)*T2x(distance)*T3x(distance)*T4x(distance)*T5x(distance)) //Translator in x
 
-#define T1y (one - 0.5 * distance * (e2 ^ ei1))
-#define T2y (one + 0.5 * distance * (e2 ^ ei2) - 0.25 * pow(distance, 2) * (ei1 ^ ei2))
-#define T3y (one - 0.5 * distance * (e1 ^ ei4))
-#define T4y (one - 0.5 * distance * (e3 ^ ei6))
-#define Ty (T1y*T2y*T3y*T4y) //Translator in y
+#define T1y(distance) (one - 0.5 * distance * (e2 ^ ei1))
+#define T2y(distance) (one + 0.5 * distance * (e2 ^ ei2) - 0.25 * pow(distance, 2) * (ei1 ^ ei2))
+#define T3y(distance) (one - 0.5 * distance * (e1 ^ ei4))
+#define T4y(distance) (one - 0.5 * distance * (e3 ^ ei6))
+#define Ty(distance) (T1y(distance)*T2y(distance)*T3y(distance)*T4y(distance)) //Translator in y
 
-#define T1z (one - 0.5 * distance * (e3 ^ ei1))
-#define T2z	(one + 0.5 * distance * (e3 ^ ei3) - 0.25 * pow(distance, 2) * (ei1 ^ ei3))
-#define T3z	(one - 0.5 * distance * (e1 ^ ei5))
-#define T4z	(one - 0.5 * distance * (e2 ^ ei6))
-#define Tz (T1z*T2z*T3z*T4z) //Translator in z
+#define T1z(distance) (one - 0.5 * distance * (e3 ^ ei1))
+#define T2z(distance) (one + 0.5 * distance * (e3 ^ ei3) - 0.25 * pow(distance, 2) * (ei1 ^ ei3))
+#define T3z(distance) (one - 0.5 * distance * (e1 ^ ei5))
+#define T4z(distance) (one - 0.5 * distance * (e2 ^ ei6))
+#define Tz(distance) (T1z(distance)*T2z(distance)*T3z(distance)*T4z(distance)) //Translator in z
 
 #define I Blade(e1*e2*e3*e4*e5*e6*e7*e8*e9*e10*e11*e12*e13*e14*e15) //Pseaudoscalar
 
@@ -93,8 +93,10 @@ public:
 	GAQ(const std::pair<std::string,long double>& basisBlade); 
 	GAQ(std::pair<std::string,long double>&& basisBlade);
 
-	GAQ(const GAQ& instance); 
-	GAQ(GAQ&& instance) noexcept; 
+	GAQ(const GAQ& other); 
+	GAQ& operator=(const GAQ& other); 
+	GAQ(GAQ&& other) noexcept;
+	GAQ& operator=(GAQ&& other) noexcept; 
 	virtual ~GAQ() = default;
 
 	long double ToNumeric(); //returs coefficient at basis blade "1"
@@ -106,8 +108,6 @@ public:
 	
 	GAQ RotorExponential(unsigned int degree, long double phi) const;			// Use carefully! Only works for specific elements, may crash otherwise
 	GAQ TranslatorExponential(unsigned int degree, long double distance) const; // Use carefully! Only works for specific elements, may crash otherwise
-	GAQ& operator=(const GAQ& other); 
-	GAQ& operator=(GAQ&& other) noexcept; 
 	bool operator==(const GAQ& other) const;	//equals operator
 	bool operator!=(const GAQ& other) const;	//not equals operator
 	GAQ operator[](int Grade) const;			//Grade projection

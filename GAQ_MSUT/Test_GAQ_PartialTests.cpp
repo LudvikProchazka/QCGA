@@ -129,5 +129,24 @@ namespace GAQ_MSUT
 
 			Assert::IsTrue(rotorXY == expected);
 		}
+
+		TEST_METHOD(Test_TranslatorExponential)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			GAQ t1 = -1 * e1 ^ ei1;
+			GAQ t2 = -1 * e1 ^ ei2;
+			GAQ t3 = -1 * e1 ^ ei3;
+			GAQ t4 = -1 * e2 ^ ei4;
+			GAQ t5 = -1 * e3 ^ ei5;
+
+			GAQ t = t1 + t2 + t3 + t4 + t5;
+			double distance = std::numbers::pi;
+
+			GAQ translatorX = t.TranslatorExponential(3, distance); // indeed only 3 because of commutation relations - zeros for higher orders
+			GAQ expected = Tx(distance);
+
+			Assert::IsTrue(translatorX == expected);
+		}
 	};
 }
