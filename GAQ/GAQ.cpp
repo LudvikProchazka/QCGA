@@ -104,7 +104,7 @@ bool GAQ::IsEqual(const GAQ& other, double precision) const
 			break;
 		}
 		//if there is, check for coefs if they are the same
-		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > precision)
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > 1.0 / precision)
 		{
 			equal = false;
 			break;
@@ -118,7 +118,7 @@ bool GAQ::IsEqual(const GAQ& other, double precision) const
 			break;
 		}
 		//if there is, check for coefs if they are the same
-		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > precision)
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > 1.0 / precision)
 		{
 			equal = false;
 			break;
@@ -174,7 +174,7 @@ GAQ& GAQ::operator=(GAQ&& other) noexcept
 
 bool GAQ::operator==(const GAQ& other) const
 {
-	return this->IsEqual(other, 1e6);
+	return this->IsEqual(other, 1e9);
 }
 
 bool GAQ::operator!=(const GAQ& other) const

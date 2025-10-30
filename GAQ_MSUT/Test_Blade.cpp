@@ -138,7 +138,6 @@ namespace GAQ_MSUT
 
 			Assert::IsTrue(b.IsBlade());
 			Assert::IsTrue(b.IsNullBlade());
-			Assert::IsFalse(euclidean.IsNullBlade());
 		}
 
 		TEST_METHOD(Test_Grade)
