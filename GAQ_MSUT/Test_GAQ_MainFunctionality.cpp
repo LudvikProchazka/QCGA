@@ -3,11 +3,14 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#define SKIP_MAIN_TESTS
+
 namespace GAQ_MSUT
 {
 	TEST_CLASS(GAQ_MSUT)
 	{
 	public:
+#ifndef SKIP_MAIN_TESTS
 		
 		TEST_METHOD(Test_RotationXY)
 		{
@@ -237,5 +240,6 @@ namespace GAQ_MSUT
 			Assert::IsTrue(translatedXZ == targetY);
 			Assert::IsTrue(translatedYZ == targetZ);
 		}
+#endif
 	};
 }

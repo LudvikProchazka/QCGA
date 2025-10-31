@@ -61,37 +61,31 @@ GAQ::GAQ(const std::map<std::string, long double>& map)
 		copyOfMap["1"] = 0;
 	}
 	m_mapLabelToCoefficient = copyOfMap;
-	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(std::map<std::string, long double>&& map)
 {
 	m_mapLabelToCoefficient = std::move(map);
-	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(const std::pair<std::string, long double>& basis_blade)
 {
 	m_mapLabelToCoefficient.emplace(basis_blade);
-	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(std::pair<std::string, long double>&& basis_blade)
 {
 	m_mapLabelToCoefficient.emplace(std::move(basis_blade));
-	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(const GAQ& instance)
 {
 	m_mapLabelToCoefficient = instance.m_mapLabelToCoefficient;
-	DeleteZeroFromVector();
 }
 
 GAQ::GAQ(GAQ&& instance) noexcept
 {
 	m_mapLabelToCoefficient = std::move(instance.m_mapLabelToCoefficient);
-	DeleteZeroFromVector();
 }
 
 const std::map<std::string, long double>& GAQ::GetSTDmapLabelToCoefficient() const
@@ -208,6 +202,7 @@ GAQ GAQ::operator[](size_t _grade) const
 	{
 		res = res + (left[i])(_grade); //equivalent to standard formula 
 	}
+	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -267,6 +262,7 @@ GAQ GAQ::operator*(const GAQ& other) const
 
 		res = (res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign)))));
 	}
+	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -309,6 +305,7 @@ GAQ GAQ::operator*(GAQ&& other) const
 
 		res = std::move((res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign))))));
 	}
+	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -396,6 +393,7 @@ GAQ GAQ::operator|(const GAQ& other) const
 			res = res + (left[i] || right[j]); //equivalent to standard formula 
 		}
 	}
+	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -414,6 +412,7 @@ GAQ GAQ::operator^(const GAQ& other) const
 			res = res + (left[i] && right[j]); //equivalent to standard formula 
 		}
 	}
+	res.DeleteZeroFromVector();
 	return res;
 }
 
@@ -430,6 +429,7 @@ GAQ GAQ::operator^(int exponent) const
 	{
 		res = res * *this;
 	}
+	res.DeleteZeroFromVector();
 	return res;
 }
 
