@@ -11,38 +11,38 @@ namespace GAQ_MSUT
 		
 		TEST_METHOD(Test_RotationXY)
 		{
-			GAQ r1 = e1 ^ e2;
-			GAQ r2 = eo6 ^ ei5;
-			GAQ r3 = ei6 ^ eo5;
-			GAQ r4 = 2 * (eo4 ^ ei2);
-			GAQ r5 = 2 * (ei4 ^ eo2);
-			GAQ r6 = eo4 ^ ei3;
+			const GAQ r1 = e1 ^ e2;
+			const GAQ r2 = eo6 ^ ei5;
+			const GAQ r3 = ei6 ^ eo5;
+			const GAQ r4 = 2 * (eo4 ^ ei2);
+			const GAQ r5 = 2 * (ei4 ^ eo2);
+			const GAQ r6 = eo4 ^ ei3;
 
-			GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
+			const GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
 
-			double phi = std::numbers::pi / 4.0;
-			GAQ R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
-			GAQ R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
-			GAQ R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
-			GAQ R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
-			GAQ R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
+			const double phi = std::numbers::pi / 4.0;
+			const GAQ R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
+			const GAQ R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
+			const GAQ R3 = cos(phi / 2) * one + sin(phi / 2) * r3;
+			const GAQ R4 = cos(phi) * one + sin(phi) * (0.5 * r4);
+			const GAQ R5 = cos(phi) * one + sin(phi) * (0.5 * r5);
 
 
-			GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
-			GAQ c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
-			GAQ c_24 = -1.5 * ei2 + 2 * ei4;
-			GAQ c_56 = 3 * ei5 + 6 * ei6;
-			GAQ c_3 = -4 * ei3;
+			const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+			const GAQ c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
+			const GAQ c_24 = -1.5 * ei2 + 2 * ei4;
+			const GAQ c_56 = 3 * ei5 + 6 * ei6;
+			const GAQ c_3 = -4 * ei3;
 
-			double x = 1;
-			double y = 2;
-			double z = 3;
-			double theta = atan(2) - phi;
-			GAQ target = Up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
-			GAQ _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) + c_3 + ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
+			const double x = 1;
+			const double y = 2;
+			const double z = 3;
+			const double theta = atan(2) - phi;
+			const GAQ target = Up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
+			const GAQ _rotated = (R1 * c_cga * ~R1) + ((R2 ^ R3) * c_56 * (~R3 ^ ~R2)) + c_3 + ((R4 ^ R5) * c_24 * (~R5 ^ ~R4)) + (-0.5 * sin(phi) * sin(phi) * (x * x - y * y) + sin(phi) * cos(phi) * x * y) * ei3;
 
-			GAQ rotor = r.RotorExponential(20, phi);
-			GAQ rotated = (rotor * C * ~rotor)[1];
+			const GAQ rotor = r.RotorExponential(20, phi);
+			const GAQ rotated = (rotor * C * ~rotor)[1];
 
 			Assert::IsTrue(_rotated == target);
 			Assert::IsTrue(rotated == target);
@@ -152,7 +152,7 @@ namespace GAQ_MSUT
 			const GAQ t4 = -1 * e3 ^ ei6;
 
 			const GAQ t = t1 + t2 + t3 + t4;
-			const int distance = 7;
+			const double distance = 7;
 
 			const GAQ T1 = one - 0.5 * distance * (e2 ^ ei1);
 			const GAQ T2 = one + 0.5 * distance * (e2 ^ ei2) - 0.25 * pow(distance, 2) * (ei1 ^ ei2);
@@ -180,7 +180,7 @@ namespace GAQ_MSUT
 			const GAQ t4 = -1 * e2 ^ ei6;
 
 			const GAQ t = t1 + t2 + t3 + t4;
-			const int distance = -4;
+			const double distance = -4;
 
 			const GAQ T1 = one - 0.5 * distance * (e3 ^ ei1);
 			const GAQ T2 = one + 0.5 * distance * (e3 ^ ei3) - 0.25 * pow(distance, 2) * (ei1 ^ ei3);
@@ -198,6 +198,44 @@ namespace GAQ_MSUT
 
 			Assert::IsTrue(translated == target);
 			Assert::IsTrue(translated2 == target);
+		}
+
+		TEST_METHOD(Test_Rotate)
+		{
+			const double phi = std::numbers::pi / 4.0;
+			const double theta = atan(2) - phi;
+			const GAQ XY = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+			const GAQ XZ = Up(1, 3, 2); //eo1+e1+3*e2+2*e3+7*ei1-2*ei2-3*ei3+3*ei4+2*ei5+6*ei6
+			const GAQ YZ = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+			const GAQ rotatedXY = GAQ::Rotate(XY, xy, phi);
+			const GAQ rotatedXZ = GAQ::Rotate(XZ, xz, phi);
+			const GAQ rotatedYZ = GAQ::Rotate(YZ, yz, phi);
+			const GAQ targetXY = Up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
+			const GAQ targetXZ = Up(sqrt(5) * cos(theta), 3, sqrt(5) * sin(theta));
+			const GAQ targetYZ = Up(1, 0.5 * 5 * sqrt(2), 0.5 * sqrt(2));
+
+			Assert::IsTrue(rotatedXY == targetXY);
+			Assert::IsTrue(rotatedXZ == targetXZ);
+			Assert::IsTrue(rotatedYZ == targetYZ);
+		}
+
+		TEST_METHOD(Test_Translate)
+		{
+			const double distanceX = -1.0 / 3.0;
+			const double distanceY = 7.0;
+			const double distanceZ = -4.0;
+
+			const GAQ point = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+			const GAQ translatedXY = GAQ::Translate(point, x, distanceX);
+			const GAQ translatedXZ = GAQ::Translate(point, y, distanceY);
+			const GAQ translatedYZ = GAQ::Translate(point, z, distanceZ);
+			const GAQ targetX = Up(1 + distanceX, 2, 3);
+			const GAQ targetY = Up(1, 2 + distanceY, 3);
+			const GAQ targetZ = Up(1, 2, 3 + distanceZ);
+
+			Assert::IsTrue(translatedXY == targetX);
+			Assert::IsTrue(translatedXZ == targetY);
+			Assert::IsTrue(translatedYZ == targetZ);
 		}
 	};
 }

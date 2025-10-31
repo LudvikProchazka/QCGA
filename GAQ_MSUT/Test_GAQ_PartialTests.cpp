@@ -12,6 +12,16 @@ namespace GAQ_MSUT
 	public:
 		using GAQ::GAQ;
 
+		static void SimplifyBasisBlade(std::string& label, int& sign)
+		{
+			GAQ::SimplifyBasisBlade(label, sign);
+		}
+
+		static void ProcessVector(std::vector<int>& vec, int& sign)
+		{
+			GAQ::ProcessVector(vec, sign);
+		}
+
 		static int CalculateSign(int* permutation, int count)
 		{
 			return GAQ::CalculateSign(permutation, count);
@@ -26,6 +36,80 @@ namespace GAQ_MSUT
 	TEST_CLASS(GAQ_Partial)
 	{
 	public:
+		TEST_METHOD(Test_Product)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			GAQ a = 2 * one + 3 * e1 - e1 * e3;
+			GAQ b = e1 + e1 * e2;
+
+			Assert::IsTrue((a ^ b) == 2 * e1 + 2 * e1 * e2);
+			Assert::IsTrue((a | b) == 3 * one + 2 * e1 + 3 * e2 + e3 + 2 * e1 * e2);
+			Assert::IsTrue((a * b) == 3 * one + 2 * e1 + 3 * e2 + e3 + 2 * e1 * e2 - e2 * e3);
+		}
+
+		TEST_METHOD(Test_Addition)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			GAQ a = e1 * e2 * e3 * e4;
+			GAQ b = e1 * e2 + e3 * e4;
+
+			Assert::IsTrue(a + b == e1 * e2 * e3 * e4 + e1 * e2 + e3 * e4);
+			Assert::IsTrue(a - b == e1 * e2 * e3 * e4 - e1 * e2 - e3 * e4);
+		}
+
+		TEST_METHOD(Test_Reverse)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			GAQ a = e1 * e2 * e3 * e4;
+			GAQ b = e1 * e2 + e3 * e4;
+
+			Assert::IsTrue(~a == e4 * e3 * e2 * e1);
+			Assert::IsTrue(~b == e2 * e1 + e4 * e3);
+		}
+
+		TEST_METHOD(Test_SimplifyBasisBlade)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			int sign1{1};
+			int sign2{1};
+			int sign3{1};
+			std::string label1 = "e1*e2*e5*e2*e3*e4*e5";
+			std::string label2 = "e1*e2*e1*e2*e1*e2*e1";
+			std::string label3 = "e10*e12*e10";
+
+			GAQ_Test::SimplifyBasisBlade(label1, sign1);
+			GAQ_Test::SimplifyBasisBlade(label2, sign2);
+			GAQ_Test::SimplifyBasisBlade(label3, sign3);
+
+			Assert::IsTrue(sign1 == -1);
+			Assert::IsTrue(sign2 == 1);
+			Assert::IsTrue(sign3 == 1);
+			Assert::IsTrue(label1 == "e1*e3*e4");
+			Assert::IsTrue(label2 == "e2");
+			Assert::IsTrue(label3 == "e12");
+		}
+
+		TEST_METHOD(Test_ProcessVector)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			int sign1{1};
+			int sign2{1};
+			std::vector<int> vec1{1, 2, 5, 2, 3, 4, 5};
+			std::vector<int> vec2{1};
+			GAQ_Test::ProcessVector(vec1, sign1);
+			GAQ_Test::ProcessVector(vec2, sign2);
+
+			Assert::IsTrue(sign1 == -1);
+			Assert::IsTrue(sign2 == 1);
+			Assert::IsTrue(vec1 == std::vector<int>{1, 3, 4});
+			Assert::IsTrue(vec2 == std::vector<int>{1});
+		}
+
 		TEST_METHOD(Test_CalculateSign)
 		{
 			GAQ::GenerateGeneratingBlades();

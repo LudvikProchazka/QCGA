@@ -435,6 +435,11 @@ GAQ GAQ::operator^(int exponent) const
 
 GAQ GAQ::operator/(long double divider) const
 {
+	if (divider == 0)
+	{
+		std::cout << "Warning, division by zero detected!" << std::endl;
+		return *this;
+	}
 	return *this * (1.0 / divider);
 }
 
@@ -548,7 +553,7 @@ void GAQ::SimplifyBasisBlade(std::string& label, int& sign)
 		label = label.substr(label.find("*") + 1, label.size());
 	}
 	permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.size())));
-	processVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented by numbers (1252345 -> 15345 ...)
+	ProcessVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented by numbers (1252345 -> 15345 ...)
 
 	std::string s;
 	for (size_t i = 0; i < permutations.size(); i++) //creates new proper label
@@ -569,7 +574,7 @@ void GAQ::SimplifyBasisBlade(std::string& label, int& sign)
 }
 
 //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
-void GAQ::processVector(std::vector<int>& vec, int& sign)
+void GAQ::ProcessVector(std::vector<int>& vec, int& sign)
 {
 	for (size_t i = 0; i < vec.size() - 1; ++i)
 	{
@@ -593,7 +598,7 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 			{
 				return;
 			}
-			processVector(vec, sign);
+			ProcessVector(vec, sign);
 		}
 		if (vec.empty())
 		{
