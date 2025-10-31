@@ -245,7 +245,6 @@ GAQ GAQ::operator*(const GAQ& other) const
 	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
 	{ 
 		std::string copyOfBasisBlade{basisBlade};
-		int sign{1}; //sign for controling sing when swaps happen
 
 		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
 		{
@@ -260,6 +259,7 @@ GAQ GAQ::operator*(const GAQ& other) const
 			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
 		}
 
+		int sign{1}; //sign for controling sing when swaps happen
 		if (copyOfBasisBlade != "1")
 		{
 			SimplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
@@ -335,9 +335,11 @@ GAQ GAQ::operator~() const
 		}
 		else
 		{
-			std::vector<int> permutation{ExtractIntegersFromBasisBlades(basisBlade)};
-			std::reverse(permutation.begin(), permutation.end());
-			map[basisBlade] = coef * CalculateSign(permutation);
+			int count{0};
+			int permutation[15]{};
+			ExtractIntegersFromBasisBlades(basisBlade, permutation, count);
+			std::reverse(permutation, permutation + count);
+			map[basisBlade] = coef * CalculateSign(permutation, count);
 		}
 	}
 	return GAQ(std::move(map));
@@ -519,20 +521,20 @@ std::string GAQ::Log() const
 //************************************PRROTECTED************************************\\
 
 //calculates sign of permutation
-int GAQ::CalculateSign(const std::vector<int>& permutation) 
+int GAQ::CalculateSign(int* permutation, int count) 
 {
-	int sign{1};
-	for (size_t i = 0; i < permutation.size(); i++) 
+	bool neg{false};
+	for (int i = 0; i < count; ++i)
 	{
-		for (size_t j = i + 1; j < permutation.size(); j++) 
+		for (int j = i + 1; j < count; ++j)
 		{
-			if (permutation[i] > permutation[j]) 
+			if (permutation[i] > permutation[j])
 			{
-				sign = -sign; // Switch the sign for each inversion
+				neg = !neg;
 			}
 		}
 	}
-	return sign;
+	return neg ? -1 : 1;
 }
 
 //simplifies label in a form of for example  e1e2e3e2e3 into e1
@@ -547,7 +549,7 @@ void GAQ::SimplifyBasisBlade(std::string& label, int& sign)
 	}
 	permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.size())));
 	processVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented by numbers (1252345 -> 15345 ...)
-	
+
 	std::string s;
 	for (size_t i = 0; i < permutations.size(); i++) //creates new proper label
 	{
@@ -567,11 +569,11 @@ void GAQ::SimplifyBasisBlade(std::string& label, int& sign)
 }
 
 //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
-void GAQ::processVector(std::vector<int>& vec, int& sign) 
+void GAQ::processVector(std::vector<int>& vec, int& sign)
 {
-	for (size_t i = 0; i < vec.size() - 1; i++)
+	for (size_t i = 0; i < vec.size() - 1; ++i)
 	{
-		for (size_t j = i + 1; j < vec.size(); j++)
+		for (size_t j = i + 1; j < vec.size(); ++j)
 		{
 			if (vec[i] != vec[j])
 			{
@@ -581,7 +583,7 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 			{
 				sign *= -1;
 			}
-			for (size_t k = 0; k < j - i - 1; k++)
+			for (size_t k = 0; k < j - i - 1; ++k)
 			{
 				std::swap(vec[j - k - 1], vec[j - k]);
 				sign *= -1;
@@ -589,13 +591,13 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 			vec.erase(vec.begin() + i, vec.begin() + i + 2);
 			if (vec.empty())
 			{
-				break;
+				return;
 			}
 			processVector(vec, sign);
 		}
 		if (vec.empty())
 		{
-			break;
+			return;
 		}
 	}
 	if (vec.empty())
@@ -604,9 +606,9 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 	}
 	//bubble sort, easy to track swaps... e3e2e1 -> e1e2e3
 	size_t i, j;
-	for (i = 0; i < vec.size() - 1; i++)
+	for (i = 0; i < vec.size() - 1; ++i)
 	{
-		for (j = 0; j < vec.size() - i - 1; j++)
+		for (j = 0; j < vec.size() - i - 1; ++j)
 		{
 			if (vec[j] > vec[j + 1])
 			{
@@ -617,27 +619,27 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 	}
 }
 
-//from a given label, for example e1*e2*e3, returns vector {1,2,3}
-std::vector<int> GAQ::ExtractIntegersFromBasisBlades(std::string_view label)
+//from a given label, for example e1*e2*e3, returns {1,2,3}
+void GAQ::ExtractIntegersFromBasisBlades(std::string_view label, int out_buffer[15], int& out_count)
 {
-	std::vector<int> permutation;
-	permutation.reserve(15);
-	int basis_vec_number;
-	auto position = label.begin();
-	while (position < label.end())
+	int pos{0};
+	out_count = 0;
+	const size_t labelSize{label.size()};
+	while (pos < labelSize) // we are guearanteed to have less than 15 elements. A bit dangerous ngl
 	{
-		auto [ptr, error] {std::from_chars(position._Unwrapped(), position._Unwrapped() + 2, basis_vec_number)};
-		if (error == std::errc{}) 
+		++pos;
+		int value{0};
+		while (pos < labelSize && std::isdigit(label[pos]))
 		{
-			permutation.push_back(basis_vec_number);
-			if (basis_vec_number > 9) 
-			{ 
-				position++; 
-			}
+			value = value * 10 + (label[pos++] - '0');
 		}
-		position++;
+		out_buffer[out_count++] = value;
+
+		if (pos < labelSize && label[pos] == '*')
+		{
+			++pos;
+		}
 	}
-	return permutation;
 }
 
 //**********************************STATIC_SUPPORT_OPERATORS**********************************\\

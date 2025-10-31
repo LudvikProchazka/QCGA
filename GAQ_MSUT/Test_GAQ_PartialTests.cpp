@@ -6,16 +6,79 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace GAQ_MSUT
 {
+	class GAQ_Test
+		: public GAQ
+	{
+	public:
+		using GAQ::GAQ;
+
+		static int CalculateSign(int* permutation, int count)
+		{
+			return GAQ::CalculateSign(permutation, count);
+		}
+
+		static void ExtractIntegersFromBasisBlades(std::string_view label, int buffer[15], int& out_count)
+		{
+			return GAQ::ExtractIntegersFromBasisBlades(label, buffer, out_count);
+		}
+	};
+
 	TEST_CLASS(GAQ_Partial)
 	{
 	public:
+		TEST_METHOD(Test_CalculateSign)
+		{
+			GAQ::GenerateGeneratingBlades();
 
+			int arr0[4]{1,3,2,4};
+			int arr1[4]{3,4,1,2};
+			int arr2[1]{1};
+			int arr3[1]{0};
+
+			int res0 = GAQ_Test::CalculateSign(arr0, 4);
+			int res1 = GAQ_Test::CalculateSign(arr1, 4);
+			int res2 = GAQ_Test::CalculateSign(arr2, 1);
+			int res3 = GAQ_Test::CalculateSign(arr3, 1);
+
+			Assert::IsTrue(res0 < 0);
+			Assert::IsTrue(res1 > 0);
+			Assert::IsTrue(res2 > 0);
+			Assert::IsTrue(res3 > 0);
+		}
+
+		TEST_METHOD(Test_ExtractIntegersFromBasisBlades)
+		{
+			GAQ::GenerateGeneratingBlades();
+
+			int arr0[15]{};
+			int arr1[15]{};
+			int arr2[15]{};
+			int arr3[15]{};
+			int arr4[15]{};
+			int count0{0};
+			int count1{0};
+			int count2{0};
+			int count3{0};
+			int count4{0};
+
+			GAQ_Test::ExtractIntegersFromBasisBlades("e9*e12*e13", arr0, count0);
+			GAQ_Test::ExtractIntegersFromBasisBlades("e1*e2*e3*e4", arr1, count1);
+			GAQ_Test::ExtractIntegersFromBasisBlades("e4*e2*e1*e5", arr2, count2);
+			GAQ_Test::ExtractIntegersFromBasisBlades("e1", arr3, count3);
+			GAQ_Test::ExtractIntegersFromBasisBlades("1", arr4, count4);
+
+			Assert::IsTrue(std::equal(arr0, arr0 + count0, std::begin({9, 12, 13})));
+			Assert::IsTrue(std::equal(arr1, arr1 + count1, std::begin({1, 2, 3, 4})));
+			Assert::IsTrue(std::equal(arr2, arr2 + count2, std::begin({4, 2, 1, 5})));
+			Assert::IsTrue(std::equal(arr3, arr3 + count3, std::begin({1})));
+			Assert::IsTrue(std::equal(arr4, arr4 + count4, std::begin({0})));
+		}
 
 		TEST_METHOD(Test_DeleteZerosFromVector)
 		{
 			GAQ::GenerateGeneratingBlades();
 
-			GAQ a = e1 + 1e-12 * e2 + 0 * e3 + zero_vector; // runs internally
+			GAQ a = e1 + 1e-12 * e2 + 0 * e3 + zero_vector; // runs internally in ctors
 			GAQ b = e1 + e2;
 
 			Assert::IsTrue(a == e1);

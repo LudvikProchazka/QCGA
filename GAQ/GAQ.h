@@ -135,10 +135,10 @@ public:
 	static GAQ generatingBlades[];				//stores 1,e1,e2,...,en.
 
 protected:
-	static int CalculateSign(const std::vector<int>& permutation); //Helps in validating basis Element, calculates sign of permutation
+	static int CalculateSign(int* permutation, int count); //Helps in validating basis Element, calculates sign of permutation
 	static void SimplifyBasisBlade(std::string& label, int& sign); //simplifies label in a form of for example  e1e2e3e2e3 into e1
 	static void processVector(std::vector<int>& vec, int& sign); //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
-	static std::vector<int> ExtractIntegersFromBasisBlades(std::string_view label); //from a given label, for example e1*e2*e3, returns vector {1,2,3}
+	static void ExtractIntegersFromBasisBlades(std::string_view label, int out_buffer[15], int& out_count); // TRANSFERS OWNERSHIPS TO CALLER //from a given label, for example e1*e2*e3, returns vector {1,2,3}
 
 	GAQ operator||(const GAQ& other) const; //inner product of two basis blades
 	GAQ operator &&(const GAQ& other) const; //outer product of two basis blades
