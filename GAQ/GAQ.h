@@ -92,7 +92,7 @@ public:
 	GAQ(const std::pair<std::string, long double>& basisBlade);
 	GAQ(std::pair<std::string, long double>&& basisBlade);
 
-	static void GenerateGeneratingBlades();
+	static void GenerateGeneratingBlades(); // Generates generating basis and scalar, that is 1, e1, ..., e15
 
 	GAQ(const GAQ& other); 
 	GAQ& operator=(const GAQ& other); 
@@ -109,49 +109,48 @@ public:
 	
 	GAQ RotorExponential(unsigned int degree, long double phi) const;			// Use carefully! Only works for specific elements, may crash otherwise
 	GAQ TranslatorExponential(unsigned int degree, long double distance) const; // Use carefully! Only works for specific elements, may crash otherwise
-	bool operator==(const GAQ& other) const;	//equals operator
-	bool operator!=(const GAQ& other) const;	//not equals operator
-	GAQ operator[](size_t grade) const;			//Grade projection
-	GAQ operator[](const GAQ& other) const;	//basis blade selection
-	GAQ operator*(const GAQ& other) const;	//geometric product operator
+	bool operator==(const GAQ& other) const;
+	bool operator!=(const GAQ& other) const;
+	GAQ operator[](size_t grade) const;			// Grade projection
+	GAQ operator[](const GAQ& other) const;		// Basis blade selection
+	GAQ operator*(const GAQ& other) const;		// Geometric product operator
 	GAQ operator*(GAQ&& other) const; 
-	GAQ operator*(long double scalar) const;	//multiplying by scalar from the right operator
-	GAQ operator~() const;						//reverse operator
-	GAQ operator+(const GAQ& other) const;	//multivector addition operator
-	GAQ operator-(const GAQ& other) const;	//multivector substraction operator
-	GAQ operator|(const GAQ& other) const;	//inner product operator
-	GAQ operator^(const GAQ& other) const;	//outer product operator
-	GAQ operator^(int exponent) const;			//exponent operator
-	GAQ operator/(long double divider) const;	//dividing operator
+	GAQ operator*(long double scalar) const;	// Multiplying by scalar from the right operator
+	GAQ operator~() const;						// Reverse operator
+	GAQ operator+(const GAQ& other) const;		// Multivector addition operator
+	GAQ operator-(const GAQ& other) const;		// Multivector substraction operator
+	GAQ operator|(const GAQ& other) const;		// Inner product operator
+	GAQ operator^(const GAQ& other) const;		// Outer product operator
+	GAQ operator^(int exponent) const;			// Exponent operator
+	GAQ operator/(long double divider) const;	// Dividing operator
 	GAQ ScalarProduct(const GAQ& b) const;
 
 	static GAQ Rotate(const GAQ& point, rotation_planes plane, long double angle);
 	static GAQ Translate(const GAQ& point, translation_directions plane, long double angle);
 
-	size_t Grade(std::string_view label) const;	//returns Grade of basis blade (if we give it appropriate label...)
-	std::string Log() const;					//returns multivector, used in << operator
+	size_t Grade(std::string_view label) const;	// Returns Grade of basis blade (if we give it appropriate label...)
+	std::string Log() const;					// Returns multivector, used in << operator
 	
-	static GAQ generatingBlades[];				//stores 1,e1,e2,...,en.
+	static GAQ generatingBlades[];				// Stores 1,e1,e2,...,en.
 
 protected:
-	static int CalculateSign(int* permutation, int count); //Helps in validating basis Element, calculates sign of permutation
-	static void SimplifyBasisBlade(std::string& label, int& sign); //simplifies label in a form of for example  e1e2e3e2e3 into e1
-	static void ProcessVector(std::vector<int>& vec, int& sign); //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
-	static void ExtractIntegersFromBasisBlades(std::string_view label, int out_buffer[15], int& out_count); //from a given label, for example e1*e2*e3, returns vector {1,2,3}
-	void DeleteZeroFromVector(); //if multivector is of a form 0*1 + c1e1+ c2e1*e2 +... it removes 0*1
+	static int CalculateSign(int* permutation, int count);			// Helps in validating basis Element, calculates sign of permutation
+	static std::string SimplifyBasisBlade(std::string_view label, int& sign);	// Simplifies label in a form of for example  e1e2e3e2e3 into e1
+	static void ProcessVector(std::vector<int>& vec, int& sign);	// Used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
+	static void ExtractIntegersFromBasisBlades(std::string_view label, int out_buffer[15], int& out_count); // From a given label, for example e1*e2*e3, returns vector {1,2,3}
+	void DeleteZeroFromVector(); // If multivector is of a form 0*1 + c1e1+ c2e1*e2 +... it removes 0*1
 
-	GAQ operator||(const GAQ& other) const; //inner product of two basis blades
-	GAQ operator&&(const GAQ& other) const; //outer product of two basis blades
-	GAQ operator()(size_t Grade) const; //Grade projection of basis blade
+	GAQ operator||(const GAQ& other) const; // Inner product of two basis blades
+	GAQ operator&&(const GAQ& other) const; // Outer product of two basis blades
+	GAQ operator()(size_t Grade) const;		// Grade projection of basis blade
 	
-	std::map<std::string, long double> m_mapLabelToCoefficient; //representation of a general multivector
+	std::map<std::string, long double> m_mapLabelToCoefficient; // Representation of a general multivector
 	// 3 + 2e1 - e1*e2*e3
 	// ==================
 	// 1 |  e1 | e1*e2*e3 
 	// 3 |   2 |       -1
 };
-//**********************************NON-MEMBER_OPERATORS**********************************\\
 
-GAQ operator*(long double scalar, const GAQ& onther); //multiplying by scalar from the left
-std::ostream& operator<<(std::ostream& stream, const GAQ& vector); //operator for printing
-std::vector<GAQ> MakeQCGAFromBasisBlades(const GAQ& multivector); //returns vector of basis blades in linear combination of general multivector
+GAQ operator*(long double scalar, const GAQ& onther);				// Multiplying by scalar from the left
+std::ostream& operator<<(std::ostream& stream, const GAQ& vector);	// Operator for printing
+std::vector<GAQ> MakeQCGAFromBasisBlades(const GAQ& multivector);	// Returns vector of basis blades in linear combination of general multivector

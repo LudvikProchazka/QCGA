@@ -12,9 +12,9 @@ namespace GAQ_MSUT
 	public:
 		using GAQ::GAQ;
 
-		static void SimplifyBasisBlade(std::string& label, int& sign)
+		static std::string SimplifyBasisBlade(std::string_view label, int& sign)
 		{
-			GAQ::SimplifyBasisBlade(label, sign);
+			return GAQ::SimplifyBasisBlade(label, sign);
 		}
 
 		static void ProcessVector(std::vector<int>& vec, int& sign)
@@ -81,16 +81,16 @@ namespace GAQ_MSUT
 			std::string label2 = "e1*e2*e1*e2*e1*e2*e1";
 			std::string label3 = "e10*e12*e10";
 
-			GAQ_Test::SimplifyBasisBlade(label1, sign1);
-			GAQ_Test::SimplifyBasisBlade(label2, sign2);
-			GAQ_Test::SimplifyBasisBlade(label3, sign3);
+			std::string res1 = GAQ_Test::SimplifyBasisBlade(label1, sign1);
+			std::string res2 = GAQ_Test::SimplifyBasisBlade(label2, sign2);
+			std::string res3 = GAQ_Test::SimplifyBasisBlade(label3, sign3);
 
 			Assert::IsTrue(sign1 == -1);
 			Assert::IsTrue(sign2 == 1);
 			Assert::IsTrue(sign3 == 1);
-			Assert::IsTrue(label1 == "e1*e3*e4");
-			Assert::IsTrue(label2 == "e2");
-			Assert::IsTrue(label3 == "e12");
+			Assert::IsTrue(res1 == "e1*e3*e4");
+			Assert::IsTrue(res2 == "e2");
+			Assert::IsTrue(res3 == "e12");
 		}
 
 		TEST_METHOD(Test_ProcessVector)

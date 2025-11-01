@@ -144,6 +144,7 @@
     <ClInclude Include="Blade.h" />
     <ClInclude Include="Examples.h" />
     <ClInclude Include="GAQ.h" />
+    <ClInclude Include="Instrumentor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

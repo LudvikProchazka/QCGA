@@ -1,4 +1,4 @@
-#include "GAQ.h"
+﻿#include "GAQ.h"
 #include <cmath>
 #include <numeric>
 
@@ -234,33 +234,44 @@ GAQ GAQ::operator*(const GAQ& other) const
 		}																			//     2 |  	 -1 |			2 |				-1
 	}
 																				
-
 	GAQ res;
 	// try to simplify individual label
-	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
+	for (const auto& [basisBlade, coef] : map)
 	{ 
-		std::string copyOfBasisBlade{basisBlade};
+		std::string_view labelView{basisBlade};
 
-		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
+		const char* data = basisBlade.data();
+		size_t size = basisBlade.size();
+
+		if (basisBlade.find('e') == std::string::npos)
 		{
-			copyOfBasisBlade = "1";
+			labelView = "1";
 		}
-		else if ((basisBlade.find_last_of("*") + 1) != basisBlade.find_last_of("e")) //if there is ei*1, label will be ei
+		else
 		{
-			copyOfBasisBlade = basisBlade.substr(0, basisBlade.find_last_of("*"));
-		}
-		else if (basisBlade.find("e") > 0) //if there is 1*ei, label will be ei
-		{
-			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
+			const char* start = data;
+			const char* end = data + size;
+			if (size >= 2 && data[0] == '1' && data[1] == '*')
+			{
+				start += 2;
+			}
+			const char* star = static_cast<const char*>(std::memchr(data, '*', size));
+			if (!star) star = end;
+			if (star + 1 < end && *(star + 1) == '1')
+			{
+				end = star;
+			}
+			labelView = std::string_view(start, end - start);
 		}
 
-		int sign{1}; //sign for controling sing when swaps happen
-		if (copyOfBasisBlade != "1")
-		{
-			SimplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
-		}
+		int sign = 1;
+		std::string simplified;
+		if (labelView != "1")
+			simplified = SimplifyBasisBlade(labelView, sign);
+		else
+			simplified = "1";
 
-		res = (res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign)))));
+		res = res + GAQ(std::make_pair(std::move(simplified), coef * sign));
 	}
 	res.DeleteZeroFromVector();
 	return res;
@@ -268,9 +279,7 @@ GAQ GAQ::operator*(const GAQ& other) const
 
 GAQ GAQ::operator*(GAQ&& other) const
 {
-	//these vectors will be used for constructor
 	std::map<std::string, long double> map;
-
 	for (const auto& [thisBasisBlade, thisCoef] : m_mapLabelToCoefficient)
 	{
 		for (auto&& [rightBasisBlade, rightCoef] : other.m_mapLabelToCoefficient)
@@ -283,27 +292,40 @@ GAQ GAQ::operator*(GAQ&& other) const
 	// try to simplify individual label
 	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
 	{
-		std::string copyOfBasisBlade{basisBlade};
-		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
+		std::string_view labelView{basisBlade};
+
+		const char* data = basisBlade.data();
+		size_t size = basisBlade.size();
+
+		if (basisBlade.find('e') == std::string::npos)
 		{
-			copyOfBasisBlade = "1";
+			labelView = "1";
 		}
-		else if ((basisBlade.find_last_of("*") + 1) != basisBlade.find_last_of("e")) //if there is ei*1, label will be ei
+		else
 		{
-			copyOfBasisBlade = basisBlade.substr(0, basisBlade.find_last_of("*"));
-		}
-		else if (basisBlade.find("e") > 0) //if there is 1*ei, label will be ei
-		{
-			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
+			const char* start = data;
+			const char* end = data + size;
+			if (size >= 2 && data[0] == '1' && data[1] == '*')
+			{
+				start += 2;
+			}
+			const char* star = static_cast<const char*>(std::memchr(data, '*', size));
+			if (!star) star = end;
+			if (star + 1 < end && *(star + 1) == '1')
+			{
+				end = star;
+			}
+			labelView = std::string_view(start, end - start);
 		}
 
-		int sign{1}; //sign for controling sing when swaps happen
-		if (copyOfBasisBlade != "1")
-		{
-			SimplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
-		}
+		int sign = 1;
+		std::string simplified;
+		if (labelView != "1")
+			simplified = SimplifyBasisBlade(labelView, sign);
+		else
+			simplified = "1";
 
-		res = std::move((res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign))))));
+		res = res + GAQ(std::make_pair(std::move(simplified), coef * sign));
 	}
 	res.DeleteZeroFromVector();
 	return res;
@@ -313,9 +335,9 @@ GAQ GAQ::operator*(GAQ&& other) const
 GAQ GAQ::operator*(long double scalar) const
 {
 	std::map<std::string, long double> map{m_mapLabelToCoefficient};
-	for (const auto& [basisBlade, coef] : m_mapLabelToCoefficient)
+	for (auto& [_, coef] : map)
 	{
-		map.at(basisBlade) *= scalar;
+		coef *= scalar;
 	}
 	return GAQ(std::move(map));
 }
@@ -543,34 +565,50 @@ int GAQ::CalculateSign(int* permutation, int count)
 }
 
 //simplifies label in a form of for example  e1e2e3e2e3 into e1
-void GAQ::SimplifyBasisBlade(std::string& label, int& sign)
+std::string GAQ::SimplifyBasisBlade(std::string_view label, int& sign)
 {
 	std::vector<int> permutations; //keeps numbers next to individual e's
 	permutations.reserve(30);
-	while (label.contains('*'))
+	
+
+	size_t pos = 0;
+	while (pos < label.size()) 
 	{
-		permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.find("*") - 1)));
-		label = label.substr(label.find("*") + 1, label.size());
+		size_t epos = label.find('e', pos);
+		size_t start = epos + 1;
+		size_t end = start;
+		while (end < label.size() && std::isdigit(static_cast<unsigned char>(label[end])))
+			++end;
+
+		int val = 0;
+		auto [ptr, ec] = std::from_chars(label.data() + start, label.data() + end, val);
+		if (ec != std::errc()) {
+			break;
+		}
+		permutations.push_back(val);
+
+		pos = end;
+		if (pos < label.size() && label[pos] == '*')
+			++pos;
 	}
-	permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.size())));
+
+
 	ProcessVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented by numbers (1252345 -> 15345 ...)
 
-	std::string s;
+	std::string res;
 	for (size_t i = 0; i < permutations.size(); i++) //creates new proper label
 	{
-		s += "e";
-		s += std::to_string(permutations[i]);
-		s += "*";
+		res += "e" + std::to_string(permutations[i]) + "*";
 	}
-	if (s.size() == 0)
+	if (res.size() == 0)
 	{
-		s += "1";
+		res += "1";
 	}
 	else
 	{
-		s = s.substr(0, s.length() - 1);
+		res = res.substr(0, res.length() - 1);
 	}
-	label = s;
+	return res;
 }
 
 //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)

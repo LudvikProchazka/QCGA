@@ -40,6 +40,14 @@ void SpeedTest()
 	std::cout << (rotated == target) << std::endl;
 }
 
+static size_t allocations{0};
+
+void* operator new(size_t bytes)
+{
+	++allocations;
+	return malloc(bytes);
+}
+
 int main()
 {
 	GAQ::GenerateGeneratingBlades(); //create an array of basis vectors in R^{9,6}... one, e1,e2,...,e15 - has to be called first!
@@ -54,14 +62,24 @@ int main()
 
 	auto start = high_resolution_clock::now();
 
-	//SpeedTest();
-	RotorXY();
+
+	const double phi = std::numbers::pi / 4.0;
+	const double theta = atan(2) - phi;
+	const GAQ XY = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+	const GAQ XZ = Up(1, 3, 2); //eo1+e1+3*e2+2*e3+7*ei1-2*ei2-3*ei3+3*ei4+2*ei5+6*ei6
+	const GAQ YZ = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1-1.5*ei2-4*ei3+2*ei4+3*ei5+6*ei6
+	const GAQ rotatedXY = GAQ::Rotate(XY, xy, phi);
+	const GAQ rotatedXZ = GAQ::Rotate(XZ, xz, phi);
+	const GAQ rotatedYZ = GAQ::Rotate(YZ, yz, phi);
+	const GAQ targetXY = Up(sqrt(5) * cos(theta), sqrt(5) * sin(theta), 3);
+	const GAQ targetXZ = Up(sqrt(5) * cos(theta), 3, sqrt(5) * sin(theta));
+	const GAQ targetYZ = Up(1, 0.5 * 5 * sqrt(2), 0.5 * sqrt(2));
 
 	auto end = high_resolution_clock::now();
 
 	auto duration = duration_cast<microseconds>(end - start);
 
-	std::cout << duration.count() << "ms" << std::endl;
+	std::cout << duration.count() << "ms = " << duration.count()/1000000.0 << " sec, Allocations: " << allocations << std::endl;
 	//RotorXZ();
 	//RotorYZ();
 	//TranslatorX();
