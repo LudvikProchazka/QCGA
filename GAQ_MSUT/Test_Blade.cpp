@@ -2,6 +2,7 @@
 #include "Blade.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace gaq;
 
 namespace GAQ_MSUT
 {

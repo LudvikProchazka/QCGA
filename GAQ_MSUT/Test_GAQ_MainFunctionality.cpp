@@ -2,8 +2,7 @@
 #include "Examples.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
-// #define SKIP_MAIN_TESTS
+using namespace gaq;
 
 namespace GAQ_MSUT
 {
@@ -12,6 +11,58 @@ namespace GAQ_MSUT
 	public:
 #ifndef SKIP_MAIN_TESTS
 		
+		TEST_METHOD(Test_Elipsoid)
+		{
+			Blade Q = MakeQuadric(0.0, 0.0, 0.0, 5.0 / 3.0, -1.0 / 3.0, -7.0 / 3.0, 5.0, 3.0, -5.0, 5.0);
+
+			double distance1x = 5.0;
+			double distance1y = 3.0 / 2;
+			double distance2x = 10.0;
+			double distance2y = 6.0;
+			double phi = 3.0 * std::numbers::pi / 4.0;
+
+			GAQ T1_x = one - 0.5 * distance1x * (e1 ^ ei1);
+			GAQ T2_x = one - 0.5 * distance1x * (e1 ^ ei2) + 0.25 * pow(distance1x, 2) * (ei1 ^ ei2);
+			GAQ T3_x = one - 0.5 * distance1x * (e1 ^ ei3) + 0.25 * pow(distance1x, 2) * (ei1 ^ ei3) + 0.25 * pow(distance1x, 2) * (ei2 ^ ei3);
+			GAQ T4_x = one - 0.5 * distance1x * (e2 ^ ei4);
+			GAQ T5_x = one - 0.5 * distance1x * (e3 ^ ei5);
+			GAQ T_x = T1_x * T2_x * T3_x * T4_x * T5_x; //Translator in x direction into origin
+
+			GAQ T1_y = one - 0.5 * distance1y * (e2 ^ ei1);
+			GAQ T2_y = one + 0.5 * distance1y * (e2 ^ ei2) - 0.25 * pow(distance1y, 2) * (ei1 ^ ei2);
+			GAQ T3_y = one - 0.5 * distance1y * (e1 ^ ei4);
+			GAQ T4_y = one - 0.5 * distance1y * (e3 ^ ei6);
+			GAQ T_y = T1_y * T2_y * T3_y * T4_y; //Translator in y direction into origin
+
+			GAQ r1 = e1 ^ e2;
+			GAQ r2 = eo6 ^ ei5;
+			GAQ r3 = ei6 ^ eo5;
+			GAQ r4 = 2 * (eo4 ^ ei2);
+			GAQ r5 = 2 * (ei4 ^ eo2);
+			GAQ r6 = eo4 ^ ei3;
+			GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
+			GAQ R = r.RotorExponential(40, phi); //Rotor in the xy-plane
+
+			Blade rotatedInOrigin = (R * (T_y * (T_x * Q * ~T_x)[1] * ~T_y)[1] * ~R)[1];
+
+			T1_x = one - 0.5 * distance2x * (e1 ^ ei1);
+			T2_x = one - 0.5 * distance2x * (e1 ^ ei2) + 0.25 * pow(distance2x, 2) * (ei1 ^ ei2);
+			T3_x = one - 0.5 * distance2x * (e1 ^ ei3) + 0.25 * pow(distance2x, 2) * (ei1 ^ ei3) + 0.25 * pow(distance2x, 2) * (ei2 ^ ei3);
+			T4_x = one - 0.5 * distance2x * (e2 ^ ei4);
+			T5_x = one - 0.5 * distance2x * (e3 ^ ei5);
+			T_x = T1_x * T2_x * T3_x * T4_x * T5_x;
+
+			T1_y = one - 0.5 * distance2y * (e2 ^ ei1);
+			T2_y = one + 0.5 * distance2y * (e2 ^ ei2) - 0.25 * pow(distance2y, 2) * (ei1 ^ ei2);
+			T3_y = one - 0.5 * distance2y * (e1 ^ ei4);
+			T4_y = one - 0.5 * distance2y * (e3 ^ ei6);
+			T_y = T1_y * T2_y * T3_y * T4_y;
+
+			Blade transformed = (T_y * (T_x * rotatedInOrigin * ~T_x)[1] * ~T_y)[1];
+
+			Assert::IsTrue(transformed.Log() == "-12*e1 + -53.416667*e10 + -93.416667*e11 + -74.291667*e12 + -45.5*e13 + -37.625631*e14 + -7.01903*e15 + -4*e2 + -5*e3 + -51.083333*e4 + -92.583333*e5 + -75.958333*e6 + -46*e7 + -37.625631*e8 + -7.01903*e9");
+		}
+
 		TEST_METHOD(Test_RotationXY)
 		{
 			const GAQ r1 = e1 ^ e2;
