@@ -141,6 +141,7 @@
     <ClCompile Include="GAQ.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Benchmarks.h" />
     <ClInclude Include="Blade.h" />
     <ClInclude Include="Examples.h" />
     <ClInclude Include="GAQ.h" />

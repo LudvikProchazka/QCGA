@@ -149,8 +149,16 @@ protected:
 	// ==================
 	// 1 |  e1 | e1*e2*e3 
 	// 3 |   2 |       -1
+
+private:
+	friend class Benchmarks;
 };
 
+namespace gaq
+{
+	GAQ Up(long double x, long double y, long double z); //embedding of a 3D point.
+	GAQ MakeQuadric(long double vo6, long double vo5, long double vo4, long double vo3, long double vo2, long double vo1, long double ve1, long double ve2, long double ve3, long double vi1); //IPNS representation of a quadric
+}
 GAQ operator*(long double scalar, const GAQ& onther);				// Multiplying by scalar from the left
 std::ostream& operator<<(std::ostream& stream, const GAQ& vector);	// Operator for printing
 std::vector<GAQ> MakeQCGAFromBasisBlades(const GAQ& multivector);	// Returns vector of basis blades in linear combination of general multivector
