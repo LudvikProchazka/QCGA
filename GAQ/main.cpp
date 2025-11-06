@@ -15,7 +15,6 @@ int main()
 	GAQ multivecorExample3 = multivecorExample1 * multivecorExample2;
 	GAQ multivecorExample4 = 3 * multivecorExample2 + eo1;
 	*/
-	Instrumentor::Get().BeginSession("Profile");
-	Benchmarks::RunBenchmarks();
-	Instrumentor::Get().EndSession();
+
+	Elipsoid();
 }

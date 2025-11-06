@@ -48,19 +48,18 @@ GAQ::GAQ(std::string&& input) noexcept
 
 GAQ::GAQ(const std::map<std::string, long double>& map)
 {
-	std::map<std::string, long double> copyOfMap{map};
+	m_mapLabelToCoefficient = map;
 	for (const auto& [basisBlade, coef] : map)
 	{
 		if (abs(coef) <= long double(1) / PRECISION)
 		{
-			copyOfMap.erase(basisBlade);
+			m_mapLabelToCoefficient.erase(basisBlade);
 		}
 	}
-	if (copyOfMap.empty())
+	if (m_mapLabelToCoefficient.empty())
 	{
-		copyOfMap["1"] = 0;
+		m_mapLabelToCoefficient["1"] = 0;
 	}
-	m_mapLabelToCoefficient = copyOfMap;
 }
 
 GAQ::GAQ(std::map<std::string, long double>&& map)
