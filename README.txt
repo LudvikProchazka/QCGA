@@ -12,6 +12,7 @@ The main objective was to make geometric algebra computations readable, debuggab
 While the architecture is far from perfect, it works reliably for its intended purpose.
 
 Structure and Usage
+
 All calculations are currently written directly inside the main() function.
 A few example usages are included to demonstrate the syntax and workflow.
 
