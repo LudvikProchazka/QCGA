@@ -1,15 +1,24 @@
-  Please note that this is a school project created primarily to learn C++ and to perform calculations in geometric algebra. The goal was to make the calculations feel more human-readable
-and as easy to debug as possible, even at the expense of speed and performance. As a result, the code architecture is poor — but it works. :)
-With the knowledge I have gained over the years, I would now choose a different design. However, since implementing high-dimensional geometric algebras is a challenge in itself, I have decided to leave it as it is for now.
-  Calculations are done by directly writing into the main function. There are few examples prepared, how to use it. In QCGA.h, there are defines for 1, e1, e2, ... , e15, as well as for the null basis ei1,eo1,...ei6,eo6.
-Those defines are the building blocks for all multivectors to be used in the main function. Please use some functions carefully, as they may cause exceptions if they are used with not suitible multivector (because of bad design).
-Thus, a user has to know exactly what he is doing.
+Introduction
 
-What to be aware of:
--QCGA object having scalar part has to be of the form "scalar" * one + (rest of the multivector), since "one" is an object representing 1 as an algebra's identity.
-    Eg: QCGA vec = 5 * one + e1 * e2;
--The operator precedence is sometimes wild so when something doesn't work you may have not enough parentheses
--Examples in Example.h serve to some extend as unit tests.
--Both the design and implementation may be improved, because at the time the code was written, I was very new to C++ and quite new to programming in general.
+GAQ is a small C++ project exploring geometric algebra computations in a way that’s meant to be readable, easy to debug, and conceptually clear.
+It’s not optimized for performance — instead, it focuses on transparency, learning value, and universality, allowing the creation of arbitrary multivectors.
+Internally, the project leverages standard C++ features such as std::string and std::map, which help manage memory efficiently and keep the codebase straightforward to understand and extend.
+If you’re curious about how high dimensional geometric algebra can be represented and manipulated in code, this is a solid starting point.
 
-Have fun and good luck exploring it :) If you have any idea or question, feel free to reach me: 209458@vutbr.cz
+Overview
+
+This project was originally created as a learning exercise in C++ and geometric algebra.
+The main objective was to make geometric algebra computations readable, debuggable, and intuitive, even at the cost of raw performance.
+While the architecture is far from perfect, it works reliably for its intended purpose.
+
+Structure and Usage
+All calculations are currently written directly inside the main() function.
+A few example usages are included to demonstrate the syntax and workflow.
+
+In QCGA.h, you’ll find definitions for:
+Basis elements 1, e1, e2, ..., e15
+Null basis elements ei1, eo1, ..., ei6, eo6
+These serve as the building blocks for constructing multivectors used in calculations.
+
+⚠️ Note:
+Some functions can throw exceptions if used with incompatible multivectors — a side effect of the early design choices. Users are expected to understand the structure of the algebra before experimenting.
