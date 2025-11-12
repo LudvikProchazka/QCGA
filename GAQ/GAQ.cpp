@@ -1,10 +1,22 @@
-#include "GAQ.h"
+﻿#include "GAQ.h"
 #include <cmath>
 #include <numeric>
 
 using namespace std::string_literals;
 
 GAQ GAQ::generatingBlades[GENERATING_BASIS_SIZE + 1];
+
+template <typename T>
+constexpr inline T abs_diff(T a, T b) {	return (a > b) ? (a - b) : (b - a); }
+template <typename T>
+constexpr inline T abs_sum(T a, T b) 
+{
+	if constexpr (std::is_signed_v<T>) 
+	{
+		return (a > 0 ? a : -a) + (b > 0 ? b : -b);
+	}
+	return a + b;
+}
 
 void GAQ::GenerateGeneratingBlades()
 {
@@ -36,19 +48,18 @@ GAQ::GAQ(std::string&& input) noexcept
 
 GAQ::GAQ(const std::map<std::string, long double>& map)
 {
-	std::map<std::string, long double> copyOfMap{map};
-	for (const auto& [basisBlade, coef] : copyOfMap)
+	m_mapLabelToCoefficient = map;
+	for (const auto& [basisBlade, coef] : map)
 	{
 		if (abs(coef) <= long double(1) / PRECISION)
 		{
-			copyOfMap.erase(basisBlade);
+			m_mapLabelToCoefficient.erase(basisBlade);
 		}
 	}
-	if (copyOfMap.empty())
+	if (m_mapLabelToCoefficient.empty())
 	{
-		copyOfMap["1"] = 0;
+		m_mapLabelToCoefficient["1"] = 0;
 	}
-	m_mapLabelToCoefficient = copyOfMap;
 }
 
 GAQ::GAQ(std::map<std::string, long double>&& map)
@@ -66,7 +77,6 @@ GAQ::GAQ(std::pair<std::string, long double>&& basis_blade)
 	m_mapLabelToCoefficient.emplace(std::move(basis_blade));
 }
 
-
 GAQ::GAQ(const GAQ& instance)
 {
 	m_mapLabelToCoefficient = instance.m_mapLabelToCoefficient;
@@ -77,13 +87,24 @@ GAQ::GAQ(GAQ&& instance) noexcept
 	m_mapLabelToCoefficient = std::move(instance.m_mapLabelToCoefficient);
 }
 
-
 const std::map<std::string, long double>& GAQ::GetSTDmapLabelToCoefficient() const
 {
 	return m_mapLabelToCoefficient;
 }
 
-long double GAQ::ToNumeric() // returns coefficient at basis blade 1
+GAQ gaq::Up(long double _x, long double _y, long double _z)
+{
+	GAQ x{(_x * e1) + (_y * e2) + (_z * e3)};
+	x = eo1 + x + 0.5 * (_x * _x + _y * _y + _z * _z) * ei1 + 0.5 * (_x * _x - _y * _y) * ei2 + 0.5 * (_x * _x - _z * _z) * ei3 + _x * _y * ei4 + _x * _z * ei5 + _y * _z * ei6;
+	return x;
+}
+
+GAQ gaq::MakeQuadric(long double vo6, long double vo5, long double vo4, long double vo3, long double vo2, long double vo1, long double ve1, long double ve2, long double ve3, long double vi1)
+{
+	return vo6 * eo6 + vo5 * eo5 + vo4 * eo4 + vo3 * eo3 + vo2 * eo2 + vo1 * eo1 + ve1 * e1 + ve2 * e2 + ve3 * e3 + vi1 * ei1;
+}
+
+long double GAQ::ToNumeric() // returns coefficient at basis vector 1
 {
 	if (m_mapLabelToCoefficient.find("1") != m_mapLabelToCoefficient.end())
 	{
@@ -91,6 +112,40 @@ long double GAQ::ToNumeric() // returns coefficient at basis blade 1
 	}
 	std::cout << "WARNING! ToNumeric found no zero-degree basis blade, returned number 1";
 	return 1.0;
+}
+
+bool GAQ::IsEqual(const GAQ& other, double precision) const
+{
+	bool equal{true};
+	for (const auto& [basisBlade, value] : m_mapLabelToCoefficient)
+	{
+		if (other.m_mapLabelToCoefficient.find(basisBlade) == other.m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
+		{
+			equal = false;
+			break;
+		}
+		//if there is, check for coefs if they are the same
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > 1.0 / precision)
+		{
+			equal = false;
+			break;
+		}
+	}
+	for (const auto& [basisBlade, value] : other.m_mapLabelToCoefficient) //now vice versa
+	{
+		if (m_mapLabelToCoefficient.find(basisBlade) == m_mapLabelToCoefficient.end())
+		{
+			equal = false;
+			break;
+		}
+		//if there is, check for coefs if they are the same
+		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > 1.0 / precision)
+		{
+			equal = false;
+			break;
+		}
+	}
+	return equal;
 }
 
 //************************************MEMBER_OPERATOR************************************\\
@@ -126,21 +181,6 @@ GAQ GAQ::TranslatorExponential(unsigned int degree, long double distance) const
 	return res;
 }
 
-GAQ GAQ::BivectorExponential(unsigned int degree, long double parameter) const
-{
-	GAQ res{one};
-	for (unsigned int i = 1; i < degree + 1; i++)
-	{
-		long double factorial = i;
-		for (int j = i; j > 1; j--)
-		{
-			factorial *= (j - 1);
-		}
-		res = res + (((parameter / 2) * (*this)) ^ i) * (long double(1) / factorial);
-	}
-	return res;
-}
-
 GAQ& GAQ::operator=(const GAQ& other)
 {
 	m_mapLabelToCoefficient = other.m_mapLabelToCoefficient;
@@ -155,36 +195,7 @@ GAQ& GAQ::operator=(GAQ&& other) noexcept
 
 bool GAQ::operator==(const GAQ& other) const
 {
-	bool equal{true};
-	for (const auto& [basisBlade, value] : m_mapLabelToCoefficient)
-	{
-		if (other.m_mapLabelToCoefficient.find(basisBlade) == other.m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
-		{
-			equal = false;
-			break;
-		}
-		//if there is, check for coefs if they are the same
-		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > long double(10000.0) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
-		{
-			equal = false;
-			break;
-		}
-	}
-	for (const auto& [basisBlade, value] : other.m_mapLabelToCoefficient) //now vice versa
-	{
-		if (m_mapLabelToCoefficient.find(basisBlade) == m_mapLabelToCoefficient.end()) //if there is on the right not the same basis blade as on the left
-		{
-			equal = false;
-			break;
-		}
-		//if there is, check for coefs if they are the same
-		if (abs(other.m_mapLabelToCoefficient.at(basisBlade) - value) > long double(10000.0) / (PRECISION)) // if coefs are different, 10000 is for not being so strict due to rounding errors
-		{
-			equal = false;
-			break;
-		}
-	}
-	return equal;
+	return this->IsEqual(other, 1e9);
 }
 
 bool GAQ::operator!=(const GAQ& other) const
@@ -193,9 +204,9 @@ bool GAQ::operator!=(const GAQ& other) const
 }
 
 //Grade projection operator
-GAQ GAQ::operator[](int _grade) const
+GAQ GAQ::operator[](size_t _grade) const
 {
-	std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
+	const std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
 
 	GAQ res;
 	for (size_t i = 0; i < m_mapLabelToCoefficient.size(); i++)
@@ -208,16 +219,17 @@ GAQ GAQ::operator[](int _grade) const
 
 GAQ GAQ::operator[](const GAQ& other) const
 {
-	GAQ res;
-	for (const auto& [key, coeff] : m_mapLabelToCoefficient) 
+	const auto it = std::ranges::find_if(m_mapLabelToCoefficient,
+		[&](const auto& pair)
+		{
+			const auto& [key, coeff] = pair;
+			return other.m_mapLabelToCoefficient.contains(key);
+		});
+	if (it != m_mapLabelToCoefficient.end())
 	{
-		if (other.m_mapLabelToCoefficient.contains(key)) 
-		{ 
-			res = coeff * GAQ(key);
-			break;
-		}
+		return it->second * GAQ(it->first);
 	}
-	return res;
+	return {};
 }
 
 //geometric product operator
@@ -233,33 +245,44 @@ GAQ GAQ::operator*(const GAQ& other) const
 		}																			//     2 |  	 -1 |			2 |				-1
 	}
 																				
-
 	GAQ res;
 	// try to simplify individual label
-	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
+	for (const auto& [basisBlade, coef] : map)
 	{ 
-		std::string copyOfBasisBlade{basisBlade};
-		int sign{1}; //sign for controling sing when swaps happen
+		std::string_view labelView{basisBlade};
 
-		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
+		const char* data = basisBlade.data();
+		size_t size = basisBlade.size();
+
+		if (basisBlade.find('e') == std::string::npos)
 		{
-			copyOfBasisBlade = "1";
+			labelView = "1";
 		}
-		else if ((basisBlade.find_last_of("*") + 1) != basisBlade.find_last_of("e")) //if there is ei*1, label will be ei
+		else
 		{
-			copyOfBasisBlade = basisBlade.substr(0, basisBlade.find_last_of("*"));
-		}
-		else if (basisBlade.find("e") > 0) //if there is 1*ei, label will be ei
-		{
-			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
+			const char* start = data;
+			const char* end = data + size;
+			if (size >= 2 && data[0] == '1' && data[1] == '*')
+			{
+				start += 2;
+			}
+			const char* star = static_cast<const char*>(std::memchr(data, '*', size));
+			if (!star) star = end;
+			if (star + 1 < end && *(star + 1) == '1')
+			{
+				end = star;
+			}
+			labelView = std::string_view(start, end - start);
 		}
 
-		if (copyOfBasisBlade != "1")
-		{
-			SimplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
-		}
+		int sign = 1;
+		std::string simplified;
+		if (labelView != "1")
+			simplified = SimplifyBasisBlade(labelView, sign);
+		else
+			simplified = "1";
 
-		res = (res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign)))));
+		res = res + GAQ(std::make_pair(std::move(simplified), coef * sign));
 	}
 	res.DeleteZeroFromVector();
 	return res;
@@ -267,9 +290,7 @@ GAQ GAQ::operator*(const GAQ& other) const
 
 GAQ GAQ::operator*(GAQ&& other) const
 {
-	//these vectors will be used for constructor
 	std::map<std::string, long double> map;
-
 	for (const auto& [thisBasisBlade, thisCoef] : m_mapLabelToCoefficient)
 	{
 		for (auto&& [rightBasisBlade, rightCoef] : other.m_mapLabelToCoefficient)
@@ -280,30 +301,42 @@ GAQ GAQ::operator*(GAQ&& other) const
 
 	GAQ res;
 	// try to simplify individual label
-	for (auto& [basisBlade, coef] : map) //each label in newLabel will be modified
+	for (const auto& [basisBlade, coef] : map) //each label in newLabel will be modified
 	{
-		std::string copyOfBasisBlade{basisBlade};
-		int sign{1}; //sign for controling sing when swaps happen
+		std::string_view labelView{basisBlade};
 
-		if (!basisBlade.contains('e')) //if there are just greade 0 elements, label is 1
+		const char* data = basisBlade.data();
+		size_t size = basisBlade.size();
+
+		if (basisBlade.find('e') == std::string::npos)
 		{
-			copyOfBasisBlade = "1";
+			labelView = "1";
 		}
-		else if ((basisBlade.find_last_of("*") + 1) != basisBlade.find_last_of("e")) //if there is ei*1, label will be ei
+		else
 		{
-			copyOfBasisBlade = basisBlade.substr(0, basisBlade.find_last_of("*"));
-		}
-		else if (basisBlade.find("e") > 0) //if there is 1*ei, label will be ei
-		{
-			copyOfBasisBlade = basisBlade.substr(2, basisBlade.size());
+			const char* start = data;
+			const char* end = data + size;
+			if (size >= 2 && data[0] == '1' && data[1] == '*')
+			{
+				start += 2;
+			}
+			const char* star = static_cast<const char*>(std::memchr(data, '*', size));
+			if (!star) star = end;
+			if (star + 1 < end && *(star + 1) == '1')
+			{
+				end = star;
+			}
+			labelView = std::string_view(start, end - start);
 		}
 
-		if (copyOfBasisBlade != "1")
-		{
-			SimplifyBasisBlade(copyOfBasisBlade, sign);//in case there is ei, for example e1e2e3e2e3 needs to be simplified in e1
-		}
+		int sign = 1;
+		std::string simplified;
+		if (labelView != "1")
+			simplified = SimplifyBasisBlade(labelView, sign);
+		else
+			simplified = "1";
 
-		res = std::move((res + std::move(GAQ(std::move(std::make_pair(copyOfBasisBlade, coef * sign))))));
+		res = res + GAQ(std::make_pair(std::move(simplified), coef * sign));
 	}
 	res.DeleteZeroFromVector();
 	return res;
@@ -313,9 +346,9 @@ GAQ GAQ::operator*(GAQ&& other) const
 GAQ GAQ::operator*(long double scalar) const
 {
 	std::map<std::string, long double> map{m_mapLabelToCoefficient};
-	for (const auto& [basisBlade, coef] : m_mapLabelToCoefficient)
+	for (auto& [_, coef] : map)
 	{
-		map.at(basisBlade) *= scalar;
+		coef *= scalar;
 	}
 	return GAQ(std::move(map));
 }
@@ -332,9 +365,11 @@ GAQ GAQ::operator~() const
 		}
 		else
 		{
-			std::vector<int> permutation{ExtractIntegersFromBasisBlades(basisBlade)};
-			std::reverse(permutation.begin(), permutation.end());
-			map[basisBlade] = coef * CalculateSign(permutation);
+			int count{0};
+			int permutation[15]{};
+			ExtractIntegersFromBasisBlades(basisBlade, permutation, count);
+			std::reverse(permutation, permutation + count);
+			map[basisBlade] = coef * CalculateSign(permutation, count);
 		}
 	}
 	return GAQ(std::move(map));
@@ -381,8 +416,8 @@ GAQ GAQ::operator-(const GAQ& other) const
 GAQ GAQ::operator|(const GAQ& other) const
 {
 	//Make vectors from left and right operadns, they will store basis blades as CGA object and they will participate in product
-	std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
-	std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
+	const std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
+	const std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
 	GAQ res;
 	for (size_t i = 0; i < m_mapLabelToCoefficient.size(); i++)
 	{
@@ -399,8 +434,8 @@ GAQ GAQ::operator|(const GAQ& other) const
 GAQ GAQ::operator^(const GAQ& other) const
 {
 	//Make vectors from left and right operadns, they will store basis blades as CGA object and they will participate in product
-	std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
-	std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
+	const std::vector<GAQ> left{MakeQCGAFromBasisBlades(*this)};
+	const std::vector<GAQ> right{MakeQCGAFromBasisBlades(other)};
 
 	GAQ res;
 	for (size_t i = 0; i < m_mapLabelToCoefficient.size(); i++)
@@ -416,22 +451,28 @@ GAQ GAQ::operator^(const GAQ& other) const
 
 GAQ GAQ::operator^(int exponent) const
 {
-	GAQ res{*this};
 	if (exponent < 0)
 	{
 		std::cout << "Warning, calling an inverse of GAQ, not of a blade, this might fail!\n";
 		const long double denominator{(((*this) * (~(*this))).ToNumeric())};
 		return denominator * (~(*this));;
 	}
+	GAQ res{*this};
 	for (int i = 0; i < exponent - 1; i++)
 	{
 		res = res * *this;
 	}
+	res.DeleteZeroFromVector();
 	return res;
 }
 
 GAQ GAQ::operator/(long double divider) const
 {
+	if (divider == 0)
+	{
+		std::cout << "Warning, division by zero detected!" << std::endl;
+		return *this;
+	}
 	return *this * (1.0 / divider);
 }
 
@@ -467,11 +508,11 @@ GAQ GAQ::Translate(const GAQ& point, translation_directions direction, long doub
 	switch (direction)
 	{
 	case x:
-		return Tx * point * ~Tx;
+		return Tx(distance) * point * ~Tx(distance);
 	case y:
-		return Ty * point * ~Ty;
+		return Ty(distance) * point * ~Ty(distance);
 	case z:
-		return Tz * point * ~Tz;
+		return Tz(distance) * point * ~Tz(distance);
 	default:
 		std::cout << "Wrong direction for translating" << std::endl;
 		return point;
@@ -479,17 +520,9 @@ GAQ GAQ::Translate(const GAQ& point, translation_directions direction, long doub
 }
 
 //returns Grade of basis blade (if we give it appropriate label...)
-int GAQ::Grade(std::string_view label) const
+size_t GAQ::Grade(std::string_view label) const
 {
-	int grade{0};
-	for (char c : label) 
-	{
-		if (c == 'e') 
-		{
-			grade++;
-		}
-	}
-	return grade;
+	return std::ranges::count(label, 'e');
 }
 
 //returns multivector in e_inf, e_o basis, used in << operator
@@ -526,59 +559,75 @@ std::string GAQ::Log() const
 //************************************PRROTECTED************************************\\
 
 //calculates sign of permutation
-int GAQ::CalculateSign(const std::vector<int>& permutation) 
+int GAQ::CalculateSign(int* permutation, int count) 
 {
-	int sign{1};
-	for (size_t i = 0; i < permutation.size(); i++) 
+	bool neg{false};
+	for (int i = 0; i < count; ++i)
 	{
-		for (size_t j = i + 1; j < permutation.size(); j++) 
+		for (int j = i + 1; j < count; ++j)
 		{
-			if (permutation[i] > permutation[j]) 
+			if (permutation[i] > permutation[j])
 			{
-				sign = -sign; // Switch the sign for each inversion
+				neg = !neg;
 			}
 		}
 	}
-	return sign;
+	return neg ? -1 : 1;
 }
 
 //simplifies label in a form of for example  e1e2e3e2e3 into e1
-void GAQ::SimplifyBasisBlade(std::string& label, int& sign)
+std::string GAQ::SimplifyBasisBlade(std::string_view label, int& sign)
 {
 	std::vector<int> permutations; //keeps numbers next to individual e's
 	permutations.reserve(30);
-	while (label.contains('*'))
-	{
-		permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.find("*") - 1)));
-		label = label.substr(label.find("*") + 1, label.size());
-	}
-	permutations.emplace_back(std::stoi(label.substr(label.find("e") + 1, label.size())));
-	processVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented by numbers (1252345 -> 15345 ...)
 	
-	std::string s;
+
+	size_t pos = 0;
+	while (pos < label.size()) 
+	{
+		size_t epos = label.find('e', pos);
+		size_t start = epos + 1;
+		size_t end = start;
+		while (end < label.size() && std::isdigit(static_cast<unsigned char>(label[end])))
+			++end;
+
+		int val = 0;
+		auto [ptr, ec] = std::from_chars(label.data() + start, label.data() + end, val);
+		if (ec != std::errc()) {
+			break;
+		}
+		permutations.push_back(val);
+
+		pos = end;
+		if (pos < label.size() && label[pos] == '*')
+			++pos;
+	}
+
+
+	ProcessVector(permutations, sign); //e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented by numbers (1252345 -> 15345 ...)
+
+	std::string res;
 	for (size_t i = 0; i < permutations.size(); i++) //creates new proper label
 	{
-		s += "e";
-		s += std::to_string(permutations[i]);
-		s += "*";
+		res += "e" + std::to_string(permutations[i]) + "*";
 	}
-	if (s.size() == 0)
+	if (res.size() == 0)
 	{
-		s += "1";
+		res += "1";
 	}
 	else
 	{
-		s = s.substr(0, s.length() - 1);
+		res = res.substr(0, res.length() - 1);
 	}
-	label = s;
+	return res;
 }
 
 //used when simplifying results of geometric product: e1e2e5e2e3e4e5 -> e1e5e3e4e5 -> e1e3e4 represented byjust numbers (1252345 -> 15345 ...)
-void GAQ::processVector(std::vector<int>& vec, int& sign) 
+void GAQ::ProcessVector(std::vector<int>& vec, int& sign)
 {
-	for (size_t i = 0; i < vec.size() - 1; i++)
+	for (size_t i = 0; i < vec.size() - 1; ++i)
 	{
-		for (size_t j = i + 1; j < vec.size(); j++)
+		for (size_t j = i + 1; j < vec.size(); ++j)
 		{
 			if (vec[i] != vec[j])
 			{
@@ -588,7 +637,7 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 			{
 				sign *= -1;
 			}
-			for (size_t k = 0; k < j - i - 1; k++)
+			for (size_t k = 0; k < j - i - 1; ++k)
 			{
 				std::swap(vec[j - k - 1], vec[j - k]);
 				sign *= -1;
@@ -596,13 +645,13 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 			vec.erase(vec.begin() + i, vec.begin() + i + 2);
 			if (vec.empty())
 			{
-				break;
+				return;
 			}
-			processVector(vec, sign);
+			ProcessVector(vec, sign);
 		}
 		if (vec.empty())
 		{
-			break;
+			return;
 		}
 	}
 	if (vec.empty())
@@ -611,9 +660,9 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 	}
 	//bubble sort, easy to track swaps... e3e2e1 -> e1e2e3
 	size_t i, j;
-	for (i = 0; i < vec.size() - 1; i++)
+	for (i = 0; i < vec.size() - 1; ++i)
 	{
-		for (j = 0; j < vec.size() - i - 1; j++)
+		for (j = 0; j < vec.size() - i - 1; ++j)
 		{
 			if (vec[j] > vec[j + 1])
 			{
@@ -624,27 +673,27 @@ void GAQ::processVector(std::vector<int>& vec, int& sign)
 	}
 }
 
-//from a given label, for example e1*e2*e3, returns vector {1,2,3}
-std::vector<int> GAQ::ExtractIntegersFromBasisBlades(std::string_view label)
+//from a given label, for example e1*e2*e3, returns {1,2,3}
+void GAQ::ExtractIntegersFromBasisBlades(std::string_view label, int out_buffer[15], int& out_count)
 {
-	std::vector<int> permutation;
-	permutation.reserve(15);
-	int basis_vec_number;
-	auto position = label.begin();
-	while (position < label.end()) //checks, if idividual ei are present in algebra. Otherwise, it crashes
+	int pos{0};
+	out_count = 0;
+	const size_t labelSize{label.size()};
+	while (pos < labelSize) // we are guearanteed to have less than 15 elements. A bit dangerous ngl
 	{
-		auto [ptr, error] {std::from_chars(position._Unwrapped(), position._Unwrapped() + 2, basis_vec_number)};
-		if (error == std::errc{}) 
+		++pos;
+		int value{0};
+		while (pos < labelSize && std::isdigit(label[pos]))
 		{
-			permutation.push_back(basis_vec_number);
-			if (basis_vec_number > 9) 
-			{ 
-				position++; 
-			}
+			value = value * 10 + (label[pos++] - '0');
 		}
-		position++;
+		out_buffer[out_count++] = value;
+
+		if (pos < labelSize && label[pos] == '*')
+		{
+			++pos;
+		}
 	}
-	return permutation;
 }
 
 //**********************************STATIC_SUPPORT_OPERATORS**********************************\\
@@ -652,32 +701,31 @@ std::vector<int> GAQ::ExtractIntegersFromBasisBlades(std::string_view label)
 //inner product of two basis blades operator. Usefull in inner product of two general multivectors
 GAQ GAQ::operator||(const GAQ& other) const
 {
-	return GAQ((*this * other)[abs(this->Grade(m_mapLabelToCoefficient.begin()->first) - other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
+	return GAQ((*this * other)[abs_diff(this->Grade(m_mapLabelToCoefficient.begin()->first), other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
 }
 
 //outer product of two basis blades operator
 GAQ GAQ::operator&&(const GAQ& other) const
 {
-	return GAQ((*this * other)[abs(this->Grade(m_mapLabelToCoefficient.begin()->first) + other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
+	return GAQ((*this * other)[abs_sum(this->Grade(m_mapLabelToCoefficient.begin()->first), other.Grade(other.m_mapLabelToCoefficient.begin()->first))]);
 }
 
 //Grade projection of basis blade
-GAQ GAQ::operator()(int Grade) const
+GAQ GAQ::operator()(size_t grade) const
 {
-	return (this->Grade(m_mapLabelToCoefficient.begin()->first) == Grade) ? *this : GAQ("0");
+	return (this->Grade(m_mapLabelToCoefficient.begin()->first) == grade) ? *this : GAQ("0");
 }
 
 void GAQ::DeleteZeroFromVector()
 {
-	if (m_mapLabelToCoefficient.find("1") != m_mapLabelToCoefficient.end())
+	if (auto it = m_mapLabelToCoefficient.find("1");
+		it != m_mapLabelToCoefficient.end() &&
+		it->second == 0 &&
+		m_mapLabelToCoefficient.size() > 1)
 	{
-		if (m_mapLabelToCoefficient.at("1") == 0 && m_mapLabelToCoefficient.size() > 1)
-		{
-			m_mapLabelToCoefficient.erase("1");
-		}
+		m_mapLabelToCoefficient.erase(it);
 	}
 }
-
 
 //**********************************NON-MEMBER_OPERATORS**********************************\\
 

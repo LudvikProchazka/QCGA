@@ -35,5 +35,11 @@
     <ClInclude Include="Examples.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Instrumentor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Benchmarks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

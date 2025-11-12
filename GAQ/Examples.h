@@ -15,7 +15,7 @@ void RotationExample() //Parabolas
 
 	double phi = std::numbers::pi / 2.0;
 
-	GAQ Q = MakeQuadric(0, 0, 0, 2.0 / 3.0, -4.0 / 3.0, -4.0 / 3.0, 0, 1, 0, 0);
+	GAQ Q = gaq::MakeQuadric(0, 0, 0, 2.0 / 3.0, -4.0 / 3.0, -4.0 / 3.0, 0, 1, 0, 0);
 
 	GAQ r = r1 + r2 + r3 + r4 + r5 + r6 + r7; //create generator
 
@@ -27,6 +27,8 @@ void RotationExample() //Parabolas
 
 void OPNS_IPNS_Duality()
 {
+	using namespace gaq;
+
 	GAQ p1 = Up(0.0, 0.0, 0.0);
 	GAQ p2 = Up(1.0, -2.0, 1.0);
 	GAQ p3 = Up(-1.0, -2.0, -1.0);
@@ -48,6 +50,8 @@ void OPNS_IPNS_Duality()
 
 void Elipsoid()
 {
+	using namespace gaq;
+
 	Blade Q = MakeQuadric(0.0, 0.0, 0.0, 5.0 / 3.0, -1.0 / 3.0, -7.0 / 3.0, 5.0, 3.0, -5.0, 5.0);
 
 	double distance = -10.0;
@@ -76,6 +80,8 @@ void Elipsoid()
 
 void Elipsoid2()
 {
+	using namespace gaq;
+
 	Blade Q = MakeQuadric(0.0, 0.0, 0.0, 5.0 / 3.0, -1.0 / 3.0, -7.0 / 3.0, 5.0, 3.0, -5.0, 5.0);
 
 	double distance1x = 5.0;
@@ -129,6 +135,8 @@ void Elipsoid2()
 
 void RotorXY()
 {
+	using namespace gaq;
+
 	GAQ r1 = e1 ^ e2;
 	GAQ r2 = eo6 ^ ei5;
 	GAQ r3 = ei6 ^ eo5;
@@ -168,8 +176,11 @@ void RotorXY()
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
 }
+
 void RotorXZ()
 {
+	using namespace gaq;
+
 	const GAQ r1 = -1 * e3 ^ e1; //rotating in opposite direction, thus -1*, viz corresponding matrices
 	const GAQ r2 = -1 * ei4 ^ eo6;
 	const GAQ r3 = -2 * (ei3 ^ eo5);
@@ -178,20 +189,11 @@ void RotorXZ()
 	const GAQ r6 = -2 * (eo3 ^ ei5);
 
 	const GAQ r = r1 + r2 + r3 + r4 + r5 + r6;
-	//double phi = std::numbers::pi / 2;
 	const double phi = std::numbers::pi / 4.0;
 
 
-	//GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
 	const GAQ C = Up(1, 3, 2); //eo1+e1+3*e2+2*e3+7*ei1-2*ei2-3*ei3+3*ei4+2*ei5+6*ei6
-	const GAQ c_euc = eo1 + e1 + 3 * e2 + 2 * e3 + 7 * ei1;
-	const GAQ c_35 = -3 * ei3 + 2 * ei5;
-	const GAQ c_2 = -2 * ei2;
-	const GAQ c_46 = 3 * ei4 + 6 * ei6;
 
-	//double y = 2;
-	const double y = 3;
-	//GAQ CC = Up(2*sqrt(2), 2, sqrt(2));
 	const double theta = atan(2) - phi;
 	const GAQ CC = Up(sqrt(5) * cos(theta), 3, sqrt(5) * sin(theta));
 	const GAQ rotor = r.RotorExponential(20, phi);
@@ -200,8 +202,11 @@ void RotorXZ()
 	std::cout << " Target: " << CC << std::endl;
 	std::cout << "   Good: " << (rotated == CC) << std::endl;
 }
+
 void RotorYZ()
 {
+	using namespace gaq;
+
 	const GAQ r1 = e2 ^ e3;
 	const GAQ r2 = eo6 ^ ei3;
 	const GAQ r3 = ei5 ^ eo4;
@@ -212,7 +217,6 @@ void RotorYZ()
 
 	const GAQ r = r1 + r2 + r3 + r4 + r5 + r6 + r7;
 	const long double phi = std::numbers::pi / 4;
-	//long double phi = std::numbers::pi / 2;
 
 	const GAQ R1 = cos(phi / 2) * one + sin(phi / 2) * r1;
 	const GAQ R2 = cos(phi / 2) * one + sin(phi / 2) * r2;
@@ -226,11 +230,9 @@ void RotorYZ()
 	const GAQ c_cga = eo1 + e1 + 2 * e2 + 3 * e3 + 7 * ei1;
 	const GAQ c_45 = 2 * ei4 + 3 * ei5;
 	const GAQ c_236 = -1.5 * ei2 - 4 * ei3 + 6 * ei6;
-	//GAQ C = MujUp(2, 3, -1); 
 
 
 	const GAQ target = Up(1, 0.5 * 5 * sqrt(2), 0.5 * sqrt(2));
-	//GAQ target = MujUp(2, -1, -3);
 	const GAQ rot_236 = (r2 + r4 + r5 + r6).RotorExponential(20, phi);
 
 	const GAQ _rotated = ((R1 * c_cga * ~R1) + ((R3 ^ R7) * c_45 * (~R7 ^ ~R3)) + (rot_236 * c_236 * ~rot_236))[1];
@@ -245,8 +247,11 @@ void RotorYZ()
 	std::cout << " Target: " << target << std::endl;
 	std::cout << "   Good: " << (rotated == target) << std::endl;
 }
+
 void TranslatorX()
 {
+	using namespace gaq;
+
 	const GAQ t1 = -1 * e1 ^ ei1;
 	const GAQ t2 = -1 * e1 ^ ei2;
 	const GAQ t3 = -1 * e1 ^ ei3;
@@ -262,7 +267,7 @@ void TranslatorX()
 	const GAQ T4 = one - 0.5 * distance * (e2 ^ ei4);
 	const GAQ T5 = one - 0.5 * distance * (e3 ^ ei5);
 
-	const GAQ translatorX = t.TranslatorExponential(20, distance);
+	const GAQ translatorX = t.TranslatorExponential(3, distance);
 	const GAQ translatorX2 = T1 * T2 * T3 * T4 * T5;
 
 	const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
@@ -277,8 +282,11 @@ void TranslatorX()
 	std::cout << "      Good: " << (translated == target) << std::endl;
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
+
 void TranslatorY()
 {
+	using namespace gaq;
+
 	const GAQ t1 = -1 * e2 ^ ei1;
 	const GAQ t2 = 1 * e2 ^ ei2;
 	const GAQ t3 = -1 * e1 ^ ei4;
@@ -292,7 +300,7 @@ void TranslatorY()
 	const GAQ T3 = one - 0.5 * distance * (e1 ^ ei4);
 	const GAQ T4 = one - 0.5 * distance * (e3 ^ ei6);
 
-	const GAQ translatorY = t.TranslatorExponential(20, distance);
+	const GAQ translatorY = t.TranslatorExponential(2, distance);
 	const GAQ translatorY2 = T1 * T2 * T3 * T4;
 
 	const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
@@ -307,8 +315,11 @@ void TranslatorY()
 	std::cout << "      Good: " << (translated == target) << std::endl;
 	std::cout << "      Good: " << (translated2 == target) << std::endl;
 }
+
 void TranslatorZ()
 {
+	using namespace gaq;
+
 	const GAQ t1 = -1 * e3 ^ ei1;
 	const GAQ t2 = 1 * e3 ^ ei3;
 	const GAQ t3 = -1 * e1 ^ ei5;
@@ -322,7 +333,7 @@ void TranslatorZ()
 	const GAQ T3 = one - 0.5 * distance * (e1 ^ ei5);
 	const GAQ T4 = one - 0.5 * distance * (e2 ^ ei6);
 
-	const GAQ translatorZ = t.TranslatorExponential(20, distance);
+	const GAQ translatorZ = t.TranslatorExponential(2, distance);
 	const GAQ translatorZ2 = T1 * T2 * T3 * T4;
 
 	const GAQ C = Up(1, 2, 3); //eo1+e1+2*e2+3*e3+7*ei1+3*ei2-2*ei3+2*ei4+3*ei5+6*ei6
