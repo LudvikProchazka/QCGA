@@ -74,8 +74,8 @@ void Elipsoid()
 
 	Blade transformed = (R * (T * Q * ~T)[1] * ~R)[1];
 
-	//std::cout << "Quadric: " << Q << std::endl;
-	//std::cout << "transformed: " << transformed << std::endl;
+	std::cout << "Quadric: " << Q << std::endl;
+	std::cout << "transformed: " << transformed << std::endl;
 }
 
 void Elipsoid2()
